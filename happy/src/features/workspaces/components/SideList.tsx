@@ -15,17 +15,24 @@ import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 
 // const options = ['Run collection', 'Add request', 'Add folder', 'Delete']
-// const ITEM_HEIGHT = 48
+const settings = ['Run collection', 'Add request', 'Add folder', 'Delete']
 
 export default function SideList() {
   const [open, setOpen] = React.useState(true)
   const navigate = useNavigate()
 
-  // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  // const menuOpen = Boolean(anchorEl)
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
 
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget)
+  }
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null)
+  }
   const allCollections = useAppSelector(selectAllCollection)
   const { workspaceId } = useParams()
 
@@ -49,37 +56,33 @@ export default function SideList() {
       {allCollections.map((c) => (
         <ListItemButton key={c.id} onClick={() => handleNavCollection(c.id)}>
           <ListItemText primary={c.title} />
-          {/* <IconButton
-            aria-label="more"
-            id="long-button"
-            aria-controls={menuOpen ? 'long-menu' : undefined}
-            aria-expanded={menuOpen ? 'true' : undefined}
-            aria-haspopup="true"
-            onClick={handleClick}
-          >
-            <MoreVertIcon />
-          </IconButton>
-          <Menu
-            id="long-menu"
-            MenuListProps={{
-              'aria-labelledby': 'long-button'
-            }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            PaperProps={{
-              style: {
-                maxHeight: ITEM_HEIGHT * 4.5,
-                width: '20ch'
-              }
-            }}
-          >
-            {options.map((option) => (
-              <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
-                {option}
-              </MenuItem>
-            ))}
-          </Menu> */}
+          <Box sx={{ flexGrow: 0 }}>
+            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right'
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right'
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
         </ListItemButton>
       ))}
 
