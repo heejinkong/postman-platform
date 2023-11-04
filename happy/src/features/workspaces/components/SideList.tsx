@@ -9,8 +9,8 @@ import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import StarBorder from '@mui/icons-material/StarBorder'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useAppSelector } from '../../../app/hook'
-import { selectAllCollection } from '../../collections/collectionsSlice'
+import { useAppDispatch, useAppSelector } from '../../../app/hook'
+import { deleteById, selectAllCollection } from '../../collections/collectionsSlice'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
@@ -18,10 +18,10 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 
-// const options = ['Run collection', 'Add request', 'Add folder', 'Delete']
 const settings = ['Run collection', 'Add request', 'Add folder', 'Delete']
 
 export default function SideList() {
+  const dispatch = useAppDispatch()
   const [open, setOpen] = React.useState(true)
   const navigate = useNavigate()
 
@@ -34,7 +34,7 @@ export default function SideList() {
     setAnchorElUser(null)
   }
   const allCollections = useAppSelector(selectAllCollection)
-  const { workspaceId } = useParams()
+  const { workspaceId, collectionId } = useParams()
 
   const handleNavCollection = (collectionId: number) => {
     navigate(`/workspaces/${workspaceId}/collections/${collectionId}`)
@@ -44,12 +44,13 @@ export default function SideList() {
     setOpen(!open)
   }
 
-  // const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-  //   setAnchorEl(event.currentTarget)
-  // }
-  // const handleClose = () => {
-  //   setAnchorEl(null)
-  // }
+  const handleMenuClick = (e: { stopPropagation: () => void },settings, collectionId: number) => {
+    e.stopPropagation()
+    if (settings === 'Delete') {
+      console.log('delete')
+      dispatch(deleteById(collectionId))
+    }
+  }
 
   return (
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} component="nav">
@@ -76,9 +77,9 @@ export default function SideList() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              {settings.map((settings) => (
+                <MenuItem key={settings} onClick={(e) => handleMenuClick(e, settings, c.id)}>
+                  <Typography textAlign="center">{settings}</Typography>
                 </MenuItem>
               ))}
             </Menu>

@@ -4,7 +4,8 @@ import NewWorkspace from './NewWorkspace'
 import NewCollection from '../collections/components/NewCollection'
 
 export default function SideBar() {
-  const path = window.location.pathname
+  const path = window.location.pathname.split(`/`)[1]
+  console.log(path)
 
   return (
     <Box>
@@ -20,7 +21,7 @@ export default function SideBar() {
       <Box>
         <NewCollection />
       </Box>
-      <Box>{path !== `/` ? <SideList /> : null}</Box>
+      <Box>{path !== ''  ? <SideList /> : null}</Box>
     </Box>
   )
 }
