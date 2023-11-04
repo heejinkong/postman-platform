@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { Collection } from './collection'
 import { create, selectCollectionById, update } from './collectionsSlice'
 import { useParams } from 'react-router-dom'
+import { addCollectionToWorkspace } from '../workspaces/workspacesSlice'
 
 export default function CollectionsPage() {
   const [title, setTitle] = useState('')
@@ -28,6 +29,7 @@ export default function CollectionsPage() {
       requests: []
     }
     dispatch(create(collection))
+    dispatch(addCollectionToWorkspace({ collection, parent_id: parseInt(workspaceId ?? '') }))
     console.log('workspaceid', workspaceId)
   }
 

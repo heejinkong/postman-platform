@@ -15,6 +15,7 @@ export const collectionsSlice = createSlice({
     reducers: {
         create: (state, action: PayloadAction<Collection>) => {
             repo.data(state.data).save(action.payload)
+            
         },
         update: (state, action: PayloadAction<Collection>) => {
             repo.data(state.data).update(action.payload)

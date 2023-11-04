@@ -38,4 +38,5 @@ export class MemoryWorkspacesRepo implements WorkspacesRepo {
     this._data.Workspaces[index] = ws
     console.log(this._data.Workspaces)
   }
+
 }
