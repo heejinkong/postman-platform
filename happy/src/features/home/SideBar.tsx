@@ -19,7 +19,7 @@ export default function SideBar() {
         </Box>
       </Box>
       <Box>
-        <NewCollection />
+      <Box>{path !== ''  ? <NewCollection /> : null}</Box>
       </Box>
       <Box>{path !== ''  ? <SideList /> : null}</Box>
     </Box>
