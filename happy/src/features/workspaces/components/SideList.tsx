@@ -44,7 +44,7 @@ export default function SideList() {
     setOpen(!open)
   }
 
-  const handleMenuClick = (e: { stopPropagation: () => void },settings, collectionId: number) => {
+  const handleMenuClick = (e: { stopPropagation: () => void },settings: string, collectionId: number) => {
     e.stopPropagation()
     if (settings === 'Delete') {
       console.log('delete')
