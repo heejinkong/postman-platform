@@ -35,8 +35,9 @@ export default function SideList() {
     setAnchorElUser(null)
   }
   const allCollections = useAppSelector(selectAllCollection)
+  const colectionList = allCollections
+  .filter((c) => c.parent_id === parseInt(workspaceId ?? ''))
   
-
   const handleNavCollection = (collectionId: number) => {
     navigate(`/workspaces/${workspaceId}/collections/${collectionId}`)
   }
@@ -55,8 +56,7 @@ export default function SideList() {
 
   return (
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} component="nav">
-      {allCollections
-            .filter((c) => c.parent_id === parseInt(workspaceId ?? ''))
+      {colectionList
             .map((c) => (
         <ListItemButton key={c.id} onClick={() => handleNavCollection(c.id)}>
           <ListItemText primary={c.title} />
