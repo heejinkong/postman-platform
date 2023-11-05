@@ -21,6 +21,7 @@ import Box from '@mui/material/Box'
 const settings = ['Run collection', 'Add request', 'Add folder', 'Delete']
 
 export default function SideList() {
+  const { workspaceId } = useParams()
   const dispatch = useAppDispatch()
   const [open, setOpen] = React.useState(true)
   const navigate = useNavigate()
@@ -34,7 +35,7 @@ export default function SideList() {
     setAnchorElUser(null)
   }
   const allCollections = useAppSelector(selectAllCollection)
-  const { workspaceId, collectionId } = useParams()
+  
 
   const handleNavCollection = (collectionId: number) => {
     navigate(`/workspaces/${workspaceId}/collections/${collectionId}`)
@@ -54,7 +55,9 @@ export default function SideList() {
 
   return (
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} component="nav">
-      {allCollections.map((c) => (
+      {allCollections
+            .filter((c) => c.parent_id === parseInt(workspaceId ?? ''))
+            .map((c) => (
         <ListItemButton key={c.id} onClick={() => handleNavCollection(c.id)}>
           <ListItemText primary={c.title} />
           <Box sx={{ flexGrow: 0 }}>

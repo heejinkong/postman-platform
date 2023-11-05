@@ -29,6 +29,7 @@ export default function CollectionsPage() {
       requests: []
     }
     dispatch(create(collection))
+    // workspace의 collections에 추가
     dispatch(addCollectionToWorkspace({ collection, parent_id: parseInt(workspaceId ?? '') }))
     console.log('workspaceid', workspaceId)
   }
