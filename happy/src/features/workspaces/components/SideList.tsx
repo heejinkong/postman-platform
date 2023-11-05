@@ -48,16 +48,21 @@ export default function SideList() {
 
   const handleMenuClick = (e: { stopPropagation: () => void },settings: string, collectionId: number) => {
     e.stopPropagation()
+    
+    if(settings === `Add request`){
+      console.log('add request')
+      navigate(`/workspaces/${workspaceId}/collections/${collectionId}/requests/:requestId`)
+    }
     if (settings === 'Delete') {
       console.log('delete')
       dispatch(deleteById(collectionId))
     }
+  
   }
 
   return (
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} component="nav">
-      {colectionList
-            .map((c) => (
+      {colectionList.map((c) => (
         <ListItemButton key={c.id} onClick={() => handleNavCollection(c.id)}>
           <ListItemText primary={c.title} />
           <Box sx={{ flexGrow: 0 }}>

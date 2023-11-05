@@ -28,10 +28,6 @@ export default function RequestsPage() {
 
   const rows = [
     createData(true, 'Frozen yoghurt', 159, 6.0),
-    createData(true, 'Ice cream sandwich', 237, 9.0),
-    createData(true, 'Eclair', 262, 16.0),
-    createData(true, 'Cupcake', 305, 3.7),
-    createData(true, 'Gingerbread', 356, 16.0)
   ]
 
   return (
@@ -69,6 +65,12 @@ export default function RequestsPage() {
               <Tab label="Headers" value="2" />
               <Tab label="Body" value="3" />
               <Tab label="Result" value="4" />
+              <Box sx={{display: `flex`, flexDirection: 'row-reverse', alignItems: `flex-end`
+          }}>
+             <Button variant="contained" size="large" >
+               Save
+            </Button>
+             </Box>
             </TabList>
           </Box>
           <TabPanel value="1">

@@ -18,7 +18,7 @@ function App() {
           <Route index element={<WorkspacesPage />} />
           <Route path="collections/:collectionId" element={<CollectionsLayout />}>
             <Route index element={<CollectionsPage />} />
-            <Route path="requests/:id" element={<RequestsLayout />}>
+            <Route path="requests/:requestId" element={<RequestsLayout />}>
               <Route index element={<RequestsPage />} />
             </Route>
           </Route>

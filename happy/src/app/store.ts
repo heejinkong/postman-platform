@@ -3,6 +3,7 @@ import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import workspacesSlice from '../features/workspaces/workspacesSlice'
 import collectionsSlice from '../features/collections/collectionsSlice'
+import requestsSlice from '../features/requests/requestsSlice'
 
 const persistedWorkspacesReducer = persistReducer(
   {
@@ -20,10 +21,19 @@ const persistedCollectionsReducer = persistReducer(
   collectionsSlice
 )
 
+const persistedRequestsReducer = persistReducer(
+  {
+    key: 'requests',
+    storage
+  },
+  requestsSlice
+)
+
 export const store = configureStore({
   reducer: {
     workspace: persistedWorkspacesReducer,
-    collection: persistedCollectionsReducer
+    collection: persistedCollectionsReducer,
+    request: persistedRequestsReducer
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false

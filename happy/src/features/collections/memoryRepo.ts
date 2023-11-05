@@ -2,11 +2,14 @@ import { CollectionsRepo } from "./collectionsRepo";
 import { Collection } from "./collection";
 
 export class MemoryCollectionsRepo implements CollectionsRepo {
+
   _data: {
     sequence: number
   Collections: Collection[]
   } = { sequence: 0, Collections: [] }
+    addCollectionToWorkspace: any;
 
+  //data 
   data(d: { sequence: number; Collections: Collection[] }): MemoryCollectionsRepo {
     this._data = d
     return this
