@@ -12,6 +12,13 @@ export default function CollectionsPage() {
   const dispatch = useAppDispatch()
   const { workspaceId, collectionId } = useParams()
 
+  useEffect(() => {
+    if (collectionId === `:collectionId`) {
+      setTitle('')
+      setDesc('')
+    }
+  }, [collectionId])
+
   const collection = useAppSelector((state) =>
     selectCollectionById(state, parseInt(collectionId ?? ''))
   )
