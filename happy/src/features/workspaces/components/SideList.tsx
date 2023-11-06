@@ -17,11 +17,12 @@ import MenuItem from '@mui/material/MenuItem'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
+import { selectAllRequest } from '../../requests/requestsSlice'
 
 const settings = ['Run collection', 'Add request', 'Add folder', 'Delete']
 
 export default function SideList() {
-  const { workspaceId } = useParams()
+  const { workspaceId, collectionId } = useParams()
   const dispatch = useAppDispatch()
   const [open, setOpen] = React.useState(true)
   const navigate = useNavigate()
@@ -37,6 +38,11 @@ export default function SideList() {
   const allCollections = useAppSelector(selectAllCollection)
   const colectionList = allCollections
   .filter((c) => c.parent_id === parseInt(workspaceId ?? ''))
+
+  //collectionId와 일치하는 request를 가져온다.
+  const allRequests = useAppSelector(selectAllRequest)
+  const RequestList = allRequests
+  .filter((rq) => rq.parent_id === parseInt(collectionId ?? ''))
   
   const handleNavCollection = (collectionId: number) => {
     navigate(`/workspaces/${workspaceId}/collections/${collectionId}`)
@@ -65,8 +71,9 @@ export default function SideList() {
       {colectionList.map((c) => (
         <ListItemButton key={c.id} onClick={() => handleNavCollection(c.id)}>
           <ListItemText primary={c.title} />
+          {open ? <ExpandLess /> : <ExpandMore />}
           <Box sx={{ flexGrow: 0 }}>
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            {/* <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <MoreVertIcon />
             </IconButton>
             <Menu
@@ -90,15 +97,22 @@ export default function SideList() {
                   <Typography textAlign="center">{settings}</Typography>
                 </MenuItem>
               ))}
-            </Menu>
+            </Menu> */}
           </Box>
         </ListItemButton>
+        <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItemButton sx={{ pl: 4 }}>
+            <ListItemIcon>
+              <StarBorder />
+            </ListItemIcon>
+            <ListItemText primary="Starred" />
+          </ListItemButton>
+        </List>
+      </Collapse>
       ))}
 
       <ListItemButton onClick={handleListClick}>
-        <ListItemIcon>
-          <InboxIcon />
-        </ListItemIcon>
         <ListItemText primary="Inbox" />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>

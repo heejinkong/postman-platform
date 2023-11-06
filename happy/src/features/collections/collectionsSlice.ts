@@ -3,14 +3,13 @@ import { MemoryCollectionsRepo } from "./memoryRepo";
 import { Collection } from "./collection";
 import { RootState } from "../../app/store";
 
-
-
 const repo = new MemoryCollectionsRepo()
 
 export const collectionsSlice = createSlice({ 
     name: 'collections',
     initialState: {
-        data: repo._data
+        data: repo._data,
+        collections: repo._data.Collections,
     },
     reducers: {
         create: (state, action: PayloadAction<Collection>) => {
@@ -22,11 +21,19 @@ export const collectionsSlice = createSlice({
         },
         deleteById: (state, action: PayloadAction<number>) => {
             repo.data(state.data).deleteById(action.payload)
-        }
+        },
+        addRequestToCollection: (state, action: PayloadAction<{ request: Request, parent_id: number }>) => {
+            const parent_id = action.payload.parent_id;
+            const collection = repo.data(state.data).findById(parent_id);
+      
+            if (collection) {
+                collection.requests.push(action.payload.request as never);
+            }
+          },
     }
 })
 
-export const { create, update, deleteById } = collectionsSlice.actions
+export const { create, update, deleteById, addRequestToCollection} = collectionsSlice.actions
 
 export const selectAllCollection = (state: RootState) => {
     return repo.data(state.collection.data).findAll()

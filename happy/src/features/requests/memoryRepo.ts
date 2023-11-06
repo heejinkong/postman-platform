@@ -8,6 +8,7 @@ export class MemoryRequestsRepo implements RequestsRepo {
     sequence: number
   Requests: Request[]
   } = { sequence: 0, Requests: [] }
+    addRequestToWorkspace: any;
   
 
   //data 

@@ -26,11 +26,11 @@ export default function NavBar() {
             {collectionTitle || 'Collection'}
           </Link>
         )}
-        {requestId && (
+        {/* {requestId && (
           <Link underline="hover" color="inherit" href={`/workspaces/${workspaceId}/collections/${collectionId}/requests/${requestId}`}>
-            Request
-          </Link>
-        )}
+            {requestId || 'Request'}
+            </Link>
+        )} */}
        
       </Breadcrumbs>
     </div>
