@@ -17,11 +17,9 @@ const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 export default function RequestsPage() {
   const [title, setTitle] = useState('')
   const dispatch = useAppDispatch()
-  const { workspaceId, collectionId, requestId} = useParams()
+  const { collectionId, requestId } = useParams()
 
-  const request = useAppSelector((state) =>
-  selectRequesteById(state, parseInt(collectionId ?? ''))
-  )
+  const request = useAppSelector((state) => selectRequesteById(state, parseInt(collectionId ?? '')))
 
   const handleSaveClick = () => {
     const request: Request = {
@@ -70,38 +68,35 @@ export default function RequestsPage() {
     return { Check, Key, Value, Description }
   }
 
-  const rows = [
-    createData(true, 'Frozen yoghurt', 159, 6.0),
-  ]
+  const rows = [createData(true, 'Frozen yoghurt', 159, 6.0)]
 
   return (
     <Box>
-      <Box sx={{display: 'flex',
-          justifyContent: 'space-between'}}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
-        <TextField
-          required
-          fullWidth
-          id="outlined-required"
-          size='small'
-          label="Request Title"
-          onChange={(e) => {
-            setTitle(e.target.value)
-          }}
-          value={title}
-        />
+          <TextField
+            required
+            fullWidth
+            id="outlined-required"
+            size="small"
+            label="Request Title"
+            onChange={(e) => {
+              setTitle(e.target.value)
+            }}
+            value={title}
+          />
         </Box>
-        <Box >
-        {requestId === ':requestId' ? (
-          <Button variant="contained" size="large" onClick={handleSaveClick}>
-            Save
-          </Button>
-        ) : (
-          <Button variant="contained" size="large" onClick={handleUpdateClick}>
-            Update
-          </Button>
-        )}
-            </Box>
+        <Box>
+          {requestId === ':requestId' ? (
+            <Button variant="contained" size="large" onClick={handleSaveClick}>
+              Save
+            </Button>
+          ) : (
+            <Button variant="contained" size="large" onClick={handleUpdateClick}>
+              Update
+            </Button>
+          )}
+        </Box>
       </Box>
       <Box sx={{ display: 'flex', mb: 5 }}>
         <Box>
@@ -136,10 +131,9 @@ export default function RequestsPage() {
               <Tab label="Headers" value="2" />
               <Tab label="Body" value="3" />
               <Tab label="Result" value="4" />
-              <Box sx={{display: `flex`, flexDirection: 'row-reverse', alignItems: `flex-end`
-          }}>
-             
-             </Box>
+              <Box
+                sx={{ display: `flex`, flexDirection: 'row-reverse', alignItems: `flex-end` }}
+              ></Box>
             </TabList>
           </Box>
           <TabPanel value="1">
