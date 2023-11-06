@@ -68,7 +68,7 @@ export default function WorkspacesPage() {
           />
         </Box>
         <Button variant="contained" size="large" onClick={updateWorkspace}>
-          Save
+          Update
         </Button>
       </Box>
     </Box>
