@@ -1,4 +1,15 @@
-import { Autocomplete, Box, Button, Checkbox, IconButton, TextField } from '@mui/material'
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
@@ -11,6 +22,7 @@ import { useParams } from 'react-router-dom'
 import { create, selectRequesteById, update } from './requestsSlice'
 import { Request } from './request'
 import { addRequestToCollection } from '../collections/collectionsSlice'
+import React from 'react'
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 
@@ -18,6 +30,16 @@ export default function RequestsPage() {
   const [title, setTitle] = useState('')
   const dispatch = useAppDispatch()
   const { collectionId, requestId } = useParams()
+
+  const [key, setKey] = useState('')
+  const [paramValue, setParamValue] = useState('')
+  const [description, setDescription] = useState('')
+
+  const [method, setMethod] = React.useState('')
+
+  const handleMethodChange = (event: SelectChangeEvent) => {
+    setMethod(event.target.value)
+  }
 
   const request = useAppSelector((state) => selectRequesteById(state, parseInt(collectionId ?? '')))
 
@@ -52,12 +74,6 @@ export default function RequestsPage() {
     setTitle(request.title)
   }, [request])
 
-  const apiMethod = [
-    { label: 'GET', value: 1 },
-    { label: 'POST', value: 2 },
-    { label: 'PUT', value: 3 },
-    { label: 'DELETE', value: 4 }
-  ]
   const [value, setValue] = useState('1')
 
   const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
@@ -75,7 +91,6 @@ export default function RequestsPage() {
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
           <TextField
-            required
             fullWidth
             id="outlined-required"
             size="small"
@@ -98,23 +113,33 @@ export default function RequestsPage() {
           )}
         </Box>
       </Box>
-      <Box sx={{ display: 'flex', mb: 5 }}>
-        <Box>
-          <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={apiMethod}
-            sx={{ width: 150 }}
-            renderInput={(params) => <TextField {...params} label="Method" />}
-          />
-        </Box>
+      <Box sx={{ display: 'flex', mb: 3 }}>
+        <FormControl variant="filled" sx={{ minWidth: 150 }}>
+          <InputLabel id="demo-simple-select-standard-label">Method</InputLabel>
+          <Select
+            labelId="demo-simple-select-standard-label"
+            id="demo-simple-select-standard"
+            value={method}
+            onChange={handleMethodChange}
+            label="method"
+          >
+            <MenuItem value="">
+              <em>Method</em>
+            </MenuItem>
+            <MenuItem value={'get'}>GET</MenuItem>
+            <MenuItem value={'post'}>POST</MenuItem>
+            <MenuItem value={'put'}>PUT</MenuItem>
+            <MenuItem value={'patch'}>PATCH</MenuItem>
+            <MenuItem value={'delete'}>DELETE</MenuItem>
+          </Select>
+        </FormControl>
         <Box sx={{ flexGrow: 1, ml: 1 }}>
           <TextField
             required
             fullWidth
             id="outlined-required"
             label="Required"
-            defaultValue="Hello World"
+            defaultValue="Enter URL or paste text"
           />
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
@@ -155,13 +180,37 @@ export default function RequestsPage() {
                         <Checkbox {...label} defaultChecked />
                       </td>
                       <td>
-                        <TextField id="outlined-basic" label="Key" variant="outlined" />
+                        <TextField
+                          id="key"
+                          label="Key"
+                          variant="outlined"
+                          onChange={(e) => {
+                            setKey(e.target.value)
+                          }}
+                          value={key}
+                        />
                       </td>
                       <td>
-                        <TextField id="outlined-basic" label="Value" variant="outlined" />
+                        <TextField
+                          id="paramValue"
+                          label="Value"
+                          variant="outlined"
+                          onChange={(e) => {
+                            setParamValue(e.target.value)
+                          }}
+                          value={paramValue}
+                        />
                       </td>
                       <td>
-                        <TextField id="outlined-basic" label="Description" variant="outlined" />
+                        <TextField
+                          id="description"
+                          label="Description"
+                          variant="outlined"
+                          onChange={(e) => {
+                            setDescription(e.target.value)
+                          }}
+                          value={description}
+                        />
                       </td>
                       <td>
                         <IconButton aria-label="delete">

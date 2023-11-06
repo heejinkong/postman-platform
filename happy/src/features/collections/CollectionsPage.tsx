@@ -17,7 +17,7 @@ export default function CollectionsPage() {
       setTitle('')
       setDesc('')
     }
-  }, [collectionId])
+  }, [collectionId, dispatch])
 
   const collection = useAppSelector((state) =>
     selectCollectionById(state, parseInt(collectionId ?? ''))
