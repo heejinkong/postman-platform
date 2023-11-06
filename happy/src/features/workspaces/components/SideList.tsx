@@ -36,26 +36,35 @@ export default function SideList() {
     setAnchorElUser(null)
   }
   const allCollections = useAppSelector(selectAllCollection)
-  const colectionList = allCollections
-  .filter((c) => c.parent_id === parseInt(workspaceId ?? ''))
+  const collectionList = allCollections.filter((c) => c.parent_id === parseInt(workspaceId ?? ''))
 
   //collectionId와 일치하는 request를 가져온다.
   const allRequests = useAppSelector(selectAllRequest)
-  const RequestList = allRequests
-  .filter((rq) => rq.parent_id === parseInt(collectionId ?? ''))
-  
+  const RequestList = allRequests.filter((rq) => rq.parent_id === parseInt(collectionId ?? ''))
+
+  const [clickCollectionId, setClickCollectionId] = React.useState<number | null>(null)
+
   const handleNavCollection = (collectionId: number) => {
     navigate(`/workspaces/${workspaceId}/collections/${collectionId}`)
+    if (collectionId !== clickCollectionId) {
+      setClickCollectionId(collectionId)
+    }
   }
-
+  const handleNavRequest = (requestId: number) => {
+    navigate(`/workspaces/${workspaceId}/collections/${collectionId}/requests/${requestId}`)
+  }
   const handleListClick = () => {
     setOpen(!open)
   }
 
-  const handleMenuClick = (e: { stopPropagation: () => void },settings: string, collectionId: number) => {
+  const handleMenuClick = (
+    e: { stopPropagation: () => void },
+    settings: string,
+    collectionId: number
+  ) => {
     e.stopPropagation()
-    
-    if(settings === `Add request`){
+
+    if (settings === `Add request`) {
       console.log('add request')
       navigate(`/workspaces/${workspaceId}/collections/${collectionId}/requests/:requestId`)
     }
@@ -63,17 +72,16 @@ export default function SideList() {
       console.log('delete')
       dispatch(deleteById(collectionId))
     }
-  
   }
 
   return (
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} component="nav">
-      {colectionList.map((c) => (
+      {collectionList.map((c) => (
         <ListItemButton key={c.id} onClick={() => handleNavCollection(c.id)}>
           <ListItemText primary={c.title} />
-          {open ? <ExpandLess /> : <ExpandMore />}
+          {clickCollectionId === c.id ? <ExpandLess /> : <ExpandMore />}
           <Box sx={{ flexGrow: 0 }}>
-            {/* <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <MoreVertIcon />
             </IconButton>
             <Menu
@@ -97,35 +105,67 @@ export default function SideList() {
                   <Typography textAlign="center">{settings}</Typography>
                 </MenuItem>
               ))}
-            </Menu> */}
+            </Menu>
           </Box>
         </ListItemButton>
-        <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <StarBorder />
-            </ListItemIcon>
-            <ListItemText primary="Starred" />
-          </ListItemButton>
-        </List>
-      </Collapse>
       ))}
-
-      <ListItemButton onClick={handleListClick}>
+      {collectionList.map((c) => (
+        <Box>
+          <ListItemButton key={c.id} onClick={() => handleNavCollection(c.id)}>
+            <ListItemText primary={c.title} />
+            {clickCollectionId === c.id ? <ExpandLess /> : <ExpandMore />}
+            <Box sx={{ flexGrow: 0 }}>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, opacity: open ? 1 : 0 }}>
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((settings) => (
+                  <MenuItem key={settings} onClick={(e) => handleMenuClick(e, settings, c.id)}>
+                    <Typography textAlign="center">{settings}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </ListItemButton>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {RequestList.map((rq) => (
+                <ListItemButton sx={{ pl: 4 }} key={rq.id} onClick={() => handleNavRequest(rq.id)}>
+                  <ListItemText primary={rq.title} />
+                </ListItemButton>
+              ))}
+            </List>
+          </Collapse>
+        </Box>
+      ))}
+      {/* <ListItemButton onClick={handleListClick}>
         <ListItemText primary="Inbox" />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <StarBorder />
-            </ListItemIcon>
-            <ListItemText primary="Starred" />
-          </ListItemButton>
+         {RequestList.map((rq) => (
+           <ListItemButton sx={{ pl: 4 }} key={rq.id}>
+             <ListItemText primary={rq.title} />
+           </ListItemButton>
+          ))}
         </List>
-      </Collapse>
+      </Collapse> */}
     </List>
   )
 }
