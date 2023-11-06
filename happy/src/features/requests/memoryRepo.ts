@@ -8,7 +8,7 @@ export class MemoryRequestsRepo implements RequestsRepo {
     sequence: number
   Requests: Request[]
   } = { sequence: 0, Requests: [] }
-    addRequestToWorkspace: any;
+    // addRequestToWorkspace: any;
   
 
   //data 
@@ -27,7 +27,7 @@ export class MemoryRequestsRepo implements RequestsRepo {
   findAll(): Request[] {
     return this._data.Requests
   }
-  deleteById(id: number): void {
+  deleteByRequestId(id: number): void {
     this._data.Requests = this._data.Requests.filter((rq) => rq.id !== id)
   }
   count(): number {

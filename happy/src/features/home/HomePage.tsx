@@ -1,6 +1,6 @@
 import { Box, Container } from '@mui/material'
 import WorkspacesList from '../workspaces/components/WorkspacesList'
-import NewWorkspace from './NewWorkspace'
+import NewWorkspace from './components/NewWorkspace'
 
 export default function HomePage() {
   return (

@@ -9,11 +9,14 @@ import { useNavigate } from 'react-router-dom'
 import { Box, IconButton } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { deleteById, selectAllWorkspace } from '../workspacesSlice'
+import { deleteByCollectionId, selectAllCollection } from '../../collections/collectionsSlice'
 
 export default function WorkspacesList() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const allWorkspaces = useAppSelector(selectAllWorkspace)
+
+  const allCollections = useAppSelector(selectAllCollection)
 
   const handleNavWorkspace = (workspaceId: number) => {
     navigate(`/workspaces/${workspaceId}`)
@@ -23,6 +26,9 @@ export default function WorkspacesList() {
   const handleDeleteClick = (e: { stopPropagation: () => void }, workspaceId: number) => {
     e.stopPropagation()
     dispatch(deleteById(workspaceId))
+
+    const collectionList = allCollections.filter((c) => c.parent_id === workspaceId)
+    collectionList.map((c) => dispatch(deleteByCollectionId(c.id)))
   }
 
   if (allWorkspaces.length === 0) {

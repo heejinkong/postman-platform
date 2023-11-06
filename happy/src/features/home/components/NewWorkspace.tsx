@@ -5,9 +5,9 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import { useAppDispatch } from '../../app/hook'
-import { Workspace } from '../workspaces/workspace'
-import { create } from '../workspaces/workspacesSlice'
+import { useAppDispatch } from '../../../app/hook'
+import { Workspace } from '../../workspaces/workspace'
+import { create } from '../../workspaces/workspacesSlice'
 
 export default function NewWorkspace() {
   const [open, setOpen] = React.useState(false)

@@ -80,7 +80,7 @@ export default function CollectionsPage() {
             onChange={(e) => setDesc(e.target.value)}
           />
         </Box>
-        {collectionId === ':colllecitonId' ? (
+        {collectionId === `:collectionId` ? (
           <Button variant="contained" size="large" onClick={handleSaveClick}>
             Save
           </Button>

@@ -9,7 +9,6 @@ import { selectAllRequest } from '../../requests/requestsSlice'
 export default function NavBar() {
   const { workspaceId, collectionId, requestId } = useParams()
 
-  // 현재 workspaceId의 해당하는 workspace를 찾아서 title을 가져온다.
   const allWorkspaces = useAppSelector(selectAllWorkspace)
   const workspaceTitle = allWorkspaces.find((ws) => ws.id === Number(workspaceId))?.title
 

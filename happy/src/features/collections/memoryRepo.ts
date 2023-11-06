@@ -7,7 +7,7 @@ export class MemoryCollectionsRepo implements CollectionsRepo {
     sequence: number
   Collections: Collection[]
   } = { sequence: 0, Collections: [] }
-    addCollectionToWorkspace: any;
+    // addCollectionToWorkspace: any;
 
   //data 
   data(d: { sequence: number; Collections: Collection[] }): MemoryCollectionsRepo {
@@ -25,7 +25,7 @@ export class MemoryCollectionsRepo implements CollectionsRepo {
   findAll(): Collection[] {
     return this._data.Collections
   }
-  deleteById(id: number): void {
+  deleteByCollectionId(id: number): void {
     this._data.Collections = this._data.Collections.filter((c) => c.id !== id)
   }
   count(): number {

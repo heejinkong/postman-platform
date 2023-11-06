@@ -20,14 +20,14 @@ export const requestsSlice = createSlice({
     update: (state, action: PayloadAction<Request>) => {
       repo.data(state.data).update(action.payload)
     },
-    deleteById:  (state, action: PayloadAction<number>) => {
-      repo.data(state.data).deleteById(action.payload)
+    deleteByRequestId:  (state, action: PayloadAction<number>) => {
+      repo.data(state.data).deleteByRequestId(action.payload)
     },
     
   },
 })
 
-export const { create, update, deleteById } = requestsSlice.actions
+export const { create, update, deleteByRequestId } = requestsSlice.actions
 
 export const selectAllRequest = (state: RootState) => {
   return repo.data(state.request.data).findAll()

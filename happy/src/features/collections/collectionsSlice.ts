@@ -18,8 +18,8 @@ export const collectionsSlice = createSlice({
     update: (state, action: PayloadAction<Collection>) => {
       repo.data(state.data).update(action.payload)
     },
-    deleteById: (state, action: PayloadAction<number>) => {
-      repo.data(state.data).deleteById(action.payload)
+    deleteByCollectionId: (state, action: PayloadAction<number>) => {
+      repo.data(state.data).deleteByCollectionId(action.payload)
     },
     addRequestToCollection: (
       state,
@@ -35,7 +35,7 @@ export const collectionsSlice = createSlice({
   }
 })
 
-export const { create, update, deleteById, addRequestToCollection } = collectionsSlice.actions
+export const { create, update, deleteByCollectionId, addRequestToCollection } = collectionsSlice.actions
 
 export const selectAllCollection = (state: RootState) => {
   return repo.data(state.collection.data).findAll()

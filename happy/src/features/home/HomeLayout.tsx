@@ -2,7 +2,7 @@ import { Box } from '@mui/material'
 import HeaderBar from '../../HeaderBar'
 import { Outlet } from 'react-router-dom'
 import { RefObject, useEffect, useRef } from 'react'
-import SideBar from './SideBar'
+import SideBar from './components/SideBar'
 
 export default function HomeLayout() {
   const headerBarRef = useRef<HTMLDivElement>(null)

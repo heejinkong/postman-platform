@@ -6,7 +6,17 @@ export type Request = {
     author: string
     author_id: number
     parent_id: number
-    response: []
+    method: string
+    url: string
+    params: {key: string, value: string, desc: string}[]
+    header: {key: string, value: string, desc: string}[]
+    body: string
+    response: {
+        statusCode: number
+        statusMsg: string
+        header: {key: string, value: string, desc: string}[]
+        body: string
+    }
 }
 
 export const REQUEST_DEFAULT: Request = {
@@ -17,5 +27,15 @@ export const REQUEST_DEFAULT: Request = {
     author: '',
     author_id: 0,
     parent_id: 0,
-    response: []
+    method: 'GET',
+    url: '',
+    params: [],
+    header: [],
+    body: '',
+    response: {
+        statusCode: 0,
+        statusMsg: '',
+        header: [],
+        body: '',
+    }
   }
