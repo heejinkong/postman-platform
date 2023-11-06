@@ -72,7 +72,7 @@ export default function SideSubList() {
       dispatch(deleteByCollectionId(collectionId))
       RequestList.map((rq) => dispatch(deleteByRequestId(rq.id)))
     }
-    setOpen(!open)
+    setAnchorElUser(null)
   }
 
   const handleDeleteClick = (e: { stopPropagation: () => void }, requestId: number) => {
