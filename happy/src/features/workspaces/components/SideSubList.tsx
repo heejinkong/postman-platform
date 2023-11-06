@@ -16,7 +16,6 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import { deleteByRequestId, selectAllRequest } from '../../requests/requestsSlice'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { batch } from 'react-redux'
 
 const settings = ['Run collection', 'Add request', 'Add folder', 'Delete']
 
@@ -84,7 +83,7 @@ export default function SideSubList() {
 
   return (
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} component="nav">
-      {collectionList.map((c, index) => (
+      {collectionList.map((c) => (
         <Box>
           <ListItemButton key={c.id} onClick={() => handleNavCollection(c.id)}>
             <ListItemText primary={c.title} />
@@ -114,6 +113,7 @@ export default function SideSubList() {
               >
                 {settings.map((settings) => (
                   <MenuItem key={settings} onClick={(e) => handleMenuClick(e, settings, c.id)}>
+                    {c.id}
                     <Typography textAlign="center">{settings}</Typography>
                   </MenuItem>
                 ))}
