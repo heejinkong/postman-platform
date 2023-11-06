@@ -36,7 +36,7 @@ export default function RequestsPage() {
   const [description, setDescription] = useState('')
 
   const [method, setMethod] = React.useState('')
-
+  const [url, setUrl] = React.useState('')
   const handleMethodChange = (event: SelectChangeEvent) => {
     setMethod(event.target.value)
   }
@@ -52,7 +52,12 @@ export default function RequestsPage() {
       author: 'admin',
       author_id: 0,
       parent_id: parseInt(collectionId ?? ''),
-      response: []
+      method: method,
+      url: url,
+      params: { key: key, value: paramValue, description: description },
+      headers: [],
+      body: '',
+      result: ''
     }
     dispatch(create(request))
     // workspace의 collections에 추가
@@ -138,8 +143,8 @@ export default function RequestsPage() {
             required
             fullWidth
             id="outlined-required"
-            label="Required"
-            defaultValue="Enter URL or paste text"
+            label="Enter URL or paste text"
+            value={url}
           />
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>

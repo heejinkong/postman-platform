@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import { deleteByRequestId, selectAllRequest } from '../../requests/requestsSlice'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { batch } from 'react-redux'
 
 const settings = ['Run collection', 'Add request', 'Add folder', 'Delete']
 
@@ -43,7 +44,7 @@ export default function SideSubList() {
   const [clickCollectionId, setClickCollectionId] = React.useState<number | null>(null)
 
   const handleNavCollection = (collectionId: number) => {
-    console.log('collectionId', collectionId)
+    console.log('handleNavCollection', collectionId)
     navigate(`/workspaces/${workspaceId}/collections/${collectionId}`)
     setOpen((prev) => !prev)
     setClickCollectionId(collectionId)
@@ -61,6 +62,7 @@ export default function SideSubList() {
     settings: string,
     collectionId: number
   ) => {
+    console.log('handleMenuClick', collectionId)
     e.stopPropagation()
 
     if (settings === `Add request`) {
@@ -82,7 +84,7 @@ export default function SideSubList() {
 
   return (
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} component="nav">
-      {collectionList.map((c) => (
+      {collectionList.map((c, index) => (
         <Box>
           <ListItemButton key={c.id} onClick={() => handleNavCollection(c.id)}>
             <ListItemText primary={c.title} />
