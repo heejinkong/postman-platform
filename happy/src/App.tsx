@@ -8,6 +8,8 @@ import CollectionsLayout from './features/collections/CollectionsLayout'
 import CollectionsPage from './features/collections/CollectionsPage'
 import RequestsLayout from './features/requests/RequestsLayout'
 import RequestsPage from './features/requests/RequestsPage'
+import NewCollectionPage from './features/collections/components/NewCollectionPage'
+import NewRequestPage from './features/requests/components/NewRequestPage'
 
 function App() {
   return (
@@ -17,10 +19,10 @@ function App() {
         <Route path="workspaces/:workspaceId" element={<WorkspacesLayout />}>
           <Route index element={<WorkspacesPage />} />
           <Route path="collections" element={<CollectionsLayout />}>
-            <Route path="new" element={<>NewCollectionPage.tsx</>} />
+            <Route path="new" element={<NewCollectionPage />} />
             <Route path=":collectionId" element={<CollectionsPage />} />
             <Route path=":collectionId/requests" element={<RequestsLayout />}>
-              <Route path="new" element={<>NewRequestPage.tsx</>} />
+              <Route path="new" element={<NewRequestPage />} />
               <Route path=":requestId" element={<RequestsPage />} />
             </Route>
           </Route>

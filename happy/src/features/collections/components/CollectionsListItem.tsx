@@ -11,7 +11,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
-import { deleteCollectionById, selectCollectionById } from '../../collections/collectionsSlice'
+import { deleteCollectionById, selectCollectionById } from '../collectionsSlice'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import RequestsList from '../../requests/components/RequestsList'
 

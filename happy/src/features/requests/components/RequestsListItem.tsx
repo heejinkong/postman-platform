@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { deleteRequestById, selectRequestById } from '../requestsSlice'
 import React from 'react'
-import { selectCollectionById } from '../../collections/collectionsSlice'
+import { selectCollectionById, updateCollection } from '../../collections/collectionsSlice'
 
 type requestItemProps = {
   requestId: string
@@ -29,9 +29,10 @@ export default function RequestsListItem(props: requestItemProps) {
   const handleDeleteClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation()
 
-    // const cloned = JSON.parse(JSON.stringify(workspace))
-
     // collection의 requests 배열에서 request.id를 찾아서 삭제
+    const cloned = JSON.parse(JSON.stringify(collection))
+    cloned.requests = cloned.requests.filter((id: string) => id !== request.id)
+    dispatch(updateCollection(cloned))
 
     // request 삭제
     dispatch(deleteRequestById(request.id))

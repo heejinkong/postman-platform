@@ -5,7 +5,7 @@ import NewCollection from '../../collections/components/NewCollection'
 import { useAppSelector } from '../../../app/hook'
 import { useParams } from 'react-router-dom'
 import { selectWorkspaceById } from '../../workspaces/workspacesSlice'
-import CollectionsList from '../../workspaces/components/CollectionsList'
+import CollectionsList from '../../collections/components/CollectionsList'
 
 export default function SideBar() {
   const { workspaceId } = useParams()

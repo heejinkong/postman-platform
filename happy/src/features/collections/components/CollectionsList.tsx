@@ -1,7 +1,7 @@
 import List from '@mui/material/List'
 import { useParams } from 'react-router-dom'
 import { useAppSelector } from '../../../app/hook'
-import { selectAllCollections } from '../../collections/collectionsSlice'
+import { selectAllCollections } from '../collectionsSlice'
 import CollectionsListItem from './CollectionsListItem'
 
 export default function CollectionsList() {
