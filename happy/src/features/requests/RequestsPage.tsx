@@ -10,7 +10,7 @@ import {
   SelectChangeEvent,
   TextField
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
@@ -19,67 +19,67 @@ import Table from '@mui/joy/Table'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { useParams } from 'react-router-dom'
-import { create, selectRequesteById, update } from './requestsSlice'
-import { Request } from './request'
-import { addRequestToCollection } from '../collections/collectionsSlice'
+import { createRequest, updateRequest, selectRequestById } from './requestsSlice'
+import { requestItem } from './requestItem'
 import React from 'react'
+import { selectCollectionById, updateCollection } from '../collections/collectionsSlice'
+import { collectionItem } from '../collections/collectionItem'
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 
 export default function RequestsPage() {
-  const [title, setTitle] = useState('')
-  const dispatch = useAppDispatch()
   const { collectionId, requestId } = useParams()
 
+  const [title, setTitle] = useState('')
   const [key, setKey] = useState('')
   const [paramValue, setParamValue] = useState('')
   const [description, setDescription] = useState('')
-
   const [method, setMethod] = React.useState('')
-  const [url, setUrl] = React.useState('')
+  const [url] = React.useState('')
+  const [value, setValue] = useState('1')
+
+  const dispatch = useAppDispatch()
+  const collection = useAppSelector((state) => selectCollectionById(state, collectionId ?? ''))
+  const request = useAppSelector((state) => selectRequestById(state, requestId ?? ''))
+
   const handleMethodChange = (event: SelectChangeEvent) => {
     setMethod(event.target.value)
   }
 
-  const request = useAppSelector((state) => selectRequesteById(state, parseInt(collectionId ?? '')))
-
   const handleSaveClick = () => {
-    const request: Request = {
-      id: 0,
+    const newRequest: requestItem = {
+      id: '',
       title: title,
-      created: new Date().getTime(),
-      updated: new Date().getTime(),
-      author: 'admin',
-      author_id: 0,
-      parent_id: parseInt(collectionId ?? ''),
+      created: Date.now(),
+      updated: Date.now(),
+      authorId: 'admin',
+      parentId: collection.id,
       method: method,
       url: url,
-      params: { key: key, value: paramValue, description: description },
-      headers: [],
+      params: [{ key: key, value: paramValue, desc: description }],
+      header: [],
       body: '',
-      result: ''
+      response: {
+        statusCode: 0,
+        statusMsg: '',
+        header: [],
+        body: ''
+      }
     }
-    dispatch(create(request))
-    // workspace의 collections에 추가
-    dispatch(addRequestToCollection({ request, parent_id: parseInt(collectionId ?? '') }))
-    console.log('collectionId', collectionId)
+    dispatch(createRequest(newRequest))
+
+    const cloned: collectionItem = JSON.parse(JSON.stringify(collection))
+    cloned.requests.push(newRequest.id)
+    cloned.updated = Date.now()
+    dispatch(updateCollection(cloned))
   }
 
   const handleUpdateClick = () => {
-    const cloned = Object.assign({}, request)
+    const cloned: requestItem = JSON.parse(JSON.stringify(request))
     cloned.title = title
-    cloned.updated = new Date().getTime()
-    dispatch(update(cloned))
+    cloned.updated = Date.now()
+    dispatch(updateRequest(cloned))
   }
-
-  useEffect(() => {
-    if (!request) {
-      return
-    }
-    setTitle(request.title)
-  }, [request])
-
-  const [value, setValue] = useState('1')
 
   const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue)

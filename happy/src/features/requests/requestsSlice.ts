@@ -1,40 +1,33 @@
-
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import type { RootState } from '../../app/store'
-import { MemoryRequestsRepo } from './memoryRepo'
-import { Request } from './request'
+import { memoryRepository } from '../../repository/memoryRepository'
+import { RootState } from '../../app/store'
+import { requestItem } from './requestItem'
 
+const repo = new memoryRepository()
 
-const repo = new MemoryRequestsRepo()
-
-export const requestsSlice = createSlice({
+const requestsSlice = createSlice({
   name: 'requests',
   initialState: {
-    data: repo._data,
-    requests : repo._data.Requests,
+    data: repo._data
   },
   reducers: {
-    create: (state, action: PayloadAction<Request>) => {
+    createRequest: (state, action: PayloadAction<requestItem>) => {
       repo.data(state.data).save(action.payload)
     },
-    update: (state, action: PayloadAction<Request>) => {
-      repo.data(state.data).update(action.payload)
+    updateRequest: (state, action: PayloadAction<requestItem>) => {
+      repo.data(state.data).save(action.payload)
     },
-    deleteByRequestId:  (state, action: PayloadAction<number>) => {
-      repo.data(state.data).deleteByRequestId(action.payload)
-    },
-    
-  },
+    deleteRequestById: (state, action: PayloadAction<string>) => {
+      repo.data(state.data).deleteById(action.payload)
+    }
+  }
 })
 
-export const { create, update, deleteByRequestId } = requestsSlice.actions
+export const { createRequest, updateRequest, deleteRequestById } = requestsSlice.actions
 
-export const selectAllRequest = (state: RootState) => {
-  return repo.data(state.request.data).findAll()
-}
-
-export const selectRequesteById = (state: RootState, id: number) => {
-  return repo.data(state.request.data).findById(id)
-}
+export const selectAllRequests = (state: RootState) =>
+  repo.data(state.requests.data).findAll() as requestItem[]
+export const selectRequestById = (state: RootState, id: string) =>
+  repo.data(state.requests.data).findById(id) as requestItem
 
 export default requestsSlice.reducer

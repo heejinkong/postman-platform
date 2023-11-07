@@ -3,26 +3,25 @@ import { useAppSelector } from '../../app/hook'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { selectWorkspaceById, update } from './workspacesSlice'
+import { updateWorkspace, selectWorkspaceById } from './workspacesSlice'
+import { workspaceItem } from './workspaceItem'
 
 export default function WorkspacesPage() {
   const navigate = useNavigate()
   const { workspaceId } = useParams()
 
-  const workspace = useAppSelector((state) =>
-    selectWorkspaceById(state, parseInt(workspaceId ?? ''))
-  )
   const dispatch = useDispatch()
+  const workspace = useAppSelector((state) => selectWorkspaceById(state, workspaceId ?? ''))
 
   const [title, setTitle] = useState('')
   const [desc, setDesc] = useState('')
 
-  const updateWorkspace = () => {
-    const cloned = Object.assign({}, workspace)
+  const updateWs = () => {
+    const cloned: workspaceItem = JSON.parse(JSON.stringify(workspace))
     cloned.title = title
     cloned.desc = desc
-    cloned.updated = new Date().getTime()
-    dispatch(update(cloned))
+    cloned.updated = Date.now()
+    dispatch(updateWorkspace(cloned))
   }
 
   useEffect(() => {
@@ -67,7 +66,7 @@ export default function WorkspacesPage() {
             value={desc}
           />
         </Box>
-        <Button variant="contained" size="large" onClick={updateWorkspace}>
+        <Button variant="contained" size="large" onClick={updateWs}>
           Update
         </Button>
       </Box>

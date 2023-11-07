@@ -1,16 +1,15 @@
 import { Box, Button, ButtonGroup } from '@mui/material'
-import SideList from '../../workspaces/components/SideList'
-import NewWorkspace from './NewWorkspace'
+
+import NewWorkspace from '../../workspaces/components/NewWorkspace'
 import NewCollection from '../../collections/components/NewCollection'
 import { useAppSelector } from '../../../app/hook'
 import { useParams } from 'react-router-dom'
 import { selectWorkspaceById } from '../../workspaces/workspacesSlice'
+import CollectionsList from '../../workspaces/components/CollectionsList'
 
 export default function SideBar() {
   const { workspaceId } = useParams()
-  const workspace = useAppSelector((state) =>
-    selectWorkspaceById(state, parseInt(workspaceId ?? ''))
-  )
+  const workspace = useAppSelector((state) => selectWorkspaceById(state, workspaceId ?? ''))
 
   return (
     <Box>
@@ -26,7 +25,7 @@ export default function SideBar() {
       <Box>
         <Box>{workspace ? <NewCollection /> : null}</Box>
       </Box>
-      <Box>{workspace ? <SideList /> : null}</Box>
+      <Box>{workspace ? <CollectionsList /> : null}</Box>
     </Box>
   )
 }

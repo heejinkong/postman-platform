@@ -1,49 +1,33 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import type { RootState } from '../../app/store'
-import { MemoryWorkspacesRepo } from './memoryRepo'
-import { Workspace } from './workspace'
-import { Collection } from '../collections/collection'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { memoryRepository } from '../../repository/memoryRepository'
+import { workspaceItem } from './workspaceItem'
+import { RootState } from '../../app/store'
 
-const repo = new MemoryWorkspacesRepo()
+const repo = new memoryRepository()
 
-export const workspacesSlice = createSlice({
+const workspacesSlice = createSlice({
   name: 'workspaces',
   initialState: {
-    data: repo._data,
-    workspaces: repo._data.Workspaces
+    data: repo._data
   },
   reducers: {
-    create: (state, action: PayloadAction<Workspace>) => {
+    createWorkspace: (state, action: PayloadAction<workspaceItem>) => {
       repo.data(state.data).save(action.payload)
     },
-    update: (state, action: PayloadAction<Workspace>) => {
-      repo.data(state.data).update(action.payload)
+    updateWorkspace: (state, action: PayloadAction<workspaceItem>) => {
+      repo.data(state.data).save(action.payload)
     },
-    deleteById: (state, action: PayloadAction<number>) => {
+    deleteWorkspaceById: (state, action: PayloadAction<string>) => {
       repo.data(state.data).deleteById(action.payload)
-    },
-    addCollectionToWorkspace: (
-      state,
-      action: PayloadAction<{ collection: Collection; parent_id: number }>
-    ) => {
-      const parent_id = action.payload.parent_id
-      const workspace = repo.data(state.data).findById(parent_id)
-
-      if (workspace) {
-        workspace.collections.push(action.payload.collection as never)
-      }
     }
   }
 })
 
-export const { create, update, deleteById, addCollectionToWorkspace } = workspacesSlice.actions
+export const { createWorkspace, updateWorkspace, deleteWorkspaceById } = workspacesSlice.actions
 
-export const selectAllWorkspace = (state: RootState) => {
-  return repo.data(state.workspace.data).findAll()
-}
-
-export const selectWorkspaceById = (state: RootState, id: number) => {
-  return repo.data(state.workspace.data).findById(id)
-}
+export const selectAllWorkspaces = (state: RootState) =>
+  repo.data(state.workspaces.data).findAll() as workspaceItem[]
+export const selectWorkspaceById = (state: RootState, id: string) =>
+  repo.data(state.workspaces.data).findById(id) as workspaceItem
 
 export default workspacesSlice.reducer

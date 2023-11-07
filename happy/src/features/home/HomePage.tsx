@@ -1,6 +1,6 @@
 import { Box, Container } from '@mui/material'
 import WorkspacesList from '../workspaces/components/WorkspacesList'
-import NewWorkspace from './components/NewWorkspace'
+import NewWorkspace from '../workspaces/components/NewWorkspace'
 
 export default function HomePage() {
   return (
@@ -13,9 +13,12 @@ export default function HomePage() {
       }}
     >
       <Box>
-        <WorkspacesList />
+        <Box sx={{ mb: 2 }}>
+          <WorkspacesList />
+        </Box>
         <Box
           sx={{
+            mb: 2,
             display: 'flex',
             justifyContent: 'center'
           }}

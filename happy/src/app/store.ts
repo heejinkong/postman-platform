@@ -31,13 +31,14 @@ const persistedRequestsReducer = persistReducer(
 
 export const store = configureStore({
   reducer: {
-    workspace: persistedWorkspacesReducer,
-    collection: persistedCollectionsReducer,
-    request: persistedRequestsReducer
+    workspaces: persistedWorkspacesReducer,
+    collections: persistedCollectionsReducer,
+    requests: persistedRequestsReducer
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-    serializableCheck: false
-  }),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false
+    })
 })
 export const persistor = persistStore(store)
 

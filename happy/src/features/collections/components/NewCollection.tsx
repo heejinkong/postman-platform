@@ -7,7 +7,7 @@ export default function NewCollection() {
   const { workspaceId } = useParams()
 
   const handleNewCollectionClick = () => {
-    navigate(`/workspaces/${workspaceId}/collections/:collectionId`)
+    navigate(`/workspaces/${workspaceId}/collections/new`)
     console.log(workspaceId)
     if (workspaceId === undefined) {
       alert('workspace를 선택해주세요')

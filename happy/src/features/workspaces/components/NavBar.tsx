@@ -2,46 +2,43 @@ import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Link from '@mui/material/Link'
 import { useParams } from 'react-router-dom'
 import { useAppSelector } from '../../../app/hook'
-import { selectAllWorkspace } from '../workspacesSlice'
-import { selectAllCollection } from '../../collections/collectionsSlice'
-import { selectAllRequest } from '../../requests/requestsSlice'
+import { selectWorkspaceById } from '../workspacesSlice'
+import { selectCollectionById } from '../../collections/collectionsSlice'
+import { selectRequestById } from '../../requests/requestsSlice'
 
 export default function NavBar() {
   const { workspaceId, collectionId, requestId } = useParams()
 
-  const allWorkspaces = useAppSelector(selectAllWorkspace)
-  const workspaceTitle = allWorkspaces.find((ws) => ws.id === Number(workspaceId))?.title
-
-  const allCollections = useAppSelector(selectAllCollection)
-  const collectionTitle = allCollections.find((c) => c.id === Number(collectionId))?.title
-
-  const allRequests = useAppSelector(selectAllRequest)
-  const requestTitle = allRequests.find((rq) => rq.id === Number(requestId))?.title
+  const workspace = useAppSelector((state) => selectWorkspaceById(state, workspaceId ?? ''))
+  const collection = useAppSelector((state) => selectCollectionById(state, collectionId ?? ''))
+  const request = useAppSelector((state) => selectRequestById(state, requestId ?? ''))
 
   return (
     <div role="presentation">
       <Breadcrumbs separator="/" aria-label="breadcrumb">
-        <Link underline="hover" color="inherit" href={`/workspaces/${workspaceId}`}>
-          {workspaceTitle || 'Workspace'}
-        </Link>
-        {collectionId && (
+        {workspace ? (
+          <Link underline="hover" color="inherit" href={`/workspaces/${workspace.id}`}>
+            {workspace.title}
+          </Link>
+        ) : null}
+        {collection ? (
           <Link
             underline="hover"
             color="inherit"
-            href={`/workspaces/${workspaceId}/collections/${collectionId}`}
+            href={`/workspaces/${workspace.id}/collections/${collection.id}`}
           >
-            {collectionTitle || 'Collection'}
+            {collection.title}
           </Link>
-        )}
-        {requestId && (
+        ) : null}
+        {request ? (
           <Link
             underline="hover"
             color="inherit"
-            href={`/workspaces/${workspaceId}/collections/${collectionId}/requests/${requestId}`}
+            href={`/workspaces/${workspace.id}/collections/${collection.id}/requests/${request.id}`}
           >
-            {requestTitle || 'Request'}
+            {request.title}
           </Link>
-        )}
+        ) : null}
       </Breadcrumbs>
     </div>
   )

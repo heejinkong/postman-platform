@@ -1,48 +1,33 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { MemoryCollectionsRepo } from './memoryRepo'
-import { Collection } from './collection'
+import { memoryRepository } from '../../repository/memoryRepository'
 import { RootState } from '../../app/store'
+import { collectionItem } from './collectionItem'
 
-const repo = new MemoryCollectionsRepo()
+const repo = new memoryRepository()
 
-export const collectionsSlice = createSlice({
+const collectionsSlice = createSlice({
   name: 'collections',
   initialState: {
-    data: repo._data,
-    collections: repo._data.Collections
+    data: repo._data
   },
   reducers: {
-    create: (state, action: PayloadAction<Collection>) => {
+    createCollection: (state, action: PayloadAction<collectionItem>) => {
       repo.data(state.data).save(action.payload)
     },
-    update: (state, action: PayloadAction<Collection>) => {
-      repo.data(state.data).update(action.payload)
+    updateCollection: (state, action: PayloadAction<collectionItem>) => {
+      repo.data(state.data).save(action.payload)
     },
-    deleteByCollectionId: (state, action: PayloadAction<number>) => {
-      repo.data(state.data).deleteByCollectionId(action.payload)
-    },
-    addRequestToCollection: (
-      state,
-      action: PayloadAction<{ request: Request; parent_id: number }>
-    ) => {
-      const parent_id = action.payload.parent_id
-      const collection = repo.data(state.data).findById(parent_id)
-
-      if (collection) {
-        collection.requests.push(action.payload.request as never)
-      }
+    deleteCollectionById: (state, action: PayloadAction<string>) => {
+      repo.data(state.data).deleteById(action.payload)
     }
   }
 })
 
-export const { create, update, deleteByCollectionId, addRequestToCollection } = collectionsSlice.actions
+export const { createCollection, updateCollection, deleteCollectionById } = collectionsSlice.actions
 
-export const selectAllCollection = (state: RootState) => {
-  return repo.data(state.collection.data).findAll()
-}
-
-export const selectCollectionById = (state: RootState, id: number) => {
-  return repo.data(state.collection.data).findById(id)
-}
+export const selectAllCollections = (state: RootState) =>
+  repo.data(state.collections.data).findAll() as collectionItem[]
+export const selectCollectionById = (state: RootState, id: string) =>
+  repo.data(state.collections.data).findById(id) as collectionItem
 
 export default collectionsSlice.reducer

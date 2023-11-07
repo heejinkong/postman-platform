@@ -16,10 +16,12 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="workspaces/:workspaceId" element={<WorkspacesLayout />}>
           <Route index element={<WorkspacesPage />} />
-          <Route path="collections/:collectionId" element={<CollectionsLayout />}>
-            <Route index element={<CollectionsPage />} />
-            <Route path="requests/:requestId" element={<RequestsLayout />}>
-              <Route index element={<RequestsPage />} />
+          <Route path="collections" element={<CollectionsLayout />}>
+            <Route path="new" element={<>NewCollectionPage.tsx</>} />
+            <Route path=":collectionId" element={<CollectionsPage />} />
+            <Route path=":collectionId/requests" element={<RequestsLayout />}>
+              <Route path="new" element={<>NewRequestPage.tsx</>} />
+              <Route path=":requestId" element={<RequestsPage />} />
             </Route>
           </Route>
         </Route>

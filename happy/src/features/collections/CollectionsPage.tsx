@@ -1,16 +1,20 @@
 import { Box, Button, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
-import { Collection } from './collection'
-import { create, selectCollectionById, update } from './collectionsSlice'
+import { collectionItem } from './collectionItem'
+import { createCollection, selectCollectionById, updateCollection } from './collectionsSlice'
 import { useParams } from 'react-router-dom'
-import { addCollectionToWorkspace } from '../workspaces/workspacesSlice'
+import { selectWorkspaceById, updateWorkspace } from '../workspaces/workspacesSlice'
 
 export default function CollectionsPage() {
+  const { workspaceId, collectionId } = useParams()
+
   const [title, setTitle] = useState('')
   const [desc, setDesc] = useState('')
+
   const dispatch = useAppDispatch()
-  const { workspaceId, collectionId } = useParams()
+  const collection = useAppSelector((state) => selectCollectionById(state, collectionId ?? ''))
+  const workspace = useAppSelector((state) => selectWorkspaceById(state, workspaceId ?? ''))
 
   useEffect(() => {
     if (collectionId === `:collectionId`) {
@@ -19,34 +23,33 @@ export default function CollectionsPage() {
     }
   }, [collectionId, dispatch])
 
-  const collection = useAppSelector((state) =>
-    selectCollectionById(state, parseInt(collectionId ?? ''))
-  )
-
   const handleSaveClick = () => {
-    const collection: Collection = {
-      id: 0,
+    const newCollection: collectionItem = {
+      id: '',
       title: title,
       desc: desc,
-      created: new Date().getTime(),
-      updated: new Date().getTime(),
-      author: 'admin',
-      author_id: 0,
-      parent_id: parseInt(workspaceId ?? ''),
-      requests: []
+      created: Date.now(),
+      updated: Date.now(),
+      authorId: 'admin',
+      parentId: workspace.id,
+      requests: [],
+      folders: []
     }
-    dispatch(create(collection))
+    dispatch(createCollection(newCollection))
+
     // workspace의 collections에 추가
-    dispatch(addCollectionToWorkspace({ collection, parent_id: parseInt(workspaceId ?? '') }))
-    console.log('workspaceid', workspaceId)
+    const cloned = JSON.parse(JSON.stringify(workspace))
+    cloned.collections.push(newCollection.id)
+    cloned.updated = Date.now()
+    dispatch(updateWorkspace(cloned))
   }
 
   const handleUpdateClick = () => {
-    const cloned = Object.assign({}, collection)
+    const cloned = JSON.parse(JSON.stringify(collection))
     cloned.title = title
     cloned.desc = desc
-    cloned.updated = new Date().getTime()
-    dispatch(update(cloned))
+    cloned.updated = Date.now()
+    dispatch(updateCollection(cloned))
   }
 
   useEffect(() => {
