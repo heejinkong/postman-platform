@@ -14,6 +14,8 @@ import { useNavigate } from 'react-router-dom'
 import { deleteCollectionById, selectCollectionById } from '../collectionsSlice'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import RequestsList from '../../requests/components/RequestsList'
+import { selectWorkspaceById, updateWorkspace } from '../../workspaces/workspacesSlice'
+import FoldersList from '../../folders/components/FoldersList'
 
 type collectionListItemProps = {
   collectionId: string
@@ -28,6 +30,7 @@ export default function CollectionsListItem(props: collectionListItemProps) {
   const [hover, setHover] = React.useState(false)
 
   const collection = useAppSelector((state) => selectCollectionById(state, props.collectionId))
+  const workspace = useAppSelector((state) => selectWorkspaceById(state, collection.parentId))
 
   const [open, setOpen] = React.useState(true)
   const handleClick = () => {
@@ -52,14 +55,22 @@ export default function CollectionsListItem(props: collectionListItemProps) {
 
     if (settings === `Add request`) {
       console.log('add request')
-      navigate(`/workspaces/${collection.parentId}/collections/${collection.id}/requests/new`)
+      navigate(
+        `/workspaces/${collection.parentId}/collections/${collection.id}/requests/:requestId`
+      )
+    }
+    if (settings === `Add folder`) {
+      navigate(`/workspaces/${collection.parentId}/collections/${collection.id}/folders/:folderId`)
     }
     if (settings === 'Delete') {
       console.log('delete')
 
       // TODO : workspace의 collections 배열에서 collectionId를 찾아서 삭제
+      const cloned = JSON.parse(JSON.stringify(workspace))
+      cloned.collections = cloned.collections.filter((id: string) => id !== collectionId)
+      dispatch(updateWorkspace(cloned))
 
-      dispatch(deleteCollectionById(collectionId))
+      dispatch(deleteCollectionById(collection.id))
     }
     setAnchorElUser(null)
   }
@@ -73,7 +84,13 @@ export default function CollectionsListItem(props: collectionListItemProps) {
         onMouseLeave={() => setHover(false)}
       >
         <ListItemText primary={collection.title} />
-        {collection.requests.length === 0 ? `` : open ? <ExpandLess /> : <ExpandMore />}
+        {(collection.requests.length || collection.folders.length) === 0 ? (
+          ``
+        ) : open ? (
+          <ExpandLess />
+        ) : (
+          <ExpandMore />
+        )}
         <Box sx={{ flexGrow: 0 }}>
           <IconButton onClick={(e) => handleOpenUserMenu(e)} sx={{ opacity: hover ? 1 : 0 }}>
             <MoreVertIcon />
@@ -103,8 +120,11 @@ export default function CollectionsListItem(props: collectionListItemProps) {
         </Box>
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
-        <RequestsList requests={collection.requests} />
+        <FoldersList folders={collection.folders} />
       </Collapse>
+      {/* <Collapse in={open} timeout="auto" unmountOnExit>
+        <RequestsList requests={collection.requests} />
+      </Collapse> */}
     </Box>
   )
 }

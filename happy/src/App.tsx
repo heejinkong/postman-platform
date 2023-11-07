@@ -8,8 +8,8 @@ import CollectionsLayout from './features/collections/CollectionsLayout'
 import CollectionsPage from './features/collections/CollectionsPage'
 import RequestsLayout from './features/requests/RequestsLayout'
 import RequestsPage from './features/requests/RequestsPage'
-import NewCollectionPage from './features/collections/components/NewCollectionPage'
-import NewRequestPage from './features/requests/components/NewRequestPage'
+import FoldersLayout from './features/folders/FoldersLayout'
+import FoldersPage from './features/folders/FoldersPage'
 
 function App() {
   return (
@@ -18,12 +18,13 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="workspaces/:workspaceId" element={<WorkspacesLayout />}>
           <Route index element={<WorkspacesPage />} />
-          <Route path="collections" element={<CollectionsLayout />}>
-            <Route path="new" element={<NewCollectionPage />} />
-            <Route path=":collectionId" element={<CollectionsPage />} />
-            <Route path=":collectionId/requests" element={<RequestsLayout />}>
-              <Route path="new" element={<NewRequestPage />} />
-              <Route path=":requestId" element={<RequestsPage />} />
+          <Route path="collections/:collectionId" element={<CollectionsLayout />}>
+            <Route index element={<CollectionsPage />} />
+            <Route path="folders/:folderId" element={<FoldersLayout />}>
+              <Route index element={<FoldersPage />} />
+            </Route>
+            <Route path="requests/:requestId" element={<RequestsLayout />}>
+              <Route index element={<RequestsPage />} />
             </Route>
           </Route>
         </Route>

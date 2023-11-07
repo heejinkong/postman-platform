@@ -1,13 +1,13 @@
 import { Box, Button, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
-import { collectionItem } from './collectionItem'
-import { createCollection, selectCollectionById, updateCollection } from './collectionsSlice'
 import { useNavigate, useParams } from 'react-router-dom'
-import { selectWorkspaceById, updateWorkspace } from '../workspaces/workspacesSlice'
+import { folderItem } from './folderItem'
+import { createFolder, selectFolderById, updateFolder } from './foldersSlice'
+import { selectCollectionById, updateCollection } from '../collections/collectionsSlice'
 
 export default function CollectionsPage() {
-  const { workspaceId, collectionId } = useParams()
+  const { collectionId, folderId } = useParams()
   const navigate = useNavigate()
 
   const [title, setTitle] = useState('')
@@ -15,60 +15,61 @@ export default function CollectionsPage() {
 
   const dispatch = useAppDispatch()
   const collection = useAppSelector((state) => selectCollectionById(state, collectionId ?? ''))
-  const workspace = useAppSelector((state) => selectWorkspaceById(state, workspaceId ?? ''))
+  const folder = useAppSelector((state) => selectFolderById(state, folderId ?? ''))
 
   useEffect(() => {
-    if (collectionId === `:collectionId`) {
+    if (folderId === `:folderId`) {
       setTitle('')
       setDesc('')
     }
-  }, [collectionId, dispatch])
+  }, [folderId, dispatch])
 
   const handleSaveClick = () => {
-    const newCollection: collectionItem = {
+    const newFolder: folderItem = {
       id: '',
       title: title,
       desc: desc,
       created: Date.now(),
       updated: Date.now(),
       authorId: 'admin',
-      parentId: workspace.id,
-      requests: [],
-      folders: []
+      parentId: collection.id,
+      requests: []
     }
-    dispatch(createCollection(newCollection))
+    dispatch(createFolder(newFolder))
 
-    // workspace의 collections에 추가
-    const cloned = JSON.parse(JSON.stringify(workspace))
-    cloned.collections.push(newCollection.id)
+    // collection의 folders에 추가
+    const cloned = JSON.parse(JSON.stringify(collection))
+    cloned.folders.push(newFolder.id)
     cloned.updated = Date.now()
-    dispatch(updateWorkspace(cloned))
+    dispatch(updateCollection(cloned))
 
-    navigate(`/workspaces/${collection.parentId}/collections/${newCollection.id}`)
+    navigate(
+      `/workspaces/${collection.parentId}/collections/${collection.id}/folders/${newFolder.id}`
+    )
   }
 
   const handleUpdateClick = () => {
-    const cloned = JSON.parse(JSON.stringify(collection))
+    const cloned = JSON.parse(JSON.stringify(folder))
     cloned.title = title
     cloned.desc = desc
     cloned.updated = Date.now()
-    dispatch(updateCollection(cloned))
+    dispatch(updateFolder(cloned))
   }
 
   useEffect(() => {
-    if (!collection) {
+    if (!folder) {
       return
     }
 
-    setTitle(collection.title)
-    setDesc(collection.desc)
-  }, [collection])
+    setTitle(folder.title)
+    setDesc(folder.desc)
+  }, [folder])
 
   return (
     <Box>
       <Box>
         <Typography variant="h3" gutterBottom>
-          Collection
+          Folder
         </Typography>
         <Box sx={{ mb: 3 }}>
           <TextField
@@ -93,7 +94,7 @@ export default function CollectionsPage() {
             onChange={(e) => setDesc(e.target.value)}
           />
         </Box>
-        {collectionId === `:collectionId` ? (
+        {folderId === `:folderId` ? (
           <Button variant="contained" size="large" onClick={handleSaveClick}>
             Save
           </Button>

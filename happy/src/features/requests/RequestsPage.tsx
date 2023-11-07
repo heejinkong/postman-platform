@@ -18,7 +18,7 @@ import Tab from '@mui/material/Tab'
 import Table from '@mui/joy/Table'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { createRequest, updateRequest, selectRequestById } from './requestsSlice'
 import { requestItem } from './requestItem'
 import React from 'react'
@@ -29,6 +29,7 @@ const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 
 export default function RequestsPage() {
   const { collectionId, requestId } = useParams()
+  const navigate = useNavigate()
 
   const [title, setTitle] = useState('')
   const [key, setKey] = useState('')
@@ -72,6 +73,10 @@ export default function RequestsPage() {
     cloned.requests.push(newRequest.id)
     cloned.updated = Date.now()
     dispatch(updateCollection(cloned))
+
+    navigate(
+      `/workspaces/${collection.parentId}/collections/${collectionId}/requests/${newRequest.id}`
+    )
   }
 
   const handleUpdateClick = () => {

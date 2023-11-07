@@ -4,6 +4,8 @@ import storage from 'redux-persist/lib/storage'
 import workspacesSlice from '../features/workspaces/workspacesSlice'
 import collectionsSlice from '../features/collections/collectionsSlice'
 import requestsSlice from '../features/requests/requestsSlice'
+import foldersSlice from '../features/folders/foldersSlice'
+
 
 const persistedWorkspacesReducer = persistReducer(
   {
@@ -26,14 +28,24 @@ const persistedRequestsReducer = persistReducer(
     key: 'requests',
     storage
   },
-  requestsSlice
+ requestsSlice
 )
+
+const persistedFoldersReducer = persistReducer(
+  {
+    key: 'folders',
+    storage
+  },
+  foldersSlice
+)
+
 
 export const store = configureStore({
   reducer: {
     workspaces: persistedWorkspacesReducer,
     collections: persistedCollectionsReducer,
-    requests: persistedRequestsReducer
+    requests: persistedRequestsReducer,
+    folders: persistedFoldersReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
