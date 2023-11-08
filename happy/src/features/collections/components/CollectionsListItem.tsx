@@ -6,72 +6,46 @@ import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import { useNavigate } from 'react-router-dom'
-import { deleteCollectionById, selectCollectionById } from '../collectionsSlice'
-import { useAppDispatch, useAppSelector } from '../../../app/hook'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { selectCollectionById } from '../collectionsSlice'
+import { useAppSelector } from '../../../app/hook'
 import RequestsList from '../../requests/components/RequestsList'
-import { selectWorkspaceById, updateWorkspace } from '../../workspaces/workspacesSlice'
 import FoldersList from '../../folders/components/FoldersList'
+import AddRequestMenuItem from '../../requests/components/AddRequestMenuItem'
+import DeleteCollectionMenuItem from './DeleteCollectionMenuItem'
+import AddFolderMenuItem from '../../folders/components/AddFolderMenuItem'
 
 type collectionListItemProps = {
   collectionId: string
 }
 
-const settings = ['Run collection', 'Add request', 'Add folder', 'Delete']
-
 export default function CollectionsListItem(props: collectionListItemProps) {
   const navigate = useNavigate()
-  const dispatch = useAppDispatch()
+  const location = useLocation()
 
   const [hover, setHover] = React.useState(false)
 
   const collection = useAppSelector((state) => selectCollectionById(state, props.collectionId))
-  const workspace = useAppSelector((state) => selectWorkspaceById(state, collection.parentId))
 
   const [open, setOpen] = React.useState(true)
   const handleClick = () => {
     setOpen(!open)
-    navigate(`/workspaces/${collection.parentId}/collections/${collection.id}`)
+    navigate(`/workspaces/${collection.workspaceId}/collections/${collection.id}`)
   }
+
+  //TODO: 현재 URL의 collection이면 배경색을 바꿔줘야 함
+  const isCurrentURL =
+    location.pathname === `/workspaces/${collection.workspaceId}/collections/${collection.id}`
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    event.stopPropagation()
-    setAnchorElUser(event.currentTarget)
-  }
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null)
-  }
-  const handleMenuClick = (
-    e: React.MouseEvent<HTMLElement, MouseEvent>,
-    settings: string,
-    collectionId: string
-  ) => {
+  const handleOpenUserMenu = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
-
-    if (settings === `Add request`) {
-      console.log('add request')
-      navigate(
-        `/workspaces/${collection.parentId}/collections/${collection.id}/requests/:requestId`
-      )
-    }
-    if (settings === `Add folder`) {
-      navigate(`/workspaces/${collection.parentId}/collections/${collection.id}/folders/:folderId`)
-    }
-    if (settings === 'Delete') {
-      console.log('delete')
-
-      // TODO : workspace의 collections 배열에서 collectionId를 찾아서 삭제
-      const cloned = JSON.parse(JSON.stringify(workspace))
-      cloned.collections = cloned.collections.filter((id: string) => id !== collectionId)
-      dispatch(updateWorkspace(cloned))
-
-      dispatch(deleteCollectionById(collection.id))
-    }
+    setAnchorElUser(e.currentTarget)
+  }
+  const handleCloseUserMenu = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.stopPropagation()
     setAnchorElUser(null)
   }
 
@@ -82,6 +56,7 @@ export default function CollectionsListItem(props: collectionListItemProps) {
         onClick={() => handleClick()}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
+        sx={{ pl: 2, bgcolor: isCurrentURL ? 'lightgrey' : '' }}
       >
         <ListItemText primary={collection.title} />
         {(collection.requests.length || collection.folders.length) === 0 ? (
@@ -111,20 +86,25 @@ export default function CollectionsListItem(props: collectionListItemProps) {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
-            {settings.map((settings) => (
-              <MenuItem key={settings} onClick={(e) => handleMenuClick(e, settings, collection.id)}>
-                <Typography textAlign="center">{settings}</Typography>
-              </MenuItem>
-            ))}
+            <AddRequestMenuItem
+              parentId={collection.id}
+              handleClose={(e) => handleCloseUserMenu(e)}
+            />
+            <AddFolderMenuItem
+              parentId={collection.id}
+              handleClose={(e) => handleCloseUserMenu(e)}
+            />
+            <DeleteCollectionMenuItem
+              collectionId={collection.id}
+              handleClose={(e) => handleCloseUserMenu(e)}
+            />
           </Menu>
         </Box>
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <FoldersList folders={collection.folders} />
-      </Collapse>
-      {/* <Collapse in={open} timeout="auto" unmountOnExit>
         <RequestsList requests={collection.requests} />
-      </Collapse> */}
+      </Collapse>
     </Box>
   )
 }

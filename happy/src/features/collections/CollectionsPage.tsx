@@ -1,21 +1,17 @@
 import { Box, Button, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
-import { collectionItem } from './collectionItem'
-import { createCollection, selectCollectionById, updateCollection } from './collectionsSlice'
-import { useNavigate, useParams } from 'react-router-dom'
-import { selectWorkspaceById, updateWorkspace } from '../workspaces/workspacesSlice'
+import { selectCollectionById, updateCollection } from './collectionsSlice'
+import { useParams } from 'react-router-dom'
 
 export default function CollectionsPage() {
-  const { workspaceId, collectionId } = useParams()
-  const navigate = useNavigate()
+  const { collectionId } = useParams()
 
   const [title, setTitle] = useState('')
   const [desc, setDesc] = useState('')
 
   const dispatch = useAppDispatch()
   const collection = useAppSelector((state) => selectCollectionById(state, collectionId ?? ''))
-  const workspace = useAppSelector((state) => selectWorkspaceById(state, workspaceId ?? ''))
 
   useEffect(() => {
     if (collectionId === `:collectionId`) {
@@ -23,29 +19,6 @@ export default function CollectionsPage() {
       setDesc('')
     }
   }, [collectionId, dispatch])
-
-  const handleSaveClick = () => {
-    const newCollection: collectionItem = {
-      id: '',
-      title: title,
-      desc: desc,
-      created: Date.now(),
-      updated: Date.now(),
-      authorId: 'admin',
-      parentId: workspace.id,
-      requests: [],
-      folders: []
-    }
-    dispatch(createCollection(newCollection))
-
-    // workspace의 collections에 추가
-    const cloned = JSON.parse(JSON.stringify(workspace))
-    cloned.collections.push(newCollection.id)
-    cloned.updated = Date.now()
-    dispatch(updateWorkspace(cloned))
-
-    navigate(`/workspaces/${collection.parentId}/collections/${newCollection.id}`)
-  }
 
   const handleUpdateClick = () => {
     const cloned = JSON.parse(JSON.stringify(collection))
@@ -93,15 +66,10 @@ export default function CollectionsPage() {
             onChange={(e) => setDesc(e.target.value)}
           />
         </Box>
-        {collectionId === `:collectionId` ? (
-          <Button variant="contained" size="large" onClick={handleSaveClick}>
-            Save
-          </Button>
-        ) : (
-          <Button variant="contained" size="large" onClick={handleUpdateClick}>
-            Update
-          </Button>
-        )}
+
+        <Button variant="contained" size="large" onClick={handleUpdateClick}>
+          Update
+        </Button>
       </Box>
     </Box>
   )

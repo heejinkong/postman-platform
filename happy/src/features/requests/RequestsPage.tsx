@@ -10,7 +10,7 @@ import {
   SelectChangeEvent,
   TextField
 } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
@@ -18,76 +18,77 @@ import Tab from '@mui/material/Tab'
 import Table from '@mui/joy/Table'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
-import { useNavigate, useParams } from 'react-router-dom'
-import { createRequest, updateRequest, selectRequestById } from './requestsSlice'
+import { useParams } from 'react-router-dom'
+import { updateRequest, selectRequestById } from './requestsSlice'
 import { requestItem } from './requestItem'
 import React from 'react'
-import { selectCollectionById, updateCollection } from '../collections/collectionsSlice'
-import { collectionItem } from '../collections/collectionItem'
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 
 export default function RequestsPage() {
-  const { collectionId, requestId } = useParams()
-  const navigate = useNavigate()
+  const { requestId } = useParams()
 
   const [title, setTitle] = useState('')
   const [key, setKey] = useState('')
   const [paramValue, setParamValue] = useState('')
   const [description, setDescription] = useState('')
   const [method, setMethod] = React.useState('')
-  const [url] = React.useState('')
+  const [url, setUrl] = React.useState('')
   const [value, setValue] = useState('1')
 
   const dispatch = useAppDispatch()
-  const collection = useAppSelector((state) => selectCollectionById(state, collectionId ?? ''))
   const request = useAppSelector((state) => selectRequestById(state, requestId ?? ''))
+
+  useEffect(() => {
+    if (requestId === `:requestId`) {
+      setTitle('')
+      setKey('')
+      setParamValue('')
+      setDescription('')
+      setMethod('')
+      setUrl('')
+      setValue('1')
+    }
+  }, [dispatch, requestId])
 
   const handleMethodChange = (event: SelectChangeEvent) => {
     setMethod(event.target.value)
   }
 
-  const handleSaveClick = () => {
-    const newRequest: requestItem = {
-      id: '',
-      title: title,
-      created: Date.now(),
-      updated: Date.now(),
-      authorId: 'admin',
-      parentId: collection.id,
-      method: method,
-      url: url,
-      params: [{ key: key, value: paramValue, desc: description }],
-      header: [],
-      body: '',
-      response: {
-        statusCode: 0,
-        statusMsg: '',
-        header: [],
-        body: ''
-      }
-    }
-    dispatch(createRequest(newRequest))
-
-    const cloned: collectionItem = JSON.parse(JSON.stringify(collection))
-    cloned.requests.push(newRequest.id)
-    cloned.updated = Date.now()
-    dispatch(updateCollection(cloned))
-
-    navigate(
-      `/workspaces/${collection.parentId}/collections/${collectionId}/requests/${newRequest.id}`
-    )
-  }
-
   const handleUpdateClick = () => {
     const cloned: requestItem = JSON.parse(JSON.stringify(request))
     cloned.title = title
+    cloned.method = method
+    cloned.url = url
     cloned.updated = Date.now()
     dispatch(updateRequest(cloned))
   }
 
+  useEffect(() => {
+    if (!request) {
+      return
+    }
+    setTitle(request.title)
+    setMethod(request.method)
+    setUrl(request.url)
+  }, [request])
+
   const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue)
+  }
+
+  const handleSendClick = async () => {
+    const response = await fetch(url)
+    const data = await response.json()
+    if (response.ok) {
+      const cloned = JSON.parse(JSON.stringify(request))
+      cloned.response.statusCode = response.status
+      cloned.response.statusMsg = response.statusText
+      cloned.response.header = response.headers
+      cloned.response.body = data
+      cloned.updated = Date.now()
+      dispatch(updateRequest(cloned))
+    }
   }
 
   function createData(Check: boolean, Key: string, Value: number, Description: number) {
@@ -112,15 +113,9 @@ export default function RequestsPage() {
           />
         </Box>
         <Box>
-          {requestId === ':requestId' ? (
-            <Button variant="contained" size="large" onClick={handleSaveClick}>
-              Save
-            </Button>
-          ) : (
-            <Button variant="contained" size="large" onClick={handleUpdateClick}>
-              Update
-            </Button>
-          )}
+          <Button variant="contained" size="large" onClick={handleUpdateClick}>
+            Update
+          </Button>
         </Box>
       </Box>
       <Box sx={{ display: 'flex', mb: 3 }}>
@@ -149,11 +144,14 @@ export default function RequestsPage() {
             fullWidth
             id="outlined-required"
             label="Enter URL or paste text"
+            onChange={(e) => {
+              setUrl(e.target.value)
+            }}
             value={url}
           />
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-          <Button variant="contained" size="large" onClick={handleSaveClick}>
+          <Button variant="contained" size="large" onClick={handleSendClick}>
             Send
           </Button>
         </Box>

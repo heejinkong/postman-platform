@@ -27,8 +27,8 @@ const foldersSlice = createSlice({
 export const { createFolder, updateFolder, deleteFolderById } = foldersSlice.actions
 
 export const selectAllFolders = (state: RootState) =>
-  repo.data(state.collections.data).findAll() as folderItem[]
+  repo.data(state.folders.data).findAll() as folderItem[]
 export const selectFolderById = (state: RootState, id: string) =>
-  repo.data(state.collections.data).findById(id) as folderItem
+  repo.data(state.folders.data).findById(id) as folderItem
 
 export default foldersSlice.reducer

@@ -7,7 +7,7 @@ export class collectionItem implements repositoryItem {
   created: number = Date.now()
   updated: number = Date.now()
   authorId: string = ''
-  parentId: string = ''
-  requests: string[] = []
+  workspaceId: string = ''
   folders: string[] = []
+  requests: string[] = []
 }

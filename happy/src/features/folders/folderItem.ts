@@ -7,6 +7,8 @@ export class folderItem implements repositoryItem {
   created: number = Date.now()
   updated: number = Date.now()
   authorId: string = ''
+  workspaceId: string = ''
   parentId: string = ''
+  folders: string[] = []
   requests: string[] = []
 }

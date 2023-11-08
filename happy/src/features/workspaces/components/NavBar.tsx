@@ -34,7 +34,7 @@ export default function NavBar() {
           <Link
             underline="hover"
             color="inherit"
-            href={`/workspaces/${workspace.id}/collections/${collection.id}/requests/${request.id}`}
+            href={`/workspaces/${workspace.id}/requests/${request.id}`}
           >
             {request.title}
           </Link>

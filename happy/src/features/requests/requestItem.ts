@@ -6,6 +6,7 @@ export class requestItem implements repositoryItem {
   created: number = Date.now()
   updated: number = Date.now()
   authorId: string = ''
+  workspaceId: string = ''
   parentId: string = ''
   method: string = ''
   url: string = ''

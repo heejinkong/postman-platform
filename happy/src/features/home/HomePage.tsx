@@ -12,17 +12,11 @@ export default function HomePage() {
         justifyContent: 'center'
       }}
     >
-      <Box>
-        <Box sx={{ mb: 2 }}>
+      <Box sx={{ width: '100%' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
           <WorkspacesList />
         </Box>
-        <Box
-          sx={{
-            mb: 2,
-            display: 'flex',
-            justifyContent: 'center'
-          }}
-        >
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
           <NewWorkspace />
         </Box>
       </Box>

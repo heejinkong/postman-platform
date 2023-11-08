@@ -20,12 +20,12 @@ function App() {
           <Route index element={<WorkspacesPage />} />
           <Route path="collections/:collectionId" element={<CollectionsLayout />}>
             <Route index element={<CollectionsPage />} />
-            <Route path="folders/:folderId" element={<FoldersLayout />}>
-              <Route index element={<FoldersPage />} />
-            </Route>
-            <Route path="requests/:requestId" element={<RequestsLayout />}>
-              <Route index element={<RequestsPage />} />
-            </Route>
+          </Route>
+          <Route path="folders/:folderId" element={<FoldersLayout />}>
+            <Route index element={<FoldersPage />} />
+          </Route>
+          <Route path="requests/:requestId" element={<RequestsLayout />}>
+            <Route index element={<RequestsPage />} />
           </Route>
         </Route>
       </Route>
