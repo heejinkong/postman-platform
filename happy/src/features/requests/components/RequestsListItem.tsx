@@ -1,7 +1,7 @@
 import IconButton from '@mui/material/IconButton'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { deleteRequestById, selectRequestById } from '../requestsSlice'
@@ -20,7 +20,6 @@ type requestItemProps = {
 export default function RequestsListItem(props: requestItemProps) {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const location = useLocation()
 
   const [hover, setHover] = React.useState(false)
 
@@ -31,9 +30,6 @@ export default function RequestsListItem(props: requestItemProps) {
   const handleNavRequest = () => {
     navigate(`/workspaces/${request.workspaceId}/requests/${request.id}`)
   }
-
-  const isCurrentURL =
-    location.pathname === `/workspaces/${request.workspaceId}/requests/${request.id}`
 
   const handleDeleteClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation()
@@ -61,7 +57,7 @@ export default function RequestsListItem(props: requestItemProps) {
   if (request) {
     return (
       <ListItemButton
-        sx={{ pl: 4, bgcolor: isCurrentURL ? `lightgray` : `` }}
+        sx={{ pl: 4 }}
         onClick={() => handleNavRequest()}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}

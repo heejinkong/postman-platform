@@ -40,11 +40,13 @@ export default function AddFolderMenuItem(props: addFolderMenuItemProps) {
       cloned.folders.push(newFolder.id)
       cloned.updated = Date.now()
       dispatch(updateCollection(cloned))
+      console.log('collection', cloned.id)
     } else if (folder) {
       const cloned = JSON.parse(JSON.stringify(folder)) as folderItem
       cloned.folders.push(newFolder.id)
       cloned.updated = Date.now()
       dispatch(updateFolder(cloned))
+      console.log('folder', cloned.id)
     }
     navigate(`/workspaces/${newFolder.workspaceId}/folders/${newFolder.id}`)
   }
