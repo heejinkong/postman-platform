@@ -40,6 +40,7 @@ export default function DeleteCollectionMenuItem(props: deleteCollectionMenuItem
       requestList.map((request) => dispatch(deleteRequestById(request.id)))
     )
 
+    //collection이 삭제되면 해당 collection.workspaceId로 이동
     navigate(`/workspaces/${collection.workspaceId}`)
   }
 

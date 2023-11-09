@@ -23,7 +23,6 @@ type collectionListItemProps = {
 
 export default function CollectionsListItem(props: collectionListItemProps) {
   const navigate = useNavigate()
-  const location = useLocation()
 
   const [hover, setHover] = React.useState(false)
 
@@ -35,9 +34,18 @@ export default function CollectionsListItem(props: collectionListItemProps) {
     navigate(`/workspaces/${collection.workspaceId}/collections/${collection.id}`)
   }
 
-  //TODO: 현재 URL의 collection이면 배경색을 바꿔줘야 함
-  const isCurrentURL =
-    location.pathname === `/workspaces/${collection.workspaceId}/collections/${collection.id}`
+  const location = useLocation()
+  const [currentCollection, setCurrentCollection] = React.useState(false)
+  const currentCollectionId = location.pathname.split('/')[4]
+  const currentWorkspaceId = location.pathname.split('/')[2]
+
+  React.useEffect(() => {
+    if (currentCollectionId === collection.id && currentWorkspaceId === collection.workspaceId) {
+      setCurrentCollection(true)
+    } else {
+      setCurrentCollection(false)
+    }
+  }, [location])
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
   const handleOpenUserMenu = (e: React.MouseEvent<HTMLElement>) => {
@@ -56,7 +64,7 @@ export default function CollectionsListItem(props: collectionListItemProps) {
         onClick={() => handleClick()}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
-        sx={{ pl: 2, bgcolor: isCurrentURL ? 'lightgrey' : '' }}
+        sx={{ pl: 2, bgcolor: currentCollection ? `lightgrey` : `` }}
       >
         <ListItemText primary={collection.title} />
         {(collection.requests.length || collection.folders.length) === 0 ? (
