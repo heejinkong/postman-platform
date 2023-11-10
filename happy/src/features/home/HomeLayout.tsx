@@ -4,6 +4,7 @@ import { Outlet } from 'react-router-dom'
 import { RefObject, useEffect, useRef } from 'react'
 import SideBar from './components/SideBar'
 import { Divider } from '@mui/joy'
+import DrawerMain from './DrawerMain'
 
 export default function HomeLayout() {
   const headerBarRef = useRef<HTMLDivElement>(null)
@@ -29,16 +30,17 @@ export default function HomeLayout() {
         <HeaderBar />
       </Box>
       <Box ref={contentsBodyRef}>
-        <Box sx={{ height: '100%', display: 'flex', p: 2 }}>
-          <Box>
+        {/* <Box sx={{ flexGrow: 1, height: '100%', width: `100%`, display: 'flex', p: 2 }}>
+          {/* <Box>
             <SideBar />
           </Box>
           <Divider orientation="vertical" />
           <Box sx={{ flexGrow: 1 }}>
             <Outlet />
-          </Box>
-        </Box>
+          </Box> */}
+        <DrawerMain />
       </Box>
     </Box>
+    // </Box>
   )
 }

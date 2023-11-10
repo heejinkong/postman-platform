@@ -10,8 +10,8 @@ export default function SideBar() {
   const workspace = useAppSelector((state) => selectWorkspaceById(state, workspaceId ?? ''))
 
   return (
-    <Box sx={{ pr: 1 }}>
-      <Box sx={{ pb: 2 }}>
+    <Box sx={{ alignItems: `center` }}>
+      <Box sx={{ pb: 2, mt: 2, ml: 4 }}>
         <ButtonGroup size="small" variant="outlined" aria-label="outlined button group">
           <NewWorkspace />
           <Button>Import</Button>
