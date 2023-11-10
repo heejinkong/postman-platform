@@ -1,9 +1,7 @@
 import { Box } from '@mui/material'
 import HeaderBar from '../../HeaderBar'
-import { Outlet } from 'react-router-dom'
+
 import { RefObject, useEffect, useRef } from 'react'
-import SideBar from './components/SideBar'
-import { Divider } from '@mui/joy'
 import DrawerMain from './DrawerMain'
 
 export default function HomeLayout() {

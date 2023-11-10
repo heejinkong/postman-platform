@@ -14,7 +14,7 @@ import { Outlet, useNavigate } from 'react-router-dom'
 import SideBar from './components/SideBar'
 import { Button } from '@mui/material'
 
-const drawerWidth = 340
+const drawerWidth = 300
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean
@@ -73,7 +73,6 @@ export default function DrawerMain() {
   }
 
   const navigate = useNavigate()
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
 
   const handleOpenWorkspaces = () => {
     navigate('/')
@@ -99,9 +98,6 @@ export default function DrawerMain() {
           >
             <MenuIcon />
           </IconButton>
-          {/* <Typography variant="h6" noWrap component="div">
-            Persistent drawer
-          </Typography> */}
           <Typography
             variant="h6"
             noWrap
@@ -146,8 +142,8 @@ export default function DrawerMain() {
         <SideBar />
       </Drawer>
       <Main open={open}>
-        <DrawerHeader />
-        <Box sx={{ height: '100%', display: 'flex', p: 1 }}>
+        {/* <DrawerHeader /> */}
+        <Box sx={{ height: '100%', display: 'flex' }}>
           <Box sx={{ flexGrow: 1 }}>
             <Outlet />
           </Box>

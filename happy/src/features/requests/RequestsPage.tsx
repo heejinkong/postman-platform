@@ -22,6 +22,11 @@ import { useParams } from 'react-router-dom'
 import { updateRequest, selectRequestById } from './requestsSlice'
 import { requestItem } from './requestItem'
 import React from 'react'
+import ResponsesPage from '../responses/ResponsesPage'
+import { Divider } from '@mui/joy'
+import CodeMirror from '@uiw/react-codemirror'
+import { javascript } from '@codemirror/lang-javascript'
+import SendRequestButton from './components/sendRequestButton'
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 
@@ -48,8 +53,19 @@ export default function RequestsPage() {
       setMethod('')
       setUrl('')
       setValue('1')
+    } else if (request) {
+      setTitle(request.title)
+      setMethod(request.method)
+      setUrl(request.url)
+      setValue('1')
+      window.onbeforeunload = function () {
+        return '저장하지 않은 데이터가 있습니다.'
+      }
+      return () => {
+        window.onbeforeunload = null
+      }
     }
-  }, [dispatch, requestId])
+  }, [dispatch, request, requestId])
 
   const handleMethodChange = (event: SelectChangeEvent) => {
     setMethod(event.target.value)
@@ -96,7 +112,9 @@ export default function RequestsPage() {
   }
 
   const rows = [createData(true, 'Frozen yoghurt', 159, 6.0)]
-
+  const onChange = React.useCallback((value: string) => {
+    console.log(value)
+  }, [])
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -151,9 +169,7 @@ export default function RequestsPage() {
           />
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-          <Button variant="contained" size="large" onClick={handleSendClick}>
-            Send
-          </Button>
+          <SendRequestButton />
         </Box>
       </Box>
       <Box sx={{ bgcolor: 'background.paper' }}>
@@ -235,17 +251,22 @@ export default function RequestsPage() {
           <TabPanel value="3">Body</TabPanel>
           <TabPanel value="4">
             <Box>
-              <TextField
-                id="outlined-multiline-static"
-                label="Multiline"
-                multiline
-                fullWidth
-                rows={4}
-                defaultValue="Default Value"
+              <CodeMirror
+                value={request.body}
+                height="200px"
+                theme="light"
+                extensions={[javascript({ jsx: true })]}
+                onChange={onChange}
               />
             </Box>
           </TabPanel>
         </TabContext>
+      </Box>
+      <Box sx={{ mt: 15 }}>
+        <Divider />
+        <Box>
+          <ResponsesPage />
+        </Box>
       </Box>
     </Box>
   )

@@ -13,10 +13,10 @@ export default function HomePage() {
       }}
     >
       <Box sx={{ width: '100%' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 20 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <WorkspacesList />
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 18 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <NewWorkspace />
         </Box>
       </Box>

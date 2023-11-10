@@ -7,7 +7,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import { useAppDispatch } from '../../../app/hook'
 import { workspaceItem } from '../workspaceItem'
-import { createWorkspace } from '../workspacesSlice'
+import { newWorkspace } from '../service/workspaceService'
 
 export default function NewWorkspace() {
   const [open, setOpen] = React.useState(false)
@@ -25,17 +25,11 @@ export default function NewWorkspace() {
   }
 
   const addWorkspace = () => {
-    const newWorkspace: workspaceItem = {
-      id: '',
-      title: title,
-      desc: desc,
-      created: Date.now(),
-      updated: Date.now(),
-      authorId: 'admin',
-      collections: []
-    }
+    const newItem = new workspaceItem()
+    newItem.title = title
+    newItem.desc = desc
+    dispatch(newWorkspace(newItem))
 
-    dispatch(createWorkspace(newWorkspace))
     setOpen(false)
   }
 

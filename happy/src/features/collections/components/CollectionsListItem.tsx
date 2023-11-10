@@ -17,34 +17,20 @@ import AddRequestMenuItem from '../../requests/components/AddRequestMenuItem'
 import DeleteCollectionMenuItem from './DeleteCollectionMenuItem'
 import AddFolderMenuItem from '../../folders/components/AddFolderMenuItem'
 
-type collectionListItemProps = {
+type CollectionListItemProps = {
   collectionId: string
 }
 
-export default function CollectionsListItem(props: collectionListItemProps) {
+export default function CollectionsListItem(props: CollectionListItemProps) {
   const navigate = useNavigate()
-  const path = window.location.pathname
-  const currentCollectionId = path.split('/')[4]
-
   const [hover, setHover] = React.useState(false)
   const collection = useAppSelector((state) => selectCollectionById(state, props.collectionId))
-
   const [open, setOpen] = React.useState(true)
-  const [selectedCollectionId, setSelectedCollectionId] = React.useState<string | null>(null)
-
-  // React.useEffect(() => {
-  //   currentCollectionId === collection.id ? setSelectedCollectionId(collection.id) : null
-  // }, [currentCollectionId, collection.id])
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, collectionId: string) => {
-    setOpen(!open)
+    e.stopPropagation()
+
     navigate(`/workspaces/${collection.workspaceId}/collections/${collection.id}`)
-    //currnetCollectionId와 같은 collection
-    if (currentCollectionId === collectionId) {
-      setSelectedCollectionId(collectionId)
-    } else {
-      setSelectedCollectionId(null)
-    }
   }
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
@@ -58,20 +44,28 @@ export default function CollectionsListItem(props: collectionListItemProps) {
     e.stopPropagation()
     setAnchorElUser(null)
   }
+
   if (!collection) return null
+
   return (
     <Box>
       <ListItemButton
         key={collection.id}
-        selected={selectedCollectionId === collection.id}
         onClick={(e) => handleClick(e, collection.id)}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
-        sx={{ pl: 2 }}
+        sx={{
+          pl: 2
+        }}
       >
         <ListItemText primary={collection.title} />
-        {(collection.requests.length || collection.folders.length) > 0 &&
-          (open ? <ExpandLess /> : <ExpandMore />)}
+        {(collection.requests.length || collection.folders.length) === 0 ? (
+          ``
+        ) : open ? (
+          <ExpandLess />
+        ) : (
+          <ExpandMore />
+        )}
         <Box sx={{ flexGrow: 0 }}>
           <IconButton onClick={(e) => handleOpenUserMenu(e)} sx={{ opacity: hover ? 1 : 0 }}>
             <MoreVertIcon />

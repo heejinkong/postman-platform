@@ -11,7 +11,7 @@ export default function SideBar() {
 
   return (
     <Box sx={{ alignItems: `center` }}>
-      <Box sx={{ pb: 2, mt: 2, ml: 4 }}>
+      <Box sx={{ pb: 2, mt: 2, ml: 1.6 }}>
         <ButtonGroup size="small" variant="outlined" aria-label="outlined button group">
           <NewWorkspace />
           <Button>Import</Button>
