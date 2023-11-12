@@ -26,7 +26,7 @@ import ResponsesPage from '../responses/ResponsesPage'
 import { Divider } from '@mui/joy'
 import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
-import SendRequestButton from './components/sendRequestButton'
+import SendRequestButton from './components/SendRequestButton'
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 
@@ -72,12 +72,21 @@ export default function RequestsPage() {
   }
 
   const handleUpdateClick = () => {
-    const cloned: requestItem = JSON.parse(JSON.stringify(request))
-    cloned.title = title
-    cloned.method = method
-    cloned.url = url
-    cloned.updated = Date.now()
-    dispatch(updateRequest(cloned))
+    const newItem = new requestItem()
+    newItem.title = title
+    newItem.method = method
+    newItem.url = url
+    newItem.updated = Date.now()
+    dispatch(updateRequest(newItem))
+
+    // const cloned: requestItem = JSON.parse(JSON.stringify(request))
+    // cloned.title = title
+    // cloned.method = method
+    // cloned.url = url
+    // cloned.updated = Date.now()
+    // dispatch(updateRequest(cloned))
+    // console.log(`hi`)
+    // console.log(cloned.url)
   }
 
   useEffect(() => {
@@ -169,7 +178,7 @@ export default function RequestsPage() {
           />
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-          <SendRequestButton />
+          <SendRequestButton method={method} url={url} />
         </Box>
       </Box>
       <Box sx={{ bgcolor: 'background.paper' }}>
