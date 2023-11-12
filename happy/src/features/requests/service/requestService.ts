@@ -8,7 +8,7 @@ export const sendRequest = createAsyncThunk('requests/send', async (arg: request
       url: arg.url,
       method: arg.method
     })
-    console.log(response.data)
+
     return response.data
   } catch (error) {
     return thunkAPI.rejectWithValue(error)

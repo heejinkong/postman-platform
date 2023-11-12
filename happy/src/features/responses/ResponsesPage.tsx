@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
@@ -7,20 +7,33 @@ import Tab from '@mui/material/Tab'
 import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
 import React from 'react'
-import { useAppSelector } from '../../app/hook'
+import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { selectRequestById } from '../requests/requestsSlice'
 import { useParams } from 'react-router-dom'
-
+import { sendRequest } from '../requests/service/requestService'
 export default function ResponsesPage() {
   const { requestId } = useParams()
+  const dispatch = useAppDispatch()
   const request = useAppSelector((state) => selectRequestById(state, requestId ?? ''))
 
-  const resultData = JSON.stringify(request?.response?.body ?? '', null, 2)
+  const [resultData, setResultData] = useState('')
 
   const [value, setValue] = useState('1')
   const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue)
   }
+
+  useEffect(() => {
+    if (request) {
+      dispatch(sendRequest(request)).then((resultAction) => {
+        if (sendRequest.fulfilled.match(resultAction)) {
+          setResultData(resultAction.payload)
+        }
+      })
+    }
+  }, [dispatch, request])
+
+  const resposne = JSON.stringify(resultData ?? '', null, 2)
 
   return (
     <Box>
@@ -39,7 +52,7 @@ export default function ResponsesPage() {
           <TabPanel value="1">
             <Box>
               <CodeMirror
-                value={resultData}
+                value={resposne}
                 height="200px"
                 theme="light"
                 extensions={[javascript({ jsx: true })]}

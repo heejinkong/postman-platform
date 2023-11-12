@@ -72,19 +72,20 @@ export default function RequestsPage() {
   }
 
   const handleUpdateClick = () => {
-    const newItem = new requestItem()
-    newItem.title = title
-    newItem.method = method
-    newItem.url = url
-    newItem.updated = Date.now()
-    dispatch(updateRequest(newItem))
+    // const newItem = new requestItem()
+    // newItem.title = title
+    // newItem.method = method
+    // newItem.url = url
+    // newItem.updated = Date.now()
+    // dispatch(updateRequest(newItem))
+    // console.log(newItem)
 
-    // const cloned: requestItem = JSON.parse(JSON.stringify(request))
-    // cloned.title = title
-    // cloned.method = method
-    // cloned.url = url
-    // cloned.updated = Date.now()
-    // dispatch(updateRequest(cloned))
+    const cloned: requestItem = JSON.parse(JSON.stringify(request))
+    cloned.title = title
+    cloned.method = method
+    cloned.url = url
+    cloned.updated = Date.now()
+    dispatch(updateRequest(cloned))
     // console.log(`hi`)
     // console.log(cloned.url)
   }

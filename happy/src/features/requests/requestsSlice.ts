@@ -23,13 +23,15 @@ const requestsSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(sendRequest.rejected, (state, action) => {
-      state
-      action
-    }).addCase(sendRequest.fulfilled, (state, action) => {
-      state
-      action
-    })
+    builder
+      .addCase(sendRequest.rejected, (state, action) => {
+        state
+        action
+      })
+      .addCase(sendRequest.fulfilled, (state, action) => {
+        state
+        action
+      })
   }
 })
 
