@@ -27,6 +27,7 @@ import { Divider } from '@mui/joy'
 import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
 import SendRequestButton from './components/SendRequestButton'
+import AddParamsItem from './components/AddParamsItem'
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 
@@ -35,11 +36,12 @@ export default function RequestsPage() {
 
   const [title, setTitle] = useState('')
   const [key, setKey] = useState('')
-  const [paramValue, setParamValue] = useState('')
+  const [value, setValue] = useState('')
   const [description, setDescription] = useState('')
   const [method, setMethod] = React.useState('')
   const [url, setUrl] = React.useState('')
-  const [value, setValue] = useState('1')
+  const [option, setOption] = useState('1')
+  const [expectedValue, setExpectedValue] = useState('')
 
   const dispatch = useAppDispatch()
   const request = useAppSelector((state) => selectRequestById(state, requestId ?? ''))
@@ -48,16 +50,16 @@ export default function RequestsPage() {
     if (requestId === `:requestId`) {
       setTitle('')
       setKey('')
-      setParamValue('')
+      setValue('')
       setDescription('')
       setMethod('')
       setUrl('')
-      setValue('1')
+      setOption('1')
     } else if (request) {
       setTitle(request.title)
       setMethod(request.method)
       setUrl(request.url)
-      setValue('1')
+      setOption('1')
       window.onbeforeunload = function () {
         return '저장하지 않은 데이터가 있습니다.'
       }
@@ -100,7 +102,7 @@ export default function RequestsPage() {
   }, [request])
 
   const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue)
+    setOption(newValue)
   }
 
   const handleSendClick = async () => {
@@ -122,8 +124,9 @@ export default function RequestsPage() {
   }
 
   const rows = [createData(true, 'Frozen yoghurt', 159, 6.0)]
+
   const onChange = React.useCallback((value: string) => {
-    console.log(value)
+    setExpectedValue(value)
   }, [])
   return (
     <Box>
@@ -183,7 +186,7 @@ export default function RequestsPage() {
         </Box>
       </Box>
       <Box sx={{ bgcolor: 'background.paper' }}>
-        <TabContext value={value}>
+        <TabContext value={option}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={handleChange} aria-label="lab API tabs example">
               <Tab label="Params" value="1" />
@@ -197,64 +200,14 @@ export default function RequestsPage() {
           </Box>
           <TabPanel value="1">
             <Box>
-              <Table sx={{ '& thead th:nth-child(1)': { width: '5%' } }}>
-                <thead>
-                  <tr>
-                    <th> </th>
-                    <th>Key</th>
-                    <th>Value</th>
-                    <th>Description</th>
-                    <th> </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row) => (
-                    <tr key={row.Key}>
-                      <td>
-                        <Checkbox {...label} defaultChecked />
-                      </td>
-                      <td>
-                        <TextField
-                          id="key"
-                          label="Key"
-                          variant="outlined"
-                          onChange={(e) => {
-                            setKey(e.target.value)
-                          }}
-                          value={key}
-                        />
-                      </td>
-                      <td>
-                        <TextField
-                          id="paramValue"
-                          label="Value"
-                          variant="outlined"
-                          onChange={(e) => {
-                            setParamValue(e.target.value)
-                          }}
-                          value={paramValue}
-                        />
-                      </td>
-                      <td>
-                        <TextField
-                          id="description"
-                          label="Description"
-                          variant="outlined"
-                          onChange={(e) => {
-                            setDescription(e.target.value)
-                          }}
-                          value={description}
-                        />
-                      </td>
-                      <td>
-                        <IconButton aria-label="delete">
-                          <DeleteIcon />
-                        </IconButton>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
+              <AddParamsItem
+                param={key}
+                setKey={setKey}
+                value={value}
+                setValue={setValue}
+                description={description}
+                setDescription={setDescription}
+              />
             </Box>
           </TabPanel>
           <TabPanel value="2">Headers</TabPanel>
@@ -262,12 +215,13 @@ export default function RequestsPage() {
           <TabPanel value="4">
             <Box>
               <CodeMirror
-                value={request.body}
+                value={expectedValue}
                 height="200px"
                 theme="light"
                 extensions={[javascript({ jsx: true })]}
                 onChange={onChange}
               />
+              {expectedValue}
             </Box>
           </TabPanel>
         </TabContext>
@@ -275,7 +229,7 @@ export default function RequestsPage() {
       <Box sx={{ mt: 15 }}>
         <Divider />
         <Box>
-          <ResponsesPage />
+          <ResponsesPage expectedValue={expectedValue} />
         </Box>
       </Box>
     </Box>

@@ -11,7 +11,15 @@ import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { selectRequestById } from '../requests/requestsSlice'
 import { useParams } from 'react-router-dom'
 import { sendRequest } from '../requests/service/requestService'
-export default function ResponsesPage() {
+import * as Diff from 'diff'
+import * as Diff2Html from 'diff2html'
+import 'diff2html/bundles/css/diff2html.min.css'
+
+type requestExpextedValueProps = {
+  expectedValue: string
+}
+
+export default function ResponsesPage(props: requestExpextedValueProps) {
   const { requestId } = useParams()
   const dispatch = useAppDispatch()
   const request = useAppSelector((state) => selectRequestById(state, requestId ?? ''))
@@ -34,6 +42,21 @@ export default function ResponsesPage() {
   }, [dispatch, request])
 
   const resposne = JSON.stringify(resultData ?? '', null, 2)
+
+  // const Diff = require('diff')
+
+  // const diff: string = Diff.createTwoFilesPatch(
+  //   'resultText',
+  //   'resultData',
+  //   `${props.expectedValue}`,
+  //   `${resultData}`
+  // )
+
+  // let outputHtml: string = Diff2Html.html(diff, {
+  //   drawFileList: true,
+  //   matching: 'lines',
+  //   outputFormat: 'side-by-side'
+  // })
 
   return (
     <Box>
@@ -61,7 +84,9 @@ export default function ResponsesPage() {
             </Box>
           </TabPanel>
           <TabPanel value="2">Headers</TabPanel>
-          <TabPanel value="3">Result diff</TabPanel>
+          <TabPanel value="3">
+            {/* <div dangerouslySetInnerHTML={{ __html: outputHtml }}></div> */}
+          </TabPanel>
         </TabContext>
       </Box>
     </Box>
