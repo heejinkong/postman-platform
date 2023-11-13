@@ -1,46 +1,32 @@
 import { IconButton } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { createCollection } from '../collectionsSlice'
-import { useAppSelector } from '../../../app/hook'
-import { selectWorkspaceById, updateWorkspace } from '../../workspaces/workspacesSlice'
-import { workspaceItem } from '../../workspaces/workspaceItem'
+import { useAppDispatch, useAppSelector } from '../../../app/hook'
+import { selectWorkspaceById } from '../../workspaces/workspacesSlice'
 import { collectionItem } from '../collectionItem'
+import collectionService from '../service/collectionService'
 
 export default function NewCollection() {
   const navigate = useNavigate()
   const { workspaceId } = useParams()
-  const dispatch = useDispatch()
 
+  const dispatch = useAppDispatch()
   const workspace = useAppSelector((state) => selectWorkspaceById(state, workspaceId ?? ''))
-
-  // TODO : workspace가 없을 때 예외처리
+  if (!workspace) {
+    navigate(`/NotFoundPage`)
+  }
 
   const handleNewCollectionClick = () => {
-    const newCollection: collectionItem = {
-      id: '',
-      title: 'New Collection',
-      desc: '',
-      created: Date.now(),
-      updated: Date.now(),
-      authorId: 'admin',
-      workspaceId: workspaceId ?? '',
-      requests: [],
-      folders: []
-    }
-    dispatch(createCollection(newCollection))
+    const newItem = new collectionItem()
+    newItem.title = 'New Collection'
+    newItem.workspaceId = workspace.id
+    dispatch(collectionService.new(newItem))
 
-    const cloned: workspaceItem = JSON.parse(JSON.stringify(workspace))
-    cloned.collections.push(newCollection.id)
-    cloned.updated = Date.now()
-    dispatch(updateWorkspace(cloned))
-
-    navigate(`/workspaces/${workspaceId}/collections/${newCollection.id}`)
+    navigate(`/workspaces/${workspace.id}/collections/${newItem.id}`)
   }
 
   return (
-    <IconButton aria-label="newcollection" onClick={handleNewCollectionClick}>
+    <IconButton size="small" aria-label="newcollection" onClick={handleNewCollectionClick}>
       <AddIcon />
     </IconButton>
   )

@@ -3,6 +3,7 @@ import { repositoryItem } from '../../repository/repositoryItem'
 export class requestItem implements repositoryItem {
   id: string = ''
   title: string = ''
+  type: string = 'request'
   created: number = Date.now()
   updated: number = Date.now()
   authorId: string = ''
@@ -10,7 +11,7 @@ export class requestItem implements repositoryItem {
   parentId: string = ''
   method: string = ''
   url: string = ''
-  params: { key: string; value: string; desc: string }[] = []
+  params: { paramKey: string; value: string; desc: string; isChecked: boolean }[] = []
   header: { key: string; value: string; desc: string }[] = []
   body: string = ''
   response: {

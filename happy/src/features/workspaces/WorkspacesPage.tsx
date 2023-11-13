@@ -1,16 +1,16 @@
 import { Box, Button, TextField, Typography } from '@mui/material'
-import { useAppSelector } from '../../app/hook'
+import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { updateWorkspace, selectWorkspaceById } from './workspacesSlice'
+import { selectWorkspaceById } from './workspacesSlice'
 import { workspaceItem } from './workspaceItem'
+import workspaceService from './service/workspaceService'
 
 export default function WorkspacesPage() {
   const navigate = useNavigate()
   const { workspaceId } = useParams()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const workspace = useAppSelector((state) => selectWorkspaceById(state, workspaceId ?? ''))
 
   const [title, setTitle] = useState('')
@@ -20,8 +20,7 @@ export default function WorkspacesPage() {
     const cloned: workspaceItem = JSON.parse(JSON.stringify(workspace))
     cloned.title = title
     cloned.desc = desc
-    cloned.updated = Date.now()
-    dispatch(updateWorkspace(cloned))
+    dispatch(workspaceService.update(cloned))
   }
 
   useEffect(() => {

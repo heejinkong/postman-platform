@@ -1,10 +1,12 @@
 import { Box, Button, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
-import { selectCollectionById, updateCollection } from './collectionsSlice'
-import { useParams } from 'react-router-dom'
+import { selectCollectionById } from './collectionsSlice'
+import { useNavigate, useParams } from 'react-router-dom'
+import collectionService from './service/collectionService'
 
 export default function CollectionsPage() {
+  const navigate = useNavigate()
   const { collectionId } = useParams()
 
   const [title, setTitle] = useState('')
@@ -12,27 +14,18 @@ export default function CollectionsPage() {
 
   const dispatch = useAppDispatch()
   const collection = useAppSelector((state) => selectCollectionById(state, collectionId ?? ''))
-
-  useEffect(() => {
-    if (collectionId === `:collectionId`) {
-      setTitle('')
-      setDesc('')
-    }
-  }, [collectionId, dispatch])
+  if (!collection) {
+    navigate(`/NotFoundPage`)
+  }
 
   const handleUpdateClick = () => {
     const cloned = JSON.parse(JSON.stringify(collection))
     cloned.title = title
     cloned.desc = desc
-    cloned.updated = Date.now()
-    dispatch(updateCollection(cloned))
+    dispatch(collectionService.update(cloned))
   }
 
   useEffect(() => {
-    if (!collection) {
-      return
-    }
-
     setTitle(collection.title)
     setDesc(collection.desc)
   }, [collection])

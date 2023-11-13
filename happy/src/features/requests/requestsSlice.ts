@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { memoryRepository } from '../../repository/memoryRepository'
 import { RootState } from '../../app/store'
 import { requestItem } from './requestItem'
-import { sendRequest } from './service/requestService'
+import requestService from './service/requestService'
 
 const repo = new memoryRepository()
 
@@ -24,13 +24,11 @@ const requestsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(sendRequest.rejected, (state, action) => {
-        state
-        action
+      .addCase(requestService.send.rejected, (_state, action) => {
+        console.log('request is rejected', action.error)
       })
-      .addCase(sendRequest.fulfilled, (state, action) => {
-        state
-        action
+      .addCase(requestService.send.fulfilled, (_state, action) => {
+        console.log('request is successed', action.payload)
       })
   }
 })

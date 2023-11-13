@@ -5,7 +5,7 @@ import workspacesSlice from '../features/workspaces/workspacesSlice'
 import collectionsSlice from '../features/collections/collectionsSlice'
 import requestsSlice from '../features/requests/requestsSlice'
 import foldersSlice from '../features/folders/foldersSlice'
-
+import configSlice from '../features/config/configSlice'
 
 const persistedWorkspacesReducer = persistReducer(
   {
@@ -28,7 +28,7 @@ const persistedRequestsReducer = persistReducer(
     key: 'requests',
     storage
   },
- requestsSlice
+  requestsSlice
 )
 
 const persistedFoldersReducer = persistReducer(
@@ -39,6 +39,13 @@ const persistedFoldersReducer = persistReducer(
   foldersSlice
 )
 
+const persistedConfigReducer = persistReducer(
+  {
+    key: 'config',
+    storage
+  },
+  configSlice
+)
 
 export const store = configureStore({
   reducer: {
@@ -46,6 +53,7 @@ export const store = configureStore({
     collections: persistedCollectionsReducer,
     requests: persistedRequestsReducer,
     folders: persistedFoldersReducer,
+    config: persistedConfigReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

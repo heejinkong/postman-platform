@@ -7,28 +7,23 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline'
 import { useNavigate } from 'react-router-dom'
 import { IconButton, ListItemButton, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { deleteWorkspaceById, selectAllWorkspaces } from '../workspacesSlice'
-import { deleteCollectionById, selectAllCollections } from '../../collections/collectionsSlice'
-import { deleteWorkspace } from '../service/workspaceService'
+import { selectAllWorkspaces } from '../workspacesSlice'
+import workspaceService from '../service/workspaceService'
+import { workspaceItem } from '../workspaceItem'
 
 export default function WorkspacesList() {
   const navigate = useNavigate()
 
   const dispatch = useAppDispatch()
   const allWorkspaces = useAppSelector(selectAllWorkspaces)
-  const allCollections = useAppSelector(selectAllCollections)
 
   const handleNavWorkspace = (workspaceId: string) => {
     navigate(`/workspaces/${workspaceId}`)
   }
 
-  const handleDeleteClick = (e: { stopPropagation: () => void }, workspaceId: string) => {
+  const handleDeleteClick = (e: { stopPropagation: () => void }, workspace: workspaceItem) => {
     e.stopPropagation()
-
-    const workspaceItem = allWorkspaces.find((w) => w.id === workspaceId)
-    if (workspaceItem) {
-      dispatch(deleteWorkspace(workspaceItem))
-    }
+    dispatch(workspaceService.delete(workspace))
   }
 
   if (allWorkspaces.length === 0) {
@@ -48,7 +43,7 @@ export default function WorkspacesList() {
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary={ws.title} secondary={new Date(ws.created).toLocaleString()} />
-            <IconButton edge="end" aria-label="delete" onClick={(e) => handleDeleteClick(e, ws.id)}>
+            <IconButton edge="end" aria-label="delete" onClick={(e) => handleDeleteClick(e, ws)}>
               <DeleteIcon />
             </IconButton>
           </ListItemButton>

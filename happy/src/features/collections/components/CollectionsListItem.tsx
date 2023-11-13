@@ -24,48 +24,52 @@ type CollectionListItemProps = {
 export default function CollectionsListItem(props: CollectionListItemProps) {
   const navigate = useNavigate()
   const [hover, setHover] = React.useState(false)
-  const collection = useAppSelector((state) => selectCollectionById(state, props.collectionId))
   const [open, setOpen] = React.useState(true)
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, collectionId: string) => {
-    e.stopPropagation()
+  const collection = useAppSelector((state) => selectCollectionById(state, props.collectionId))
+  if (!collection) {
+    navigate('/NotFoundPage')
+  }
 
+  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation()
     navigate(`/workspaces/${collection.workspaceId}/collections/${collection.id}`)
+  }
+  const handleExpand = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.stopPropagation()
+    setOpen(!open)
   }
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
-
   const handleOpenUserMenu = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
     setAnchorElUser(e.currentTarget)
   }
-
   const handleCloseUserMenu = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     e.stopPropagation()
     setAnchorElUser(null)
   }
 
-  if (!collection) return null
-
   return (
     <Box>
       <ListItemButton
         key={collection.id}
-        onClick={(e) => handleClick(e, collection.id)}
+        onClick={(e) => handleClick(e)}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         sx={{
           pl: 2
         }}
+        dense
       >
         <ListItemText primary={collection.title} />
-        {(collection.requests.length || collection.folders.length) === 0 ? (
-          ``
-        ) : open ? (
-          <ExpandLess />
-        ) : (
-          <ExpandMore />
-        )}
+        <IconButton onClick={(e) => handleExpand(e)}>
+          {collection.requests.length === 0 && collection.folders.length === 0 ? null : open ? (
+            <ExpandLess />
+          ) : (
+            <ExpandMore />
+          )}
+        </IconButton>
         <Box sx={{ flexGrow: 0 }}>
           <IconButton onClick={(e) => handleOpenUserMenu(e)} sx={{ opacity: hover ? 1 : 0 }}>
             <MoreVertIcon />

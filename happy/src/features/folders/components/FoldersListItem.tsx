@@ -9,7 +9,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import React from 'react'
 import { selectCollectionById } from '../../collections/collectionsSlice'
 import { selectFolderById } from '../foldersSlice'
-import { Collapse, ListItemIcon } from '@mui/material'
+import { Collapse } from '@mui/material'
 import FoldersList from './FoldersList'
 import RequestsList from '../../requests/components/RequestsList'
 import FolderOpenIcon from '@mui/icons-material/FolderOpen'
@@ -24,7 +24,6 @@ type folderItemProps = {
 
 export default function FoldersListItem(props: folderItemProps) {
   const navigate = useNavigate()
-  // const location = useLocation()
 
   const folder = useAppSelector((state) => selectFolderById(state, props.folderId))
   const collection = useAppSelector((state) => selectCollectionById(state, folder?.parentId ?? ''))
@@ -32,12 +31,13 @@ export default function FoldersListItem(props: folderItemProps) {
   const [hover, setHover] = React.useState(false)
   const [open, setOpen] = React.useState(true)
   const handleNavFolder = () => {
-    setOpen(!open)
     navigate(`/workspaces/${collection.workspaceId}/folders/${folder.id}`)
   }
 
-  // const isCurrentURL =
-  //   location.pathname === `/workspaces/${folder.workspaceId}/folders/${folder.id}`
+  const handleExpand = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.stopPropagation()
+    setOpen(!open)
+  }
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
   const handleOpenUserMenu = (e: React.MouseEvent<HTMLElement>) => {
@@ -58,19 +58,17 @@ export default function FoldersListItem(props: folderItemProps) {
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           sx={{ pl: 4 }}
+          dense
         >
-          <ListItemIcon>
-            <FolderOpenIcon />
-          </ListItemIcon>
-
+          <FolderOpenIcon />
           <ListItemText primary={folder?.title} />
-          {(folder.requests.length || folder.folders.length) === 0 ? (
-            ``
-          ) : open ? (
-            <ExpandLess />
-          ) : (
-            <ExpandMore />
-          )}
+          <IconButton onClick={(e) => handleExpand(e)}>
+            {folder.requests.length === 0 && folder.folders.length === 0 ? null : open ? (
+              <ExpandLess />
+            ) : (
+              <ExpandMore />
+            )}
+          </IconButton>
           <Box sx={{ flexGrow: 0 }}>
             <IconButton onClick={(e) => handleOpenUserMenu(e)} sx={{ opacity: hover ? 1 : 0 }}>
               <MoreVertIcon />
@@ -103,13 +101,10 @@ export default function FoldersListItem(props: folderItemProps) {
             </Menu>
           </Box>
         </ListItemButton>
-        {
-          // TODO : 폴더 열면 아래로 하위폴더와 request 보여야 함
-          <Collapse in={open} timeout="auto" unmountOnExit sx={{ pl: 4 }}>
-            <FoldersList folders={folder.folders} />
-            <RequestsList requests={folder.requests} />
-          </Collapse>
-        }
+        <Collapse in={open} timeout="auto" unmountOnExit sx={{ ml: 4 }}>
+          <FoldersList folders={folder.folders} />
+          <RequestsList requests={folder.requests} />
+        </Collapse>
       </Box>
     )
   } else {

@@ -12,7 +12,6 @@ export default function CollectionsList() {
   const { workspaceId } = useParams()
 
   const workspace = useAppSelector((state) => selectWorkspaceById(state, workspaceId ?? ''))
-
   if (!workspace) {
     navigate('/NotFoundPage')
     return <></>

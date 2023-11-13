@@ -3,9 +3,10 @@ import { repositoryItem } from './repositoryItem'
 
 class testItem implements repositoryItem {
   id: string = ''
-  name: string = ''
-  constructor(name: string) {
-    this.name = name
+  title: string = ''
+  type: string = 'test'
+  constructor(title: string) {
+    this.title = title
   }
 }
 

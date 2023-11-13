@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
@@ -7,10 +7,9 @@ import Tab from '@mui/material/Tab'
 import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
 import React from 'react'
-import { useAppDispatch, useAppSelector } from '../../app/hook'
+import { useAppSelector } from '../../app/hook'
 import { selectRequestById } from '../requests/requestsSlice'
 import { useParams } from 'react-router-dom'
-import { sendRequest } from '../requests/service/requestService'
 import * as Diff from 'diff'
 import * as Diff2Html from 'diff2html'
 import 'diff2html/bundles/css/diff2html.min.css'
@@ -21,33 +20,20 @@ type requestExpextedValueProps = {
 
 export default function ResponsesPage(props: requestExpextedValueProps) {
   const { requestId } = useParams()
-  const dispatch = useAppDispatch()
   const request = useAppSelector((state) => selectRequestById(state, requestId ?? ''))
 
-  const [resultData, setResultData] = useState('')
+  const resultData = JSON.stringify(request?.response?.body ?? '', null, 2)
 
   const [value, setValue] = useState('1')
   const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue)
   }
 
-  useEffect(() => {
-    if (request) {
-      dispatch(sendRequest(request)).then((resultAction) => {
-        if (sendRequest.fulfilled.match(resultAction)) {
-          setResultData(resultAction.payload)
-        }
-      })
-    }
-  }, [dispatch, request])
-
-  const resposne = JSON.stringify(resultData ?? '', null, 2)
-
   const diff = Diff.createTwoFilesPatch(
     'resultText',
     'resultData',
     `${props.expectedValue}`,
-    `${resposne}`
+    `${resultData}`
   )
 
   let outputHtml = ''
@@ -59,7 +45,7 @@ export default function ResponsesPage(props: requestExpextedValueProps) {
     }
 
     outputHtml = Diff2Html.html(diff, diff2htmlConfig)
-    console.log(outputHtml)
+    //console.log(outputHtml)
   }
 
   return (
@@ -70,7 +56,8 @@ export default function ResponsesPage(props: requestExpextedValueProps) {
             <TabList onChange={handleChange} aria-label="lab API tabs example">
               <Tab label="Body" value="1" />
               <Tab label="Headers" value="2" />
-              <Tab label="Result diff" value="3" />
+              {props.expectedValue !== '' ? <Tab label="Result diff" value="3" /> : ``}
+
               <Box
                 sx={{ display: `flex`, flexDirection: 'row-reverse', alignItems: `flex-end` }}
               ></Box>
@@ -79,7 +66,7 @@ export default function ResponsesPage(props: requestExpextedValueProps) {
           <TabPanel value="1">
             <Box>
               <CodeMirror
-                value={resposne}
+                value={resultData}
                 height="200px"
                 theme="light"
                 extensions={[javascript({ jsx: true })]}

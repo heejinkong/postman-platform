@@ -2,8 +2,9 @@ import { Box, Button, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { useParams } from 'react-router-dom'
-import { selectFolderById, updateFolder } from './foldersSlice'
+import { selectFolderById } from './foldersSlice'
 import { folderItem } from './folderItem'
+import folderService from './service/folderService'
 
 export default function FoldersPage() {
   const { folderId } = useParams()
@@ -15,28 +16,20 @@ export default function FoldersPage() {
   const folder = useAppSelector((state) => selectFolderById(state, folderId ?? ''))
 
   useEffect(() => {
-    if (folderId === `:folderId`) {
-      setTitle('')
-      setDesc('')
+    if (!folder) {
+      return
     }
-  }, [folderId, dispatch])
+    setTitle(folder.title)
+    setDesc(folder.desc)
+  }, [folder])
 
   const handleUpdateClick = () => {
     const cloned: folderItem = JSON.parse(JSON.stringify(folder))
     cloned.title = title
     cloned.desc = desc
     cloned.updated = Date.now()
-    dispatch(updateFolder(cloned))
+    dispatch(folderService.update(cloned))
   }
-
-  useEffect(() => {
-    if (!folder) {
-      return
-    }
-
-    setTitle(folder.title)
-    setDesc(folder.desc)
-  }, [folder])
 
   return (
     <Box>

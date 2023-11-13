@@ -1,21 +1,35 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { workspaceItem } from '../workspaceItem'
 
-export const newWorkspace = createAsyncThunk(
-  'workspaces/new',
-  async (arg: workspaceItem, thunkAPI) => {
-    thunkAPI.dispatch({ type: 'workspaces/createWorkspace', payload: arg })
-  }
-)
+interface workspaceDomain {
+  new: unknown
+  delete: unknown
+  update: unknown
+}
 
-export const deleteWorkspace = createAsyncThunk(
-  'workspaces/delete',
-  async (arg: workspaceItem, thunkAPI) => {
-    thunkAPI.dispatch({ type: 'workspaces/deleteWorkspaceById', payload: arg.id })
+class workspaceService implements workspaceDomain {
+  new = createAsyncThunk('workspaceService/new', async (workspace: workspaceItem, thunkAPI) => {
+    thunkAPI.dispatch({ type: 'workspaces/createWorkspace', payload: workspace })
+  })
 
-    //arg의 collection들을 삭제
-    arg.collections.map((collectionId) => {
-      thunkAPI.dispatch({ type: 'collections/deleteCollectionById', payload: collectionId })
-    })
-  }
-)
+  delete = createAsyncThunk(
+    'workspaceService/delete',
+    async (workspace: workspaceItem, thunkAPI) => {
+      workspace.collections.map((collectionId) => {
+        thunkAPI.dispatch({ type: 'collections/deleteCollectionById', payload: collectionId })
+      })
+
+      thunkAPI.dispatch({ type: 'workspaces/deleteWorkspaceById', payload: workspace.id })
+    }
+  )
+
+  update = createAsyncThunk(
+    'workspaceService/update',
+    async (workspace: workspaceItem, thunkAPI) => {
+      workspace.updated = Date.now()
+      thunkAPI.dispatch({ type: 'workspaces/updateWorkspace', payload: workspace })
+    }
+  )
+}
+
+export default new workspaceService()

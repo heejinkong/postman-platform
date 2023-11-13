@@ -1,8 +1,7 @@
-import { Box } from '@mui/material'
-import HeaderBar from '../../HeaderBar'
-
 import { RefObject, useEffect, useRef } from 'react'
-import DrawerMain from './DrawerMain'
+import { Outlet } from 'react-router-dom'
+import { Box } from '@mui/material'
+import HeaderBar from './components/HomeHeaderBar'
 
 export default function HomeLayout() {
   const headerBarRef = useRef<HTMLDivElement>(null)
@@ -28,17 +27,8 @@ export default function HomeLayout() {
         <HeaderBar />
       </Box>
       <Box ref={contentsBodyRef}>
-        {/* <Box sx={{ flexGrow: 1, height: '100%', width: `100%`, display: 'flex', p: 2 }}>
-          {/* <Box>
-            <SideBar />
-          </Box>
-          <Divider orientation="vertical" />
-          <Box sx={{ flexGrow: 1 }}>
-            <Outlet />
-          </Box> */}
-        <DrawerMain />
+        <Outlet />
       </Box>
     </Box>
-    // </Box>
   )
 }
