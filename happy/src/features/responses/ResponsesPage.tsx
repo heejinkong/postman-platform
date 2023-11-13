@@ -19,12 +19,21 @@ type requestExpextedValueProps = {
   expectedValue: string
 }
 
+interface Diff2HtmlConfig {
+  inputFormat?: string
+  showFiles?: boolean
+  matching?: 'lines' | 'words'
+  drawFileList?: boolean
+  outputFormat?: 'line-by-line' | 'side-by-side' | 'htmldiff'
+}
+
 export default function ResponsesPage(props: requestExpextedValueProps) {
   const { requestId } = useParams()
   const dispatch = useAppDispatch()
   const request = useAppSelector((state) => selectRequestById(state, requestId ?? ''))
 
   const [resultData, setResultData] = useState('')
+  const resultText = props.expectedValue
 
   const [value, setValue] = useState('1')
   const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
@@ -42,6 +51,26 @@ export default function ResponsesPage(props: requestExpextedValueProps) {
   }, [dispatch, request])
 
   const resposne = JSON.stringify(resultData ?? '', null, 2)
+
+  const diff = Diff.createTwoFilesPatch(
+    'resultText',
+    'resultData',
+    `${props.expectedValue}`,
+    `${resposne}`
+  )
+
+  let outputHtml = ''
+  if (Diff2Html.html) {
+    const diff2htmlConfig: import('/Users/gonghuijin/Documents/GitHub/postman-platform/happy/node_modules/diff2html/lib/diff2html').Diff2HtmlConfig =
+      {
+        matching: 'lines',
+        drawFileList: false,
+        outputFormat: 'side-by-side'
+      }
+
+    outputHtml = Diff2Html.html(diff, diff2htmlConfig)
+    console.log(outputHtml)
+  }
 
   // const Diff = require('diff')
 
@@ -85,7 +114,7 @@ export default function ResponsesPage(props: requestExpextedValueProps) {
           </TabPanel>
           <TabPanel value="2">Headers</TabPanel>
           <TabPanel value="3">
-            {/* <div dangerouslySetInnerHTML={{ __html: outputHtml }}></div> */}
+            <div dangerouslySetInnerHTML={{ __html: outputHtml }} />
           </TabPanel>
         </TabContext>
       </Box>
