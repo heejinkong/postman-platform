@@ -13,8 +13,6 @@ type requestParamsProps = {
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 
 export default function AddParamsItem(props: requestParamsProps) {
-  // key, value, description에 값을 입력하면 rows에 추가되는 기능 구현
-
   return (
     <Box>
       <Table sx={{ '& thead th:nth-child(1)': { width: '5%' } }}>

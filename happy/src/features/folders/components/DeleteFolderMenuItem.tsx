@@ -24,7 +24,6 @@ export default function DeleteFolderMenuItem(props: deleteFolderMenuItemProps) {
 
   const handleDeleteFolder = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     props.handleClose(e)
-    console.log('handleDeleteFolder', folder.id)
 
     dispatch(deleteFolderById(folder.id))
 

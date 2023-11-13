@@ -9,6 +9,7 @@ import { IconButton, ListItemButton, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { deleteWorkspaceById, selectAllWorkspaces } from '../workspacesSlice'
 import { deleteCollectionById, selectAllCollections } from '../../collections/collectionsSlice'
+import { deleteWorkspace } from '../service/workspaceService'
 
 export default function WorkspacesList() {
   const navigate = useNavigate()
@@ -23,10 +24,11 @@ export default function WorkspacesList() {
 
   const handleDeleteClick = (e: { stopPropagation: () => void }, workspaceId: string) => {
     e.stopPropagation()
-    dispatch(deleteWorkspaceById(workspaceId))
 
-    const collectionList = allCollections.filter((c) => c.workspaceId === workspaceId)
-    collectionList.map((c) => dispatch(deleteCollectionById(c.id)))
+    const workspaceItem = allWorkspaces.find((w) => w.id === workspaceId)
+    if (workspaceItem) {
+      dispatch(deleteWorkspace(workspaceItem))
+    }
   }
 
   if (allWorkspaces.length === 0) {
