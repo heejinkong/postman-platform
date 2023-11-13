@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Container, Fab, Fade, Toolbar, useScrollTrigger } from '@mui/material'
 import { useEffect, useState } from 'react'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
@@ -14,6 +14,7 @@ import { sendRequest } from '../requests/service/requestService'
 import * as Diff from 'diff'
 import * as Diff2Html from 'diff2html'
 import 'diff2html/bundles/css/diff2html.min.css'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 
 type requestExpextedValueProps = {
   expectedValue: string
@@ -26,6 +27,44 @@ type requestExpextedValueProps = {
 //   drawFileList?: boolean
 //   outputFormat?: 'line-by-line' | 'side-by-side' | 'htmldiff'
 // }
+
+interface Props {
+  children: React.ReactElement
+}
+
+function ScrollTop(props: Props) {
+  const { children } = props
+
+  const trigger = useScrollTrigger({
+    target: typeof window !== 'undefined' ? window : undefined,
+    disableHysteresis: true,
+    threshold: 100
+  })
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const anchor = ((event.target as HTMLDivElement).ownerDocument || document).querySelector(
+      '#back-to-top-anchor'
+    )
+
+    if (anchor) {
+      anchor.scrollIntoView({
+        block: 'center'
+      })
+    }
+  }
+
+  return (
+    <Fade in={trigger}>
+      <Box
+        onClick={handleClick}
+        role="presentation"
+        sx={{ position: 'fixed', bottom: 16, right: 16 }}
+      >
+        {children}
+      </Box>
+    </Fade>
+  )
+}
 
 export default function ResponsesPage(props: requestExpextedValueProps) {
   const { requestId } = useParams()
@@ -102,13 +141,32 @@ export default function ResponsesPage(props: requestExpextedValueProps) {
           </Box>
           <TabPanel value="1">
             <Box>
-              <CodeMirror
+              {/* <CodeMirror
                 value={resposne}
                 height="200px"
                 theme="light"
                 extensions={[javascript({ jsx: true })]}
                 readOnly={true}
-              />
+              /> */}
+              <React.Fragment>
+                <Toolbar id="back-to-top-anchor" />
+                <Container>
+                  <Box sx={{ my: 2 }}>
+                    <CodeMirror
+                      value={resposne}
+                      height="200px"
+                      theme="light"
+                      extensions={[javascript({ jsx: true })]}
+                      readOnly={true}
+                    />
+                  </Box>
+                </Container>
+                <ScrollTop {...props}>
+                  <Fab size="small" aria-label="scroll back to top">
+                    <KeyboardArrowUpIcon />
+                  </Fab>
+                </ScrollTop>
+              </React.Fragment>
             </Box>
           </TabPanel>
           <TabPanel value="2">Headers</TabPanel>
