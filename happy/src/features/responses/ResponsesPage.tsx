@@ -19,13 +19,13 @@ type requestExpextedValueProps = {
   expectedValue: string
 }
 
-interface Diff2HtmlConfig {
-  inputFormat?: string
-  showFiles?: boolean
-  matching?: 'lines' | 'words'
-  drawFileList?: boolean
-  outputFormat?: 'line-by-line' | 'side-by-side' | 'htmldiff'
-}
+// interface Diff2HtmlConfig {
+//   inputFormat?: string
+//   showFiles?: boolean
+//   matching?: 'lines' | 'words'
+//   drawFileList?: boolean
+//   outputFormat?: 'line-by-line' | 'side-by-side' | 'htmldiff'
+// }
 
 export default function ResponsesPage(props: requestExpextedValueProps) {
   const { requestId } = useParams()
@@ -33,7 +33,6 @@ export default function ResponsesPage(props: requestExpextedValueProps) {
   const request = useAppSelector((state) => selectRequestById(state, requestId ?? ''))
 
   const [resultData, setResultData] = useState('')
-  const resultText = props.expectedValue
 
   const [value, setValue] = useState('1')
   const handleChange = (_event: React.SyntheticEvent, newValue: string) => {

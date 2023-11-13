@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, IconButton, Table, TextField } from '@mui/material'
+import { Box, Checkbox, IconButton, Table, TextField } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useState } from 'react'
 
@@ -13,38 +13,8 @@ type requestParamsProps = {
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 
 export default function AddParamsItem(props: requestParamsProps) {
-  const [rows, setRows] = useState<requestParamsProps[]>([])
-  const [key, setKey] = useState('')
-  const [value, setValue] = useState('')
-  const [description, setDescription] = useState('')
-  const [checked, setChecked] = useState(false)
+  // key, value, description에 값을 입력하면 rows에 추가되는 기능 구현
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked)
-  }
-  const handleAddClick = () => {
-    setRows([...rows, { key, value, description }])
-    setKey('')
-    setValue('')
-    setDescription('')
-  }
-  const handleDeleteClick = (index: number) => {
-    const newRows = [...rows]
-    newRows.splice(index, 1)
-    setRows(newRows)
-  }
-
-  const handleKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setKey(event.target.value)
-  }
-
-  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value)
-  }
-
-  const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDescription(event.target.value)
-  }
   return (
     <Box>
       <Table sx={{ '& thead th:nth-child(1)': { width: '5%' } }}>
@@ -99,7 +69,7 @@ export default function AddParamsItem(props: requestParamsProps) {
               />
             </td>
             <td>
-              <IconButton aria-label="delete" onClick={handleDeleteClick}>
+              <IconButton aria-label="delete">
                 <DeleteIcon />
               </IconButton>
             </td>
@@ -107,7 +77,6 @@ export default function AddParamsItem(props: requestParamsProps) {
           {/* ))} */}
         </tbody>
       </Table>
-      <Button onClick={handleAddClick}>add</Button>
     </Box>
   )
 }

@@ -201,7 +201,7 @@ export default function RequestsPage() {
           <TabPanel value="1">
             <Box>
               <AddParamsItem
-                param={key}
+                paramKey={key}
                 setKey={setKey}
                 value={value}
                 setValue={setValue}
@@ -221,7 +221,6 @@ export default function RequestsPage() {
                 extensions={[javascript({ jsx: true })]}
                 onChange={onChange}
               />
-              {expectedValue}
             </Box>
           </TabPanel>
         </TabContext>
