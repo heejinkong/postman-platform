@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { folderItem } from '../folderItem'
 import { collectionItem } from '../../collections/collectionItem'
 
-export const deleteFolderByCollection = createAsyncThunk(
+export const deleteFolderInCollection = createAsyncThunk(
   'folders/delete',
   async (arg: { folder: folderItem; parent: collectionItem }, thunkAPI) => {
     thunkAPI.dispatch({ type: 'folders/deleteFolderById', payload: arg.folder.id })
@@ -15,13 +15,10 @@ export const deleteFolderByCollection = createAsyncThunk(
     arg.folder.requests.map((requestId) => {
       thunkAPI.dispatch({ type: 'requests/deleteRequestById', payload: requestId })
     })
-    arg.folder.folders.map((folderId) => {
-      thunkAPI.dispatch({ type: 'folders/deleteFolderById', payload: folderId })
-    })
   }
 )
 
-export const deleteFolderByFolder = createAsyncThunk(
+export const deleteFolderInFolder = createAsyncThunk(
   'folders/delete',
   async (arg: { folder: folderItem; parent: folderItem }, thunkAPI) => {
     thunkAPI.dispatch({ type: 'folders/deleteFolderById', payload: arg.folder.id })
