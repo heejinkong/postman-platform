@@ -47,6 +47,14 @@ class collectionService implements collectionDomain {
       thunkAPI.dispatch({ type: 'collections/updateCollection', payload: collection })
     }
   )
+
+  run = createAsyncThunk(
+    'collectionService/run',
+    async (collection: collectionItem, thunkAPI) => {
+      const state = thunkAPI.getState() as RootState
+
+    }
+  )
 }
 
 export default new collectionService()

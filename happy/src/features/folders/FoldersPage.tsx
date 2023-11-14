@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { selectFolderById } from './foldersSlice'
 import { folderItem } from './folderItem'
 import folderService from './service/folderService'
+import configService from '../config/service/configService'
 
 export default function FoldersPage() {
   const { folderId } = useParams()
@@ -21,7 +22,8 @@ export default function FoldersPage() {
     }
     setTitle(folder.title)
     setDesc(folder.desc)
-  }, [folder])
+    dispatch(configService.navItemOpened(folder))
+  }, [dispatch, folder])
 
   const handleUpdateClick = () => {
     const cloned: folderItem = JSON.parse(JSON.stringify(folder))

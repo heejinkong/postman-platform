@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { selectCollectionById } from './collectionsSlice'
 import { useNavigate, useParams } from 'react-router-dom'
 import collectionService from './service/collectionService'
+import configService from '../config/service/configService'
 
 export default function CollectionsPage() {
   const navigate = useNavigate()
@@ -28,7 +29,8 @@ export default function CollectionsPage() {
   useEffect(() => {
     setTitle(collection.title)
     setDesc(collection.desc)
-  }, [collection])
+    dispatch(configService.navItemOpened(collection))
+  }, [collection, dispatch])
 
   return (
     <Box>

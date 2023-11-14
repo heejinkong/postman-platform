@@ -30,8 +30,8 @@ export default function ResponsesPage(props: requestExpextedValueProps) {
   }
 
   const diff = Diff.createTwoFilesPatch(
-    'resultText',
-    'resultData',
+    'ExpectedData',
+    'ResposneData',
     `${props.expectedValue}`,
     `${resultData}`
   )

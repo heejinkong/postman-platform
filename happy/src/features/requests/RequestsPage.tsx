@@ -26,16 +26,21 @@ import ResponsesPage from '../responses/ResponsesPage'
 import { Divider } from '@mui/joy'
 import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
+import { html } from '@codemirror/lang-html'
+import { xml } from '@codemirror/lang-xml'
+import { json } from '@codemirror/lang-json'
+// import { text } from '@codemirror/lang-text'
 import requestService from './service/requestService'
 import axios from 'axios'
 import Radio from '@mui/joy/Radio'
 import RadioGroup from '@mui/joy/RadioGroup'
-import Option from '@mui/joy/Option'
+import configService from '../config/service/configService'
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 
 type reqParam = { paramKey: string; value: string; desc: string; isChecked: boolean }
-type reqParams = reqParam[]
+type reqHeader = { headerKey: string; value: string; desc: string; isChecked: boolean }
+type reqBody = { bodyKey: string; value: string; desc: string; isChecked: boolean }
 
 export default function RequestsPage() {
   const { requestId } = useParams()
@@ -44,14 +49,17 @@ export default function RequestsPage() {
   const [method, setMethod] = React.useState('')
   const [url, setUrl] = React.useState('')
 
-  const [params, setParams] = useState<reqParams>([
-    {
-      paramKey: '',
-      value: '',
-      desc: '',
-      isChecked: true
+  const [params, setParams] = useState<reqParam[]>([])
+  const [header, setHeader] = useState<reqHeader[]>([])
+  const [body, setBody] = useState<reqBody[]>([])
+
+  const isRequiredEmptyParam = (p: reqParam[]) => {
+    if (p.length === 0) {
+      return true
     }
-  ])
+    const lastParam = p[p.length - 1]
+    return lastParam.paramKey !== '' || lastParam.value !== '' || lastParam.desc !== ''
+  }
 
   const onChangeParams = (_index: number, cloned: reqParam[]) => {
     const lastItem = cloned[cloned.length - 1]
@@ -62,6 +70,46 @@ export default function RequestsPage() {
   }
 
   const selectedParams = params.filter((param) => param.isChecked === true)
+
+  const isRequiredEmptyParamHeader = (pH: reqHeader[]) => {
+    if (pH.length === 0) {
+      return true
+    }
+    const lastHeader = pH[pH.length - 1]
+    return lastHeader.headerKey !== '' || lastHeader.value !== '' || lastHeader.desc !== ''
+  }
+
+  const onChangeHeader = (_index: number, cloned: reqHeader[]) => {
+    const lastHeaderItem = cloned[cloned.length - 1]
+    if (
+      lastHeaderItem.headerKey !== '' ||
+      lastHeaderItem.value !== '' ||
+      lastHeaderItem.desc !== ''
+    ) {
+      cloned.push({ headerKey: '', value: '', desc: '', isChecked: true })
+    }
+    setHeader(cloned)
+  }
+
+  // const selectedHeader = header.filter((header) => header.isChecked === true)
+
+  const isRequiredEmptyParamBody = (pB: reqBody[]) => {
+    if (pB.length === 0) {
+      return true
+    }
+    const lastBody = pB[pB.length - 1]
+    return lastBody.bodyKey !== '' || lastBody.value !== '' || lastBody.desc !== ''
+  }
+
+  const onChangeBody = (_index: number, cloned: reqBody[]) => {
+    const lastBodyItem = cloned[cloned.length - 1]
+    if (lastBodyItem.bodyKey !== '' || lastBodyItem.value !== '' || lastBodyItem.desc !== '') {
+      cloned.push({ bodyKey: '', value: '', desc: '', isChecked: true })
+    }
+    setBody(cloned)
+  }
+
+  // const selectedBody = body.filter((body) => body.isChecked === true)
 
   const addUrl = (url: string) => {
     let fullUrl = url
@@ -102,32 +150,60 @@ export default function RequestsPage() {
     setSelectedValue(event.target.value)
   }
 
-  const [code, setCode] = useState('')
-
   const onCodeChange = React.useCallback((value: string) => {
-    setCode(value)
+    setExpectedValue(value)
   }, [])
 
   useEffect(() => {
-    if (requestId === `:requestId`) {
-      setTitle('')
-      setMethod('')
-      setUrl('')
-      setTabOption('1')
-    } else if (request) {
-      setTitle(request.title)
-      setMethod(request.method)
-      setUrl(request.url)
-      setParams(request.params)
-      setTabOption('1')
-      window.onbeforeunload = function () {
-        return '저장하지 않은 데이터가 있습니다.'
-      }
-      return () => {
-        window.onbeforeunload = null
-      }
+    if (!request) {
+      return
     }
-  }, [dispatch, request, requestId])
+    dispatch(configService.navItemOpened(request))
+
+    setTitle(request.title)
+    setMethod(request.method)
+    setUrl(request.url)
+
+    const clonedParams = JSON.parse(JSON.stringify(request.params))
+    if (isRequiredEmptyParam(clonedParams)) {
+      clonedParams.push({
+        paramKey: '',
+        value: '',
+        desc: '',
+        isChecked: true
+      })
+    }
+    setParams(clonedParams)
+    setTabOption('1')
+
+    const clonedHeader = JSON.parse(JSON.stringify(request.header))
+    if (isRequiredEmptyParamHeader(clonedHeader)) {
+      clonedHeader.push({
+        headerKey: '',
+        value: '',
+        desc: '',
+        isChecked: true
+      })
+    }
+    setHeader(clonedHeader)
+
+    // const clonedBody = JSON.parse(JSON.stringify(request.body))
+    // if (isRequiredEmptyParamBody(clonedBody)) {
+    //   //clonedBody.push is not a function 에러 발생
+    //   clonedBody.push({
+    //     bodyKey: '',
+    //     value: '',
+    //     desc: '',
+    //     isChecked: true
+    //   })
+    // }
+    // setBody(clonedBody)
+
+    window.onbeforeunload = function () {
+      return '저장하지 않은 데이터가 있습니다.'
+    }
+    window.onbeforeunload = null
+  }, [dispatch, request])
 
   const handleMethodChange = (event: SelectChangeEvent) => {
     setMethod(event.target.value)
@@ -141,15 +217,6 @@ export default function RequestsPage() {
     cloned.params = params
     dispatch(requestService.update(cloned))
   }
-
-  useEffect(() => {
-    if (!request) {
-      return
-    }
-    setTitle(request.title)
-    setMethod(request.method)
-    setUrl(request.url)
-  }, [request])
 
   const handleChange = (_event: React.SyntheticEvent, newTabOption: string) => {
     setTabOption(newTabOption)
@@ -175,20 +242,58 @@ export default function RequestsPage() {
 
   console.log(addUrl(url))
 
-  const rows = params
-
-  const onChange = React.useCallback((value: string) => {
-    setExpectedValue(value)
-  }, [])
-
-  const handleDeleteClick = (index: number) => {
+  const handleParamsDeleteClick = (index: number) => {
     const cloned = JSON.parse(JSON.stringify(params))
     cloned.splice(index, 1)
     setParams(cloned)
   }
 
+  const handleHeaderDeleteClick = (index: number) => {
+    const cloned = JSON.parse(JSON.stringify(header))
+    cloned.splice(index, 1)
+    setHeader(cloned)
+  }
+
+  const handleBodyDeleteClick = (index: number) => {
+    const cloned = JSON.parse(JSON.stringify(body))
+    cloned.splice(index, 1)
+    setBody(cloned)
+  }
+
+  const [code, setCode] = React.useState('')
+  const [type, setType] = React.useState('10')
+  const [contentType, setContentType] = React.useState(xml())
+  const handleTypeChange = (value: string) => {
+    setCode(value)
+  }
+
+  const handleTypeOptionChange = (event: SelectChangeEvent<string>) => {
+    setType(event.target.value)
+    switch (event.target.value) {
+      case '10':
+        setContentType(javascript())
+        break
+      case '20':
+        setContentType(javascript())
+        break
+      case '30':
+        setContentType(json())
+        break
+      case '40':
+        setContentType(html())
+        break
+      case '50':
+        setContentType(xml())
+        break
+    }
+  }
+
+  console.log(type)
+
+  console.log(contentType)
   return (
     <Box>
+      {/*----------------------------------Request info----------------------------------*/}
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
           <TextField
@@ -208,6 +313,9 @@ export default function RequestsPage() {
           </Button>
         </Box>
       </Box>
+      {/*----------------------------------Request info----------------------------------*/}
+
+      {/*----------------------------------Request URL----------------------------------*/}
       <Box sx={{ display: 'flex', mb: 3 }}>
         <FormControl variant="filled" sx={{ minWidth: 150 }}>
           <InputLabel id="demo-simple-select-standard-label">Method</InputLabel>
@@ -246,7 +354,11 @@ export default function RequestsPage() {
           </Button>
         </Box>
       </Box>
+      {/*----------------------------------Request URL----------------------------------*/}
+
+      {/*----------------------------------Params Header Body Result----------------------------------*/}
       <Box sx={{ bgcolor: 'background.paper' }}>
+        {/*----------------------------------Tab Tab----------------------------------*/}
         <TabContext value={tabOption}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={handleChange} aria-label="lab API tabs example">
@@ -259,9 +371,12 @@ export default function RequestsPage() {
               ></Box>
             </TabList>
           </Box>
+          {/*----------------------------------Tab Tab----------------------------------*/}
+
+          {/*----------------------------------Params Tab----------------------------------*/}
           <TabPanel value="1">
             <Box>
-              <Table sx={{ '& thead th:nth-child(1)': { width: '5%' } }}>
+              <Table sx={{ '& thead th:nth-of-child(1)': { width: '5%' } }}>
                 <thead>
                   <tr>
                     <th> </th>
@@ -272,8 +387,8 @@ export default function RequestsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {rows.map((row, index) => (
-                    <tr key={row.paramKey}>
+                  {params.map((row, index) => (
+                    <tr key={index}>
                       <td>
                         <Checkbox
                           {...label}
@@ -326,7 +441,10 @@ export default function RequestsPage() {
                       </td>
                       <td>
                         {index !== 0 ? (
-                          <IconButton aria-label="delete" onClick={() => handleDeleteClick(index)}>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => handleParamsDeleteClick(index)}
+                          >
                             <DeleteIcon />
                           </IconButton>
                         ) : (
@@ -339,9 +457,97 @@ export default function RequestsPage() {
               </Table>
             </Box>
           </TabPanel>
-          <TabPanel value="2">Headers</TabPanel>
+          {/*----------------------------------Params Tab----------------------------------*/}
+
+          {/*----------------------------------Header Tab----------------------------------*/}
+          <TabPanel value="2">
+            <Box>
+              <Table sx={{ '& thead th:nth-of-child(1)': { width: '5%' } }}>
+                <thead>
+                  <tr>
+                    <th> </th>
+                    <th>Key</th>
+                    <th>Value</th>
+                    <th>Description</th>
+                    <th> </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {header.map((row, index) => (
+                    <tr key={index}>
+                      <td>
+                        <Checkbox
+                          {...label}
+                          checked={row.isChecked}
+                          onChange={(e) => {
+                            const cloned = JSON.parse(JSON.stringify(header))
+                            cloned[index].isChecked = e.target.checked
+                            onChangeHeader(index, cloned)
+                          }}
+                        />
+                      </td>
+                      <td>
+                        <TextField
+                          id="headerKey"
+                          label="Key"
+                          variant="outlined"
+                          onChange={(e) => {
+                            const cloned = JSON.parse(JSON.stringify(header))
+                            cloned[index].headerKey = e.target.value
+                            onChangeHeader(index, cloned)
+                          }}
+                          value={row.headerKey}
+                        />
+                      </td>
+                      <td>
+                        <TextField
+                          id="headerValue"
+                          label="Value"
+                          variant="outlined"
+                          onChange={(e) => {
+                            const cloned = JSON.parse(JSON.stringify(header))
+                            cloned[index].value = e.target.value
+                            onChangeHeader(index, cloned)
+                          }}
+                          value={row.value}
+                        />
+                      </td>
+                      <td>
+                        <TextField
+                          id="description"
+                          label="Description"
+                          variant="outlined"
+                          onChange={(e) => {
+                            const cloned = JSON.parse(JSON.stringify(header))
+                            cloned[index].desc = e.target.value
+                            onChangeHeader(index, cloned)
+                          }}
+                          value={row.desc}
+                        />
+                      </td>
+                      <td>
+                        {index !== 0 ? (
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => handleHeaderDeleteClick(index)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        ) : (
+                          ''
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Box>
+          </TabPanel>
+          {/*----------------------------------Header Tab----------------------------------*/}
+
+          {/*----------------------------------Body Tab----------------------------------*/}
           <TabPanel value="3">
-            <FormControl>
+            <FormControl sx={{ justifyContent: 'flex-start' }}>
               <RadioGroup
                 defaultValue="female"
                 name="controlled-radio-buttons-group"
@@ -351,38 +557,128 @@ export default function RequestsPage() {
               >
                 <Radio value="form-data" label="form-data" />
                 <Radio value="raw" label="raw" sx={{ ml: 2, marginBlockStart: 0 }} />
-                {/* {selectedValue === `raw` ? (
-                  <Select defaultValue="Text" disabled={false}>
-                    <Option value="Text">Text</Option>
-                    <Option value="JavaScript">JavaScript</Option>
-                    <Option value="JSON">JSON</Option>
-                    <Option value="HTML">HTML</Option>
-                    <Option value="XML">XML</Option>
-                  </Select>
+                {selectedValue === `raw` ? (
+                  <FormControl variant="standard" sx={{ m: 1, minWidth: 120, mt: -0.5, ml: 2 }}>
+                    <Select
+                      labelId="demo-simple-select-standard-label"
+                      id="demo-simple-select-standard"
+                      value={type}
+                      onChange={handleTypeOptionChange}
+                    >
+                      <MenuItem value={10}>Text</MenuItem>
+                      <MenuItem value={20}>JavaScript</MenuItem>
+                      <MenuItem value={30}>JSON</MenuItem>
+                      <MenuItem value={40}>HTML</MenuItem>
+                      <MenuItem value={50}>XML</MenuItem>
+                    </Select>
+                  </FormControl>
                 ) : (
-                  ``
-                )} */}
+                  ''
+                )}
               </RadioGroup>
             </FormControl>
 
             <Box>
               {selectedValue === 'form-data' ? (
-                'form-data'
+                <Box>
+                  <Table sx={{ '& thead th:nth-of-child(1)': { width: '5%' } }}>
+                    <thead>
+                      <tr>
+                        <th> </th>
+                        <th>Key</th>
+                        <th>Value</th>
+                        <th>Description</th>
+                        <th> </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {body.map((row, index) => (
+                        <tr key={index}>
+                          <td>
+                            <Checkbox
+                              {...label}
+                              checked={row.isChecked}
+                              onChange={(e) => {
+                                const cloned = JSON.parse(JSON.stringify(body))
+                                cloned[index].isChecked = e.target.checked
+                                onChangeBody(index, cloned)
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <TextField
+                              id="bodyKey"
+                              label="Key"
+                              variant="outlined"
+                              onChange={(e) => {
+                                const cloned = JSON.parse(JSON.stringify(body))
+                                cloned[index].bodyKey = e.target.value
+                                onChangeBody(index, cloned)
+                              }}
+                              value={row.bodyKey}
+                            />
+                          </td>
+                          <td>
+                            <TextField
+                              id="bodyValue"
+                              label="Value"
+                              variant="outlined"
+                              onChange={(e) => {
+                                const cloned = JSON.parse(JSON.stringify(body))
+                                cloned[index].value = e.target.value
+                                onChangeBody(index, cloned)
+                              }}
+                              value={row.value}
+                            />
+                          </td>
+                          <td>
+                            <TextField
+                              id="description"
+                              label="Description"
+                              variant="outlined"
+                              onChange={(e) => {
+                                const cloned = JSON.parse(JSON.stringify(body))
+                                cloned[index].desc = e.target.value
+                                onChangeBody(index, cloned)
+                              }}
+                              value={row.desc}
+                            />
+                          </td>
+                          <td>
+                            {index !== 0 ? (
+                              <IconButton
+                                aria-label="delete"
+                                onClick={() => handleBodyDeleteClick(index)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            ) : (
+                              ''
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Box>
               ) : (
                 <CodeMirror
-                  value={expectedValue}
+                  value={code}
                   height="200px"
                   theme="light"
-                  extensions={[javascript({ jsx: true })]}
-                  onChange={onChange}
+                  extensions={[contentType]}
+                  onChange={handleTypeChange}
                 />
               )}
             </Box>
           </TabPanel>
+          {/*----------------------------------Body Tab----------------------------------*/}
+
+          {/*----------------------------------Result Tab----------------------------------*/}
           <TabPanel value="4">
             <Box>
               <CodeMirror
-                value={code}
+                value={expectedValue}
                 height="200px"
                 theme="light"
                 extensions={[javascript({ jsx: true })]}
@@ -392,12 +688,16 @@ export default function RequestsPage() {
           </TabPanel>
         </TabContext>
       </Box>
-      <Box sx={{ mt: 15 }}>
+      {/*----------------------------------Params Header Body Result----------------------------------*/}
+
+      {/*----------------------------------Response----------------------------------*/}
+      <Box sx={{ mt: 27 }}>
         <Divider />
         <Box>
           <ResponsesPage expectedValue={expectedValue} />
         </Box>
       </Box>
+      {/*----------------------------------Response----------------------------------*/}
     </Box>
   )
 }

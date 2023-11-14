@@ -42,7 +42,7 @@ export default function WorkspaceNavTree() {
         aria-label="rich object"
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
-        selected={selected[0]}
+        selected={selected}
         expanded={expanded}
         onNodeToggle={handleToggle}
         onNodeSelect={handleSelect}
