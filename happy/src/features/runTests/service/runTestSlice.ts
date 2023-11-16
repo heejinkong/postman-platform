@@ -1,0 +1,30 @@
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { memoryRepository } from '../../../repository/memoryRepository'
+import { runTestItem } from './runTestItem'
+import { RootState } from '../../../app/store'
+
+const repo = new memoryRepository()
+
+const runTestsSlice = createSlice({
+  name: 'runTests',
+  initialState: {
+    data: repo._data
+  },
+  reducers: {
+    createRunTest: (state, action: PayloadAction<runTestItem>) => {
+      repo.data(state.data).save(action.payload)
+    },
+    deleteRunTest: (state, action: PayloadAction<string>) => {
+      repo.data(state.data).deleteById(action.payload)
+    }
+  }
+})
+
+export const {createRunTest}= runTestsSlice.actions
+
+export const selectAllRunResults = (state: RootState) =>
+  repo.data(state.runTests.data).findAll() as runTestItem[]
+export const selectRunResultById = (state: RootState, id: string) =>
+  repo.data(state.workspaces.data).findById(id) as runTestItem
+
+export default runTestsSlice.reducer

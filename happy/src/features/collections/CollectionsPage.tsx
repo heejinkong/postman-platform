@@ -1,10 +1,11 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, Container, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { selectCollectionById } from './collectionsSlice'
 import { useNavigate, useParams } from 'react-router-dom'
 import collectionService from './service/collectionService'
 import configService from '../config/service/configService'
+import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
 
 export default function CollectionsPage() {
   const navigate = useNavigate()
@@ -34,11 +35,16 @@ export default function CollectionsPage() {
 
   return (
     <Box>
-      <Box>
-        <Typography variant="h3" gutterBottom>
-          Collection
-        </Typography>
-        <Box sx={{ mb: 3 }}>
+      <Box sx={{ p: 2 }}>
+        <WorkspaceNavBar />
+      </Box>
+      <Container>
+        <Box sx={{ mt: 5 }}>
+          <Typography variant="h3" gutterBottom>
+            Collection
+          </Typography>
+        </Box>
+        <Box sx={{ mt: 3 }}>
           <TextField
             required
             fullWidth
@@ -50,7 +56,7 @@ export default function CollectionsPage() {
             value={title}
           />
         </Box>
-        <Box>
+        <Box sx={{ mt: 3 }}>
           <TextField
             fullWidth
             id="outlined-multiline-static"
@@ -61,11 +67,10 @@ export default function CollectionsPage() {
             onChange={(e) => setDesc(e.target.value)}
           />
         </Box>
-
-        <Button variant="contained" size="large" onClick={handleUpdateClick}>
+        <Button sx={{ mt: 2 }} variant="contained" size="large" onClick={handleUpdateClick}>
           Update
         </Button>
-      </Box>
+      </Container>
     </Box>
   )
 }

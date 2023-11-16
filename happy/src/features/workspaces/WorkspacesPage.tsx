@@ -1,10 +1,11 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, Container, TextField, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { selectWorkspaceById } from './workspacesSlice'
 import { workspaceItem } from './workspaceItem'
 import workspaceService from './service/workspaceService'
+import WorkspaceNavBar from './components/WorkspaceNavBar'
 
 export default function WorkspacesPage() {
   const navigate = useNavigate()
@@ -34,13 +35,16 @@ export default function WorkspacesPage() {
 
   return (
     <Box>
-      <Box>
-        <Box sx={{ display: 'flex' }}>
+      <Box sx={{ p: 2 }}>
+        <WorkspaceNavBar />
+      </Box>
+      <Container>
+        <Box sx={{ mt: 5 }}>
           <Typography variant="h3" gutterBottom>
             Workspace
           </Typography>
         </Box>
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mt: 3 }}>
           <TextField
             required
             fullWidth
@@ -52,7 +56,7 @@ export default function WorkspacesPage() {
             value={title}
           />
         </Box>
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mt: 3 }}>
           <TextField
             fullWidth
             id="desc"
@@ -65,10 +69,10 @@ export default function WorkspacesPage() {
             value={desc}
           />
         </Box>
-        <Button variant="contained" size="large" onClick={updateWs}>
+        <Button sx={{ mt: 2 }} variant="contained" size="large" onClick={updateWs}>
           Update
         </Button>
-      </Box>
+      </Container>
     </Box>
   )
 }

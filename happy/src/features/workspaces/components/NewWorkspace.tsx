@@ -8,11 +8,14 @@ import DialogTitle from '@mui/material/DialogTitle'
 import { useAppDispatch } from '../../../app/hook'
 import { workspaceItem } from '../workspaceItem'
 import workspaceService from '../service/workspaceService'
+import { useNavigate } from 'react-router-dom'
 
 export default function NewWorkspace() {
   const [open, setOpen] = React.useState(false)
   const [title, setTitle] = React.useState('')
   const [desc, setDesc] = React.useState('')
+
+  const navigate = useNavigate()
 
   const dispatch = useAppDispatch()
 
@@ -30,12 +33,13 @@ export default function NewWorkspace() {
     newItem.desc = desc
     dispatch(workspaceService.new(newItem))
 
+    navigate(`/workspaces/${newItem.id}`)
     setOpen(false)
   }
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button variant="contained" size="small" onClick={handleClickOpen}>
         New Workspace
       </Button>
       <Dialog open={open} onClose={handleClose}>

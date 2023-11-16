@@ -5,7 +5,7 @@ import Avatar from '@mui/material/Avatar'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline'
 import { useNavigate } from 'react-router-dom'
-import { IconButton, ListItemButton, Typography } from '@mui/material'
+import { Box, IconButton, ListItemButton, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { selectAllWorkspaces } from '../workspacesSlice'
 import workspaceService from '../service/workspaceService'
@@ -28,27 +28,34 @@ export default function WorkspacesList() {
 
   if (allWorkspaces.length === 0) {
     return (
-      <Typography variant="h5" gutterBottom>
-        Workspace가 없어요!
-      </Typography>
+      <Box>
+        <Typography variant="h3" gutterBottom sx={{ ml: 3 }}>
+          Workspace does not exist
+        </Typography>
+        <Typography variant="h6" gutterBottom>
+          To start your work, try using the 'New Workspace' button at the top.
+        </Typography>
+      </Box>
     )
   } else {
     return (
-      <List sx={{ width: '100%', maxWidth: 380 }}>
-        {allWorkspaces.map((ws) => (
-          <ListItemButton key={ws.id} onClick={() => handleNavWorkspace(ws.id)}>
-            <ListItemAvatar>
-              <Avatar>
-                <PersonOutlineIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={ws.title} secondary={new Date(ws.created).toLocaleString()} />
-            <IconButton edge="end" aria-label="delete" onClick={(e) => handleDeleteClick(e, ws)}>
-              <DeleteIcon />
-            </IconButton>
-          </ListItemButton>
-        ))}
-      </List>
+      <Box>
+        <List sx={{ width: '100%', maxWidth: 380 }}>
+          {allWorkspaces.map((ws) => (
+            <ListItemButton key={ws.id} onClick={() => handleNavWorkspace(ws.id)}>
+              <ListItemAvatar>
+                <Avatar>
+                  <PersonOutlineIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={ws.title} secondary={new Date(ws.created).toLocaleString()} />
+              <IconButton edge="end" aria-label="delete" onClick={(e) => handleDeleteClick(e, ws)}>
+                <DeleteIcon />
+              </IconButton>
+            </ListItemButton>
+          ))}
+        </List>
+      </Box>
     )
   }
 }

@@ -7,10 +7,9 @@ import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import { selectWorkspaceById } from '../workspacesSlice'
 import CollectionTreeItem from '../../collections/components/CollectionTreeItem'
 import {
+  configAction,
   selectNavTreeExpanded,
-  selectNavTreeSelected,
-  setExpanded,
-  setSelected
+  selectNavTreeSelected
 } from '../../config/configSlice'
 
 export default function WorkspaceNavTree() {
@@ -27,10 +26,10 @@ export default function WorkspaceNavTree() {
   }
 
   const handleToggle = (_event: React.SyntheticEvent, nodeIds: string[]) => {
-    dispatch(setExpanded(nodeIds))
+    dispatch(configAction.setNavTreeExpanded(nodeIds))
   }
   const handleSelect = (_event: React.SyntheticEvent, nodeId: string) => {
-    dispatch(setSelected(nodeId))
+    dispatch(configAction.setNavTreeSelected(nodeId))
   }
 
   const renderCollectionTree = (collections: string[]) =>

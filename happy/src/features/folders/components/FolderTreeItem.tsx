@@ -11,6 +11,7 @@ import { selectFolderById } from '../foldersSlice'
 import { folderItem } from '../folderItem'
 import DeleteFolderMenuItem from './DeleteFolderMenuItem'
 import FolderOpenIcon from '@mui/icons-material/FolderOpen'
+import RunFolderMenuItem from './RunFolderMenuItem'
 
 type TreeItemProps = {
   _id: string
@@ -84,6 +85,7 @@ export default function FolderTreeItem(props: TreeItemProps) {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
+            <RunFolderMenuItem parentId={folder.id} handleClose={(e) => handleCloseUserMenu(e)} />
             <AddRequestMenuItem parentId={folder.id} handleClose={(e) => handleCloseUserMenu(e)} />
             <AddFolderMenuItem parentId={folder.id} handleClose={(e) => handleCloseUserMenu(e)} />
             <DeleteFolderMenuItem

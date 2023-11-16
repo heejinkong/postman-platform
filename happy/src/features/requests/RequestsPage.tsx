@@ -53,6 +53,16 @@ export default function RequestsPage() {
   const [header, setHeader] = useState<reqHeader[]>([])
   const [body, setBody] = useState<reqBody[]>([])
 
+  const [currentMethod, setCurrentMethod] = React.useState('' as string)
+  const [currentUrl, setCurrentUrl] = React.useState('' as string)
+  // const [currentParams, setCurrentParams] = React.useState([] as reqParam[])
+
+  useEffect(() => {
+    setCurrentMethod(method)
+    setCurrentUrl(url)
+  }, [method, url])
+
+  //------------Param에 대한 params, header, body 값
   const isRequiredEmptyParam = (p: reqParam[]) => {
     if (p.length === 0) {
       return true
@@ -71,6 +81,7 @@ export default function RequestsPage() {
 
   const selectedParams = params.filter((param) => param.isChecked === true)
 
+  //------------Header에 대한 params, header, body 값
   const isRequiredEmptyParamHeader = (pH: reqHeader[]) => {
     if (pH.length === 0) {
       return true
@@ -93,6 +104,7 @@ export default function RequestsPage() {
 
   // const selectedHeader = header.filter((header) => header.isChecked === true)
 
+  //------------Body에 대한 params, header, body 값
   const isRequiredEmptyParamBody = (pB: reqBody[]) => {
     if (pB.length === 0) {
       return true
@@ -111,6 +123,7 @@ export default function RequestsPage() {
 
   // const selectedBody = body.filter((body) => body.isChecked === true)
 
+  //------------url에 대한 params, header, body 값
   const addUrl = (url: string) => {
     let fullUrl = url
     selectedParams.forEach((param) => {
@@ -137,7 +150,7 @@ export default function RequestsPage() {
     return fullUrl
   }
 
-  // current tab index
+  //------------current tab index
   const [tabOption, setTabOption] = useState('1')
 
   const [expectedValue, setExpectedValue] = useState('')
@@ -187,17 +200,16 @@ export default function RequestsPage() {
     }
     setHeader(clonedHeader)
 
-    // const clonedBody = JSON.parse(JSON.stringify(request.body))
-    // if (isRequiredEmptyParamBody(clonedBody)) {
-    //   //clonedBody.push is not a function 에러 발생
-    //   clonedBody.push({
-    //     bodyKey: '',
-    //     value: '',
-    //     desc: '',
-    //     isChecked: true
-    //   })
-    // }
-    // setBody(clonedBody)
+    const clonedBody = JSON.parse(JSON.stringify(request.body))
+    if (isRequiredEmptyParamBody(clonedBody)) {
+      clonedBody.push({
+        bodyKey: '',
+        value: '',
+        desc: '',
+        isChecked: true
+      })
+    }
+    setBody(clonedBody)
 
     window.onbeforeunload = function () {
       return '저장하지 않은 데이터가 있습니다.'
@@ -205,16 +217,17 @@ export default function RequestsPage() {
     window.onbeforeunload = null
   }, [dispatch, request])
 
-  const handleMethodChange = (event: SelectChangeEvent) => {
-    setMethod(event.target.value)
+  const handleMethodChange = (event: SelectChangeEvent<string>) => {
+    setCurrentMethod(event.target.value)
   }
 
   const handleUpdateClick = () => {
     const cloned: requestItem = JSON.parse(JSON.stringify(request))
     cloned.title = title
-    cloned.method = method
-    cloned.url = addUrl(url)
+    cloned.method = currentMethod
+    cloned.url = addUrl(currentUrl)
     cloned.params = params
+
     dispatch(requestService.update(cloned))
   }
 
@@ -224,11 +237,10 @@ export default function RequestsPage() {
 
   const handleSendClick = async () => {
     const response = await axios({
-      method: method,
-      url: addUrl(url),
+      method: currentMethod,
+      url: addUrl(currentUrl),
       params: selectedParams
     })
-    console.log(selectedParams)
     const data = await response.data
     if (response.status === 200) {
       const cloned = JSON.parse(JSON.stringify(request))
@@ -288,9 +300,6 @@ export default function RequestsPage() {
     }
   }
 
-  console.log(type)
-
-  console.log(contentType)
   return (
     <Box>
       {/*----------------------------------Request info----------------------------------*/}
@@ -322,7 +331,7 @@ export default function RequestsPage() {
           <Select
             labelId="demo-simple-select-standard-label"
             id="demo-simple-select-standard"
-            value={method}
+            value={currentMethod}
             onChange={handleMethodChange}
             label="method"
           >
@@ -343,9 +352,9 @@ export default function RequestsPage() {
             id="outlined-required"
             label="Enter URL or paste text"
             onChange={(e) => {
-              setUrl(e.target.value)
+              setCurrentUrl(e.target.value)
             }}
-            value={url}
+            value={currentUrl}
           />
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
@@ -440,7 +449,7 @@ export default function RequestsPage() {
                         />
                       </td>
                       <td>
-                        {index !== 0 ? (
+                        {index !== params.length - 1 ? (
                           <IconButton
                             aria-label="delete"
                             onClick={() => handleParamsDeleteClick(index)}
@@ -526,7 +535,7 @@ export default function RequestsPage() {
                         />
                       </td>
                       <td>
-                        {index !== 0 ? (
+                        {index !== header.length - 1 ? (
                           <IconButton
                             aria-label="delete"
                             onClick={() => handleHeaderDeleteClick(index)}
@@ -645,7 +654,7 @@ export default function RequestsPage() {
                             />
                           </td>
                           <td>
-                            {index !== 0 ? (
+                            {index !== body.length - 1 ? (
                               <IconButton
                                 aria-label="delete"
                                 onClick={() => handleBodyDeleteClick(index)}
@@ -691,7 +700,7 @@ export default function RequestsPage() {
       {/*----------------------------------Params Header Body Result----------------------------------*/}
 
       {/*----------------------------------Response----------------------------------*/}
-      <Box sx={{ mt: 27 }}>
+      <Box sx={{ mt: 22 }}>
         <Divider />
         <Box>
           <ResponsesPage expectedValue={expectedValue} />

@@ -7,6 +7,9 @@ type configState = {
       expanded: string[]
       selected: string
     }
+    navBar: {
+      expanded: string[]
+    }
     drawer: {
       isOpen: boolean
     }
@@ -19,6 +22,9 @@ const initialState: configState = {
       expanded: [],
       selected: ''
     },
+    navBar: {
+      expanded: []
+    },
     drawer: {
       isOpen: true
     }
@@ -29,11 +35,14 @@ const configSlice = createSlice({
   name: 'config',
   initialState: initialState,
   reducers: {
-    setExpanded: (state, action: PayloadAction<string[]>) => {
+    setNavTreeExpanded: (state, action: PayloadAction<string[]>) => {
       state.workspace.navTree.expanded = action.payload
     },
-    setSelected: (state, action: PayloadAction<string>) => {
+    setNavTreeSelected: (state, action: PayloadAction<string>) => {
       state.workspace.navTree.selected = action.payload
+    },
+    setNavBarExpanded: (state, action: PayloadAction<string[]>) => {
+      state.workspace.navBar.expanded = action.payload
     },
     setDrawerOpen: (state, action: PayloadAction<boolean>) => {
       state.workspace.drawer.isOpen = action.payload
@@ -41,10 +50,11 @@ const configSlice = createSlice({
   }
 })
 
-export const { setExpanded, setSelected, setDrawerOpen } = configSlice.actions
+export const configAction = configSlice.actions
 
 export const selectNavTreeExpanded = (state: RootState) => state.config.workspace.navTree.expanded
 export const selectNavTreeSelected = (state: RootState) => state.config.workspace.navTree.selected
+export const selectNavBarExpanded = (state: RootState) => state.config.workspace.navBar.expanded
 export const selectIsOpenDrawer = (state: RootState) => state.config.workspace.drawer.isOpen
 
 export default configSlice.reducer

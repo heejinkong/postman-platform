@@ -10,6 +10,12 @@ import RequestsLayout from './features/requests/RequestsLayout'
 import RequestsPage from './features/requests/RequestsPage'
 import FoldersLayout from './features/folders/FoldersLayout'
 import FoldersPage from './features/folders/FoldersPage'
+import RunHistoryLayout from './features/runHistory/RunHistoryLayout'
+import RunHistoryPage from './features/runHistory/RunHistoryPage'
+import RunResultLayout from './features/runResults/runResultLayout'
+import RunResultPage from './features/runResults/runResultPage'
+import RunTestLayout from './features/runTests/RunTestLayout'
+import RunTestPage from './features/runTests/RunTestPage'
 
 function App() {
   return (
@@ -26,6 +32,15 @@ function App() {
           </Route>
           <Route path="requests/:requestId" element={<RequestsLayout />}>
             <Route index element={<RequestsPage />} />
+          </Route>
+          <Route path="runHistory" element={<RunHistoryLayout />}>
+            <Route index element={<RunHistoryPage />} />
+          </Route>
+          <Route path="runResult/:runResultId" element={<RunResultLayout />}>
+            <Route index element={<RunResultPage />} />
+          </Route>
+          <Route path="runTest/:runTestId" element={<RunTestLayout />}>
+            <Route index element={<RunTestPage />} />
           </Route>
         </Route>
       </Route>

@@ -20,6 +20,10 @@ const requestsSlice = createSlice({
     },
     deleteRequestById: (state, action: PayloadAction<string>) => {
       repo.data(state.data).deleteById(action.payload)
+    },
+    runRequestById: (state, action: PayloadAction<string>) => {
+      const request = repo.data(state.data).findById(action.payload) as requestItem
+      requestService.send(request)
     }
   },
   extraReducers: (builder) => {

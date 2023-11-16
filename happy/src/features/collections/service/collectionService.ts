@@ -48,13 +48,7 @@ class collectionService implements collectionDomain {
     }
   )
 
-  run = createAsyncThunk(
-    'collectionService/run',
-    async (collection: collectionItem, thunkAPI) => {
-      const state = thunkAPI.getState() as RootState
-
-    }
-  )
+  
 }
 
 export default new collectionService()

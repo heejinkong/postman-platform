@@ -16,7 +16,7 @@ class configService implements configDomain {
       const state = thunkAPI.getState() as RootState
 
       let depth = 0
-      let expanded: string[] = []
+      const expanded: string[] = [item.id]
       let parentId = item.parentId
       do {
         const folderParent = selectFolderById(state, parentId)
@@ -36,15 +36,19 @@ class configService implements configDomain {
         break
       } while (depth++ < 100)
 
-      expanded = expanded.concat(selectNavTreeExpanded(state))
+      const navTreeExpanded = expanded.concat(selectNavTreeExpanded(state))
+      const navBarExpanded = expanded
 
       thunkAPI.dispatch({
-        type: 'config/setExpanded',
-        payload: expanded
+        type: 'config/setNavBarExpanded',
+        payload: navBarExpanded
       })
-
       thunkAPI.dispatch({
-        type: 'config/setSelected',
+        type: 'config/setNavTreeExpanded',
+        payload: navTreeExpanded
+      })
+      thunkAPI.dispatch({
+        type: 'config/setNavTreeSelected',
         payload: item.id
       })
 

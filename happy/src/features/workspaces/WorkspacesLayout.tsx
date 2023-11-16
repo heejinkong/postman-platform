@@ -1,14 +1,14 @@
-import { Box, Button, ButtonGroup, Container, Divider, Drawer, IconButton } from '@mui/material'
-import { Outlet } from 'react-router-dom'
+import { Box, Divider, Drawer, IconButton, Typography } from '@mui/material'
+import { Outlet, useParams } from 'react-router-dom'
 import { styled } from '@mui/material/styles'
-import NavBar from './components/NavBar'
 import WorkspaceNavTree from './components/WorkspaceNavTree'
 import NewCollection from '../collections/components/NewCollection'
-import NewWorkspace from './components/NewWorkspace'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
-import { selectIsOpenDrawer, setDrawerOpen } from '../config/configSlice'
+import { configAction, selectIsOpenDrawer } from '../config/configSlice'
+import { selectWorkspaceById } from './workspacesSlice'
+import WorkspaceOptions from './components/WorkspaceOptions'
 
 const drawerWidth = 300
 
@@ -39,11 +39,15 @@ export default function WorkspacesLayout() {
   const isDrawerOpen = useAppSelector(selectIsOpenDrawer)
   const dispatch = useAppDispatch()
 
+  const { workspaceId } = useParams()
+
+  const workspace = useAppSelector((state) => selectWorkspaceById(state, workspaceId ?? ''))
+
   const handleDrawerOpen = () => {
-    dispatch(setDrawerOpen(true))
+    dispatch(configAction.setDrawerOpen(true))
   }
   const handleDrawerClose = () => {
-    dispatch(setDrawerOpen(false))
+    dispatch(configAction.setDrawerOpen(false))
   }
 
   return (
@@ -54,7 +58,8 @@ export default function WorkspacesLayout() {
           flexShrink: 0,
           '& .MuiDrawer-paper': {
             width: drawerWidth,
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            border: 0
           }
         }}
         variant="persistent"
@@ -63,12 +68,14 @@ export default function WorkspacesLayout() {
       >
         <DrawerHeader />
         <Box>
-          <Box sx={{ p: 1, pt: 2 }}>
-            <ButtonGroup size="small" variant="outlined" aria-label="outlined button group">
-              <NewWorkspace />
-              <Button>Import</Button>
-              <Button>Export</Button>
-            </ButtonGroup>
+          <Typography variant="subtitle1" gutterBottom sx={{ ml: 1, mt: 1 }}>
+            Workspace
+          </Typography>
+          <Typography variant="h4" gutterBottom sx={{ ml: 2, color: `#1877F2` }}>
+            {workspace.title}
+          </Typography>
+          <Box sx={{ pb: 2 }}>
+            <WorkspaceOptions />
           </Box>
           <Divider />
           <Box
@@ -84,72 +91,73 @@ export default function WorkspacesLayout() {
         </Box>
       </Drawer>
       <Main open={isDrawerOpen}>
-        <Box sx={{ display: 'flex', height: '100%' }}>
+        <Box sx={{ display: 'flex' }}>
           <Box
+            position={'fixed'}
             sx={{
-              width: 20,
-              zIndex: (theme) => theme.zIndex.drawer + 1
+              zIndex: (theme) => theme.zIndex.drawer + 1,
+              display: 'flex',
+              height: '100%'
             }}
           >
             <Box
-              position="relative"
-              sx={{ right: 15, top: 9, ...(!isDrawerOpen && { right: -5 }) }}
-            >
-              <IconButton
-                size="small"
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  mr: 2,
-                  border: 1,
-                  bgcolor: 'white',
-                  borderColor: 'lightgrey',
-                  ':hover': {
-                    bgcolor: 'lightgrey'
-                  },
-                  ...(isDrawerOpen && { display: 'none' })
-                }}
-              >
-                <ChevronRightIcon />
-              </IconButton>
-              <IconButton
-                size="small"
-                color="inherit"
-                aria-label="close drawer"
-                onClick={handleDrawerClose}
-                edge="start"
-                sx={{
-                  mr: 2,
-                  border: 1,
-                  bgcolor: 'white',
-                  borderColor: 'lightgrey',
-                  ':hover': {
-                    bgcolor: 'lightgrey'
-                  },
-                  ...(!isDrawerOpen && { display: 'none' })
-                }}
-              >
-                <ChevronLeftIcon />
-              </IconButton>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              width: 20,
-              ...(!isDrawerOpen && {
+              sx={{
+                width: 20,
+                ...(isDrawerOpen && { display: 'none' })
+              }}
+            ></Box>
+            <Box
+              sx={{
+                width: 20,
                 borderLeft: 1,
                 borderColor: 'lightgrey'
-              })
-            }}
-          ></Box>
-          <Container>
-            <Box sx={{ pt: 2 }}>
-              <NavBar />
-              <Outlet />
+              }}
+            >
+              <Box position="relative" sx={{ right: 15, top: 10 }}>
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={handleDrawerOpen}
+                  edge="start"
+                  sx={{
+                    mr: 2,
+                    border: 1,
+                    bgcolor: 'white',
+                    borderColor: 'lightgrey',
+                    ':hover': {
+                      bgcolor: 'lightgrey'
+                    },
+                    ...(isDrawerOpen && { display: 'none' })
+                  }}
+                >
+                  <ChevronRightIcon />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  aria-label="close drawer"
+                  onClick={handleDrawerClose}
+                  edge="start"
+                  sx={{
+                    mr: 2,
+                    border: 1,
+                    bgcolor: 'white',
+                    borderColor: 'lightgrey',
+                    ':hover': {
+                      bgcolor: 'lightgrey'
+                    },
+                    ...(!isDrawerOpen && { display: 'none' })
+                  }}
+                >
+                  <ChevronLeftIcon />
+                </IconButton>
+              </Box>
             </Box>
-          </Container>
+          </Box>
+          <Box sx={{ flexGrow: 1, ml: 5, ...(isDrawerOpen && { ml: 2.5 }) }}>
+            <Outlet />
+          </Box>
         </Box>
       </Main>
     </Box>

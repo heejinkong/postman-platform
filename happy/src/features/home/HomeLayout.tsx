@@ -5,21 +5,75 @@ import {
   Avatar,
   Box,
   Button,
+  Divider,
   IconButton,
   Menu,
   MenuItem,
+  MenuProps,
   Toolbar,
   Tooltip,
-  Typography
+  Typography,
+  alpha,
+  styled
 } from '@mui/material'
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions'
+import React from 'react'
+import NewWorkspace from '../workspaces/components/NewWorkspace'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import { useAppSelector } from '../../app/hook'
+import { selectAllWorkspaces } from '../workspaces/workspacesSlice'
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
+
+const StyledMenu = styled((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'right'
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'right'
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  '& .MuiPaper-root': {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+    boxShadow:
+      'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+    '& .MuiMenu-list': {
+      padding: '4px 0'
+    },
+    '& .MuiMenuItem-root': {
+      '& .MuiSvgIcon-root': {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5)
+      },
+      '&:active': {
+        backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity)
+      }
+    }
+  }
+}))
 
 export default function HomeLayout() {
   const headerRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
   const headerBarRef = useRef<HTMLDivElement>(null)
+
+  const navigate = useNavigate()
+  const allWorkspaces = useAppSelector(selectAllWorkspaces)
+
+  const handleNavWorkspace = (workspaceId: string) => {
+    navigate(`/workspaces/${workspaceId}`)
+    setAnchorEl(null)
+  }
 
   const handleResize = () => {
     if (headerRef.current && bodyRef.current && headerBarRef.current) {
@@ -33,11 +87,14 @@ export default function HomeLayout() {
     handleResize()
   }, [headerBarRef, bodyRef])
 
-  const navigate = useNavigate()
-  const handleOpenWorkspaces = () => {
-    navigate('/')
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
   }
-
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget)
@@ -45,14 +102,13 @@ export default function HomeLayout() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null)
   }
-
   return (
     <Box>
       <Box ref={headerRef}>
         <AppBar
           position="fixed"
           ref={headerBarRef}
-          sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
         >
           <Box sx={{ mx: 2 }}>
             <Toolbar disableGutters>
@@ -75,11 +131,86 @@ export default function HomeLayout() {
 
               <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 <Button
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                  onClick={handleOpenWorkspaces}
+                  id="demo-customized-button"
+                  aria-controls={open ? 'demo-customized-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                  variant="contained"
+                  disableElevation
+                  onClick={handleClick}
+                  endIcon={<KeyboardArrowDownIcon />}
                 >
-                  Workspace
+                  Workpsace
                 </Button>
+                <StyledMenu
+                  id="demo-customized-menu"
+                  MenuListProps={{
+                    'aria-labelledby': 'demo-customized-button'
+                  }}
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                >
+                  <Box>
+                    <Box
+                      sx={{
+                        flexWrap: 'wrap',
+                        '& > :not(style)': {
+                          m: 1,
+                          width: 250,
+                          height: 150
+                        }
+                      }}
+                    >
+                      {allWorkspaces.length === 0 ? (
+                        <Box>
+                          <Typography
+                            variant="button"
+                            display="block"
+                            gutterBottom
+                            sx={{ mt: 5, ml: 3 }}
+                          >
+                            Workspace does not exist
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            display="block"
+                            gutterBottom
+                            sx={{ mt: 1, ml: 2 }}
+                          >
+                            To start your work, try using the 'New Workspace' button at the top.
+                          </Typography>
+                        </Box>
+                      ) : (
+                        <Box>
+                          {allWorkspaces.map((ws) => (
+                            <MenuItem
+                              key={ws.id}
+                              onClick={() => handleNavWorkspace(ws.id)}
+                              disableRipple
+                            >
+                              {ws.title}
+                            </MenuItem>
+                          ))}
+                          {/* <MenuItem onClick={handleClose} disableRipple>
+                  Duplicate
+                </MenuItem */}
+                        </Box>
+                      )}
+                    </Box>
+                    <Divider sx={{ my: 0.5 }} />
+                    <Box sx={{ display: 'flex' }}>
+                      <Box sx={{ ml: 1 }}>
+                        <Button variant="outlined" size="small">
+                          Import Workspace
+                        </Button>
+                      </Box>
+                      <Box sx={{ ml: 1, mr: 1 }}>
+                        <NewWorkspace />
+                      </Box>
+                    </Box>
+                  </Box>
+                </StyledMenu>
               </Box>
 
               <Box sx={{ flexGrow: 0 }}>
