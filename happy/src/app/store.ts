@@ -7,6 +7,7 @@ import requestsSlice from '../features/requests/requestsSlice'
 import foldersSlice from '../features/folders/foldersSlice'
 import configSlice from '../features/config/configSlice'
 import runTestSlice from '../features/runTests/service/runTestSlice'
+import runResultSlice from '../features/runResults/service/runResultSlice'
 
 const persistedWorkspacesReducer = persistReducer(
   {
@@ -61,7 +62,7 @@ const persistedRunResultsReducer = persistReducer(
     key: 'runResults',
     storage
   },
-  runTestSlice
+  runResultSlice
 )
 
 export const store = configureStore({

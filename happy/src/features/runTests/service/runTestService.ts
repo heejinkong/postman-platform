@@ -12,6 +12,7 @@ class runTestService implements runTestDomain {
   new = createAsyncThunk('runTestService/new', async (runTest: runTestItem, thunkAPI) => {
     thunkAPI.dispatch({ type: 'runTests/createRunTest', payload: runTest })
 
+    thunkAPI.dispatch({ type: 'requests/send', payload: runTest.requestId })
   })
 
   delete = createAsyncThunk('runTestService/delete', async (_item: repositoryItem, _thunkAPI) => {

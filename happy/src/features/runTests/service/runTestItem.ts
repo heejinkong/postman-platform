@@ -7,4 +7,7 @@ export class runTestItem implements repositoryItem {
   requestId: string = ''
   created: number = 0
   duration: number = 0
+  status: number = 0
+  result: string = ''
+  expected: string = ''
 }

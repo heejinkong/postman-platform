@@ -24,4 +24,5 @@ export class requestItem implements repositoryItem {
     header: [],
     body: ''
   }
+  expected: string = ''
 }

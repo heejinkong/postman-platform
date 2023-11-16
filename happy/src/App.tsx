@@ -36,10 +36,10 @@ function App() {
           <Route path="runHistory" element={<RunHistoryLayout />}>
             <Route index element={<RunHistoryPage />} />
           </Route>
-          <Route path="runResult/:runResultId" element={<RunResultLayout />}>
+          <Route path="runResult" element={<RunResultLayout />}>
             <Route index element={<RunResultPage />} />
           </Route>
-          <Route path="runTest/:runTestId" element={<RunTestLayout />}>
+          <Route path="runTest" element={<RunTestLayout />}>
             <Route index element={<RunTestPage />} />
           </Route>
         </Route>

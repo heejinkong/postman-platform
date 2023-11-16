@@ -227,6 +227,7 @@ export default function RequestsPage() {
     cloned.method = currentMethod
     cloned.url = addUrl(currentUrl)
     cloned.params = params
+    cloned.expected = expectedValue
 
     dispatch(requestService.update(cloned))
   }
