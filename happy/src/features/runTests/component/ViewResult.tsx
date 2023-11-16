@@ -1,8 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAppDispatch } from '../../../app/hook'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
-import CodeMirror from '@uiw/react-codemirror'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import * as Diff from 'diff'
 import * as Diff2Html from 'diff2html'
 import 'diff2html/bundles/css/diff2html.min.css'
@@ -43,15 +40,6 @@ export default function ViewResult(props: viewResultProps) {
     outputHtml = Diff2Html.html(diff, diff2htmlConfig)
     //console.log(outputHtml)
   }
-  //   const addWorkspace = () => {
-  //     const newItem = new workspaceItem()
-  //     newItem.title = title
-  //     newItem.desc = desc
-  //     dispatch(workspaceService.new(newItem))
-
-  //     navigate(`/workspaces/${newItem.id}`)
-  //     setOpen(false)
-  //   }
 
   return (
     <div>

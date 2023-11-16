@@ -39,7 +39,7 @@ export default function RunTestPage() {
         {allRunTests.map((runTest) => (
           <Box sx={{ display: 'flex', mt: 2 }}>
             <Box>
-              {runTest.status === 200 ? (
+              {runTest.status === 200 && runTest.expected === runTest.result ? (
                 <Box>
                   <Typography variant="h5" gutterBottom sx={{ color: `#2E7D32` }}>
                     Success
@@ -72,22 +72,20 @@ export default function RunTestPage() {
             <Box sx={{ mt: 3, ml: 45 }}>
               <ViewResult response={runTest.result} expected={runTest.expected} />
             </Box>
+            <Divider sx={{ my: 2 }} />
 
             {/* <ListItemText
               primary={runTest.title}
               secondary={new Date(runTest.created).toLocaleString()}
             /> */}
             {/* <IconButton edge="end" aria-label="delete" onClick={(e) => handleDeleteClick(e, ws)}>
-      <DeleteIcon />
-    </IconButton> */}
-
-            <Box>
-              <Divider sx={{ my: 2 }} />
-            </Box>
+            <DeleteIcon />
+            </IconButton> */}
           </Box>
         ))}
+        <Divider sx={{ my: 2 }} />
       </List>
-      <Divider sx={{ my: 0.5 }} />
+
       {/* <Box sx={{ width: '100%' }}>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             {allRunTests.map((runTest) => (
