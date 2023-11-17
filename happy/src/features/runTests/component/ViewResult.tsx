@@ -1,8 +1,10 @@
 import React from 'react'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import * as Diff from 'diff'
 import * as Diff2Html from 'diff2html'
 import 'diff2html/bundles/css/diff2html.min.css'
+import CodeMirror from '@uiw/react-codemirror'
+import { javascript } from '@codemirror/lang-javascript'
 
 type viewResultProps = {
   response: string
@@ -49,7 +51,19 @@ export default function ViewResult(props: viewResultProps) {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>View Result</DialogTitle>
         <DialogContent>
-          <div dangerouslySetInnerHTML={{ __html: outputHtml }} />
+          {props.expected ? (
+            <div dangerouslySetInnerHTML={{ __html: outputHtml }} />
+          ) : (
+            <Box>
+              <CodeMirror
+                value={response}
+                height="200px"
+                theme="light"
+                extensions={[javascript({ jsx: true })]}
+                readOnly={true}
+              />
+            </Box>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

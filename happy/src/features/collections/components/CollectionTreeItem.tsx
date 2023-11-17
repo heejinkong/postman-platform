@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAppSelector } from '../../../app/hook'
 import { selectCollectionById } from '../collectionsSlice'
 import { collectionItem } from '../collectionItem'
-import RunCollectionMenuItem from './RuncollectionMenuItem'
+import RunCollectionMenuItem from './RunCollectionMenuItem'
 
 type TreeItemProps = {
   _id: string
@@ -82,10 +82,10 @@ export default function CollectionTreeItem(props: TreeItemProps) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {/* <RunCollectionMenuItem
+              <RunCollectionMenuItem
                 collectionId={collection.id}
                 handleClose={(e) => handleCloseUserMenu(e)}
-              /> */}
+              />
               <AddRequestMenuItem
                 parentId={collection.id}
                 handleClose={(e) => handleCloseUserMenu(e)}

@@ -1,8 +1,102 @@
-import { Box, Container, Typography } from '@mui/material'
-import RunTestPage from '../runTests/RunTestPage'
+import {
+  Box,
+  Container,
+  Divider,
+  ListItemButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material'
+import { selectAllRunResults } from '../runTests/service/runTestSlice'
+import { useSelector } from 'react-redux'
+// import { useNavigate } from 'react-router-dom'
 
 export default function RunHistoryPage() {
-  return <Box></Box>
+  const allRunResults = useSelector(selectAllRunResults)
+  // const navigate = useNavigate()
+
+  // const handleTargetClick = () => {
+  //   navigate(``)
+  // }
+
+  return (
+    <Box>
+      <Container sx={{ ml: 20 }}>
+        <Box sx={{ mt: 2.2 }}>Run History</Box>
+        <Box sx={{ mt: 10, ml: 19 }}>
+          <Typography variant="h4" gutterBottom>
+            Run History
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Please click on one item to check its run details.
+          </Typography>
+        </Box>
+        <Box sx={{}}>
+          <TableContainer component={Paper} sx={{ mt: 5, width: 900, ml: 18 }}>
+            <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+              <TableHead>
+                <TableRow>
+                  <Box sx={{ display: 'flex', ml: 1 }}>
+                    <Box>
+                      <TableCell>Date/Time</TableCell>
+                    </Box>
+                    <Box sx={{ ml: 18 }}>
+                      <TableCell align="left">Run Target</TableCell>
+                    </Box>
+                  </Box>
+                  <Divider />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {allRunResults.map((runResult) => (
+                  <Box>
+                    <ListItemButton key={runResult.id}>
+                      {new Date(runResult.created).toLocaleString()}
+                      <Box sx={{ ml: 8 }}>{runResult.title}</Box>
+                    </ListItemButton>
+                    <Divider />
+                  </Box>
+
+                  // <TableRow
+                  //   key={runResult.id}
+                  //   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  // >
+                  //   <TableCell component="th" scope="row">
+                  //     {new Date(runResult.created).toLocaleString()}
+                  //   </TableCell>
+
+                  //   <TableCell align="left">{runResult.title}</TableCell>
+                  // </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {/* <Table sx={{ '& thead th:nth-of-child(1)': { width: '5%' } }}>
+            <thead>
+              <tr>
+                <th> </th>
+                <th>Date/Time</th>
+                <th>Run Target</th>
+                <th> </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </Table> */}
+        </Box>
+        <Box sx={{ mt: 3 }}></Box>
+      </Container>
+    </Box>
+  )
 }
 // const handleNavRunTest = (requestId: string) => {
 //   navigate(`/workspaces/${workspaceId}/requests/${requestId}`)

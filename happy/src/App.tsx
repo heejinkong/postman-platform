@@ -13,9 +13,9 @@ import FoldersPage from './features/folders/FoldersPage'
 import RunHistoryLayout from './features/runHistory/RunHistoryLayout'
 import RunHistoryPage from './features/runHistory/RunHistoryPage'
 import RunResultLayout from './features/runResults/runResultLayout'
-import RunResultPage from './features/runResults/runResultPage'
 import RunTestLayout from './features/runTests/RunTestLayout'
 import RunTestPage from './features/runTests/RunTestPage'
+import RunResultPage from './features/runResults/runResultPage'
 
 function App() {
   return (
@@ -36,7 +36,7 @@ function App() {
           <Route path="runHistory" element={<RunHistoryLayout />}>
             <Route index element={<RunHistoryPage />} />
           </Route>
-          <Route path="runResult" element={<RunResultLayout />}>
+          <Route path="runResult/:runResultId" element={<RunResultLayout />}>
             <Route index element={<RunResultPage />} />
           </Route>
           <Route path="runTest" element={<RunTestLayout />}>

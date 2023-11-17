@@ -6,12 +6,15 @@ import { RootState } from '../../../app/store'
 const repo = new memoryRepository()
 
 const runResultSlice = createSlice({
-  name: 'runResult',
+  name: 'runResults',
   initialState: {
     data: repo._data
   },
   reducers: {
     createRunResult: (state, action: PayloadAction<runResultItem>) => {
+      repo.data(state.data).save(action.payload)
+    },
+    updateRunResult: (state, action: PayloadAction<runResultItem>) => {
       repo.data(state.data).save(action.payload)
     },
     deleteRunResult: (state, action: PayloadAction<string>) => {

@@ -4,6 +4,7 @@ import { selectFolderById } from '../foldersSlice'
 import { runTestItem } from '../../runTests/service/runTestItem'
 import { selectAllRequests } from '../../requests/requestsSlice'
 import runTestService from '../../runTests/service/runTestService'
+import { useNavigate } from 'react-router-dom'
 
 type runFolderMenuItemProps = {
   parentId: string
@@ -12,6 +13,7 @@ type runFolderMenuItemProps = {
 
 export default function RunFolderMenuItem(props: runFolderMenuItemProps) {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
   const folder = useAppSelector((state) => selectFolderById(state, props.parentId))
   const requests = useAppSelector(selectAllRequests).filter((request) => {
@@ -22,13 +24,15 @@ export default function RunFolderMenuItem(props: runFolderMenuItemProps) {
 
     requests.forEach((request) => {
       const newRunTestItem = new runTestItem()
-      newRunTestItem.title = folder.title + ' - ' + `Run results`
+      newRunTestItem.title = folder.title + ' - ' + request.title
       newRunTestItem.parentId = folder?.id ?? ''
       newRunTestItem.requestId = request.id
       newRunTestItem.created = Date.now()
       newRunTestItem.status = request.response.statusCode
       newRunTestItem.result = request.response.body
       dispatch(runTestService.new(newRunTestItem))
+
+      navigate(`/workspaces/${folder.workspaceId}/runResult/${newRunTestItem.id}`)
     })
   }
 
