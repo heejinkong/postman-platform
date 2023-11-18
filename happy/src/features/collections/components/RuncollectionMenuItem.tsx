@@ -34,18 +34,25 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
   const handleRunClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     props.handleClose(e)
 
+    const newRunResultItem = new runResultItem()
+    newRunResultItem.title = collection.title
+    newRunResultItem.parentId = collection?.id ?? ''
+    newRunResultItem.created = Date.now()
+    dispatch(runResultService.new(newRunResultItem))
+
     if (folders.length > 0) {
-      folders.forEach((folder) => {
+      folders.forEach(() => {
         if (requestsByFolder.length > 0) {
           requestsByFolder.forEach((request) => {
             const newRunTestItem = new runTestItem()
             newRunTestItem.title = request.title
-            newRunTestItem.parentId = folder?.id ?? ''
+            newRunTestItem.parentId = collection?.id ?? ''
             newRunTestItem.requestId = request.id
             newRunTestItem.created = Date.now()
             newRunTestItem.status = request.response.statusCode
             newRunTestItem.result = request.response.body
             dispatch(runTestService.new(newRunTestItem))
+            newRunResultItem.runTestList?.push(newRunTestItem.id)
           })
         }
       })
@@ -61,16 +68,9 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
         newRunTestItem.status = request.response.statusCode
         newRunTestItem.result = request.response.body
         dispatch(runTestService.new(newRunTestItem))
+        newRunResultItem.runTestList?.push(newRunTestItem.id)
       })
     }
-
-    const newRunResultItem = new runResultItem()
-    newRunResultItem.title = collection.title
-    newRunResultItem.parentId = collection?.id ?? ''
-    newRunResultItem.created = Date.now()
-    dispatch(runResultService.new(newRunResultItem))
-
-    navigate(`/workspaces/${workspaceId}/runHistory`)
   }
 
   return (

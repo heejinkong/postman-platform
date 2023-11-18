@@ -12,17 +12,19 @@ import {
   TableRow,
   Typography
 } from '@mui/material'
-import { selectAllRunResults } from '../runTests/service/runTestSlice'
+import { selectAllRunResult } from '../runResults/service/runResultSlice'
 import { useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 // import { useNavigate } from 'react-router-dom'
 
 export default function RunHistoryPage() {
-  const allRunResults = useSelector(selectAllRunResults)
-  // const navigate = useNavigate()
+  const allRunResults = useSelector(selectAllRunResult)
+  const { workspaceId } = useParams()
+  const navigate = useNavigate()
 
-  // const handleTargetClick = () => {
-  //   navigate(``)
-  // }
+  const handleRunResult = (runResultId: string) => {
+    navigate(`/workspaces/${workspaceId}/runResult/${runResultId}`)
+  }
 
   return (
     <Box>
@@ -55,111 +57,22 @@ export default function RunHistoryPage() {
               <TableBody>
                 {allRunResults.map((runResult) => (
                   <Box>
-                    <ListItemButton key={runResult.id}>
+                    <ListItemButton
+                      key={runResult.id}
+                      onClick={() => handleRunResult(runResult.id)}
+                    >
                       {new Date(runResult.created).toLocaleString()}
                       <Box sx={{ ml: 8 }}>{runResult.title}</Box>
                     </ListItemButton>
                     <Divider />
                   </Box>
-
-                  // <TableRow
-                  //   key={runResult.id}
-                  //   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  // >
-                  //   <TableCell component="th" scope="row">
-                  //     {new Date(runResult.created).toLocaleString()}
-                  //   </TableCell>
-
-                  //   <TableCell align="left">{runResult.title}</TableCell>
-                  // </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
-          {/* <Table sx={{ '& thead th:nth-of-child(1)': { width: '5%' } }}>
-            <thead>
-              <tr>
-                <th> </th>
-                <th>Date/Time</th>
-                <th>Run Target</th>
-                <th> </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </Table> */}
         </Box>
         <Box sx={{ mt: 3 }}></Box>
       </Container>
     </Box>
   )
 }
-// const handleNavRunTest = (requestId: string) => {
-//   navigate(`/workspaces/${workspaceId}/requests/${requestId}`)
-// }
-
-// if (allRunTests.length === 0) {
-//   return (
-//     <Container
-//       sx={{
-//         height: '100%',
-//         display: 'flex',
-//         alignItems: 'center',
-//         justifyContent: 'center'
-//       }}
-//     >
-//       <Box sx={{ width: '100%' }}>
-//         <Box sx={{ mt: 20, justifyContent: 'center' }}>
-//           <Typography variant="h4" gutterBottom sx={{ ml: 3 }}>
-//             Run History does not exist.
-//           </Typography>
-//           <Typography variant="h6" gutterBottom>
-//             You can run all items in the workspace using the button below.
-//           </Typography>
-//         </Box>
-//       </Box>
-//     </Container>
-//   )
-// } else {
-// return (
-//     <Container
-//       sx={{
-//         height: '100%',
-//         display: 'flex',
-//         alignItems: 'center',
-//         justifyContent: 'center'
-//       }}
-//     >
-//       <List sx={{ width: '100%', maxWidth: 380 }}>
-//         {allRunTests.map((runTest) => (
-//           <>
-//             <ListItemButton key={runTest.id}>
-//               <ListItemText
-//                 primary={runTest.title}
-//                 secondary={new Date(runTest.created).toLocaleString()}
-//               />
-//               {/* <IconButton edge="end" aria-label="delete" onClick={(e) => handleDeleteClick(e, ws)}>
-//     <DeleteIcon />
-//   </IconButton> */}
-//             </ListItemButton>
-//             <Box>
-//               <Divider sx={{ my: 0.5 }} />
-//             </Box>
-//           </>
-//         ))}
-//       </List>
-//       <Divider sx={{ my: 0.5 }} />
-//       {/* <Box sx={{ width: '100%' }}>
-//         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-//           {allRunTests.map((runTest) => (
-//             <li key={runTest.id}>{runTest.title}</li>
-//           ))}
-//         </Box>
-//       </Box> */}
-//     </Container>
-//   )
-// }

@@ -4,6 +4,9 @@ import { repositoryItem } from '../../../repository/repositoryItem'
 import { runResultItem } from './runResultItem'
 import { RootState } from '../../../app/store'
 import { selectCollectionById } from '../../collections/collectionsSlice'
+import { selectAllRunResult } from './runResultSlice'
+import { selectAllRunResults } from '../../runTests/service/runTestSlice'
+import { runTestItem } from '../../runTests/service/runTestItem'
 
 interface runResultDomain {
   new: unknown
@@ -17,9 +20,7 @@ class runResultService implements runResultDomain {
     const state = thunkAPI.getState() as RootState
 
     thunkAPI.dispatch({ type: 'runResults/createRunResult', payload: runResult })
-  
-
- 
+    thunkAPI.dispatch({ type: 'runResults/updateRunResult', payload: runResult })
   })
 
   delete = createAsyncThunk('runResultService/delete', async (_item: repositoryItem, _thunkAPI) => {

@@ -23,7 +23,7 @@ const runResultSlice = createSlice({
   }
 })
 
-export const {createRunResult} = runResultSlice.actions
+export const { createRunResult } = runResultSlice.actions
 
 export const selectAllRunResult = (state: RootState) =>
   repo.data(state.runResults.data).findAll() as runResultItem[]

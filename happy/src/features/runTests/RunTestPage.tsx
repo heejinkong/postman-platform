@@ -64,26 +64,10 @@ export default function RunTestPage() {
               </Grid>
             </Box>
             <Divider sx={{ my: 2 }} />
-
-            {/* <ListItemText
-              primary={runTest.title}
-              secondary={new Date(runTest.created).toLocaleString()}
-            /> */}
-            {/* <IconButton edge="end" aria-label="delete" onClick={(e) => handleDeleteClick(e, ws)}>
-            <DeleteIcon />
-            </IconButton> */}
           </Box>
         ))}
         <Divider sx={{ my: 2 }} />
       </List>
-
-      {/* <Box sx={{ width: '100%' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            {allRunTests.map((runTest) => (
-              <li key={runTest.id}>{runTest.title}</li>
-            ))}
-          </Box>
-        </Box> */}
     </Container>
   )
 }

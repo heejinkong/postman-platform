@@ -18,7 +18,6 @@ export default function WorkspacesList() {
   const dispatch = useAppDispatch()
   const allWorkspaces = useAppSelector(selectAllWorkspaces)
 
-  //allWorkspaces를 최대 10개씩 나눠서 pagination으로 보여줄거야
   const rowsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)
   const indexOfLastRow = currentPage * rowsPerPage

@@ -20,7 +20,7 @@ const runTestsSlice = createSlice({
   }
 })
 
-export const {createRunTest}= runTestsSlice.actions
+export const { createRunTest } = runTestsSlice.actions
 
 export const selectAllRunResults = (state: RootState) =>
   repo.data(state.runTests.data).findAll() as runTestItem[]
