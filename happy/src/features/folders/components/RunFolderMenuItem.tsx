@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import { MenuItem, Typography } from '@mui/material'
 import { selectFolderById } from '../foldersSlice'
-import { runTestItem } from '../../runTests/service/runTestItem'
+import { runTestItem } from '../../runTests/runTestItem'
 import { selectAllRequests } from '../../requests/requestsSlice'
 import runTestService from '../../runTests/service/runTestService'
 import { useNavigate } from 'react-router-dom'

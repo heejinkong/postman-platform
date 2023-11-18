@@ -2,6 +2,7 @@ import {
   Box,
   Container,
   Divider,
+  IconButton,
   ListItemButton,
   Paper,
   Table,
@@ -12,67 +13,111 @@ import {
   TableRow,
   Typography
 } from '@mui/material'
-import { selectAllRunResult } from '../runResults/service/runResultSlice'
-import { useSelector } from 'react-redux'
+import { selectAllRunResult } from '../runResults/runResultSlice'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-// import { useNavigate } from 'react-router-dom'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { runResultItem } from '../runResults/runResultItem'
+import runResultService from '../runResults/service/runResultService'
 
 export default function RunHistoryPage() {
-  const allRunResults = useSelector(selectAllRunResult)
+  const allRunResults = useSelector(selectAllRunResult).sort((a, b) =>
+    a.created < b.created ? 1 : -1
+  )
   const { workspaceId } = useParams()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const handleRunResult = (runResultId: string) => {
     navigate(`/workspaces/${workspaceId}/runResult/${runResultId}`)
   }
 
-  return (
-    <Box>
-      <Container sx={{ ml: 20 }}>
-        <Box sx={{ mt: 2.2 }}>Run History</Box>
-        <Box sx={{ mt: 10, ml: 19 }}>
-          <Typography variant="h4" gutterBottom>
-            Run History
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            Please click on one item to check its run details.
-          </Typography>
-        </Box>
-        <Box sx={{}}>
-          <TableContainer component={Paper} sx={{ mt: 5, width: 900, ml: 18 }}>
-            <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-              <TableHead>
-                <TableRow>
-                  <Box sx={{ display: 'flex', ml: 1 }}>
-                    <Box>
-                      <TableCell>Date/Time</TableCell>
+  const handleDeleteClick = (e: { stopPropagation: () => void }, runResult: runResultItem) => {
+    e.stopPropagation()
+    dispatch(runResultService.delete(runResult))
+  }
+
+  if (allRunResults.length === 0) {
+    return (
+      <Box>
+        <Container sx={{ ml: 20 }}>
+          <Box sx={{ mt: 2.2 }}>Run History</Box>
+          <Box sx={{ mt: 10, ml: 19 }}>
+            <Typography variant="h3" gutterBottom>
+              Run History
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              Please click on one item to check its run details.
+            </Typography>
+          </Box>
+          <Box sx={{ mt: 40, ml: 70 }}>
+            <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
+              Run History does not exist
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              You can run all items in the workspace using the button below
+            </Typography>
+          </Box>
+        </Container>
+      </Box>
+    )
+  } else {
+    return (
+      <Box>
+        <Container sx={{ ml: 40 }}>
+          <Box sx={{ mt: 2.2 }}>Run History</Box>
+          <Box sx={{ mt: 10, ml: 19 }}>
+            <Typography variant="h4" gutterBottom>
+              Run History
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Please click on one item to check its run details.
+            </Typography>
+          </Box>
+          <Box sx={{}}>
+            <TableContainer component={Paper} sx={{ mt: 5, width: 900, ml: 18 }}>
+              <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                <TableHead>
+                  <TableRow>
+                    <Box sx={{ display: 'flex', ml: 1 }}>
+                      <Box>
+                        <TableCell>Date/Time</TableCell>
+                      </Box>
+                      <Box sx={{ ml: 21 }}>
+                        <TableCell align="left">Run Target</TableCell>
+                      </Box>
                     </Box>
-                    <Box sx={{ ml: 18 }}>
-                      <TableCell align="left">Run Target</TableCell>
-                    </Box>
-                  </Box>
-                  <Divider />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {allRunResults.map((runResult) => (
-                  <Box>
-                    <ListItemButton
-                      key={runResult.id}
-                      onClick={() => handleRunResult(runResult.id)}
-                    >
-                      {new Date(runResult.created).toLocaleString()}
-                      <Box sx={{ ml: 8 }}>{runResult.title}</Box>
-                    </ListItemButton>
                     <Divider />
-                  </Box>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-        <Box sx={{ mt: 3 }}></Box>
-      </Container>
-    </Box>
-  )
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {allRunResults.map((runResult) => (
+                    <Box>
+                      <ListItemButton
+                        key={runResult.id}
+                        onClick={() => handleRunResult(runResult.id)}
+                        sx={{ p: 3 }}
+                      >
+                        {new Date(runResult.created).toLocaleString()}
+                        <Box sx={{ ml: 10 }}>{runResult.title}</Box>
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          onClick={(e) => handleDeleteClick(e, runResult)}
+                          sx={{ ml: 50 }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </ListItemButton>
+                      <Divider />
+                    </Box>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </Container>
+      </Box>
+    )
+  }
 }

@@ -6,8 +6,8 @@ import collectionsSlice from '../features/collections/collectionsSlice'
 import requestsSlice from '../features/requests/requestsSlice'
 import foldersSlice from '../features/folders/foldersSlice'
 import configSlice from '../features/config/configSlice'
-import runTestSlice from '../features/runTests/service/runTestSlice'
-import runResultSlice from '../features/runResults/service/runResultSlice'
+import runTestSlice from '../features/runTests/runTestSlice'
+import runResultSlice from '../features/runResults/runResultSlice'
 
 const persistedWorkspacesReducer = persistReducer(
   {

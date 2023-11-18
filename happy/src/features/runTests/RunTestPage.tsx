@@ -1,8 +1,8 @@
 import { Box, Breadcrumbs, Container, Divider, Grid, Link, List, Typography } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { selectAllRunResults, selectAllRunTests } from './service/runTestSlice'
+import { selectAllRunTests } from './runTestSlice'
 import ViewResult from './component/ViewResult'
-import { runResultItem } from '../runResults/service/runResultItem'
+import { runResultItem } from '../runResults/runResultItem'
 
 type runResultPageProps = {
   parent: runResultItem

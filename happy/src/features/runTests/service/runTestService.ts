@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { repositoryItem } from '../../../repository/repositoryItem'
-import { runTestItem } from './runTestItem'
+import { runTestItem } from '../runTestItem'
 
 interface runTestDomain {
   new: unknown
@@ -15,8 +14,8 @@ class runTestService implements runTestDomain {
     thunkAPI.dispatch({ type: 'requests/send', payload: runTest.requestId })
   })
 
-  delete = createAsyncThunk('runTestService/delete', async (_item: repositoryItem, _thunkAPI) => {
-    // TODO : Implement
+  delete = createAsyncThunk('runTestService/delete', async (runTest: runTestItem, thunkAPI) => {
+    thunkAPI.dispatch({ type: 'runTests/deleteRunTestById', payload: runTest.id })
   })
 }
 

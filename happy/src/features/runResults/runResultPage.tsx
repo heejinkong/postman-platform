@@ -2,7 +2,7 @@ import { Box, Container, Divider, Typography } from '@mui/material'
 import RunTestPage from '../runTests/RunTestPage'
 import { useParams } from 'react-router-dom'
 import { useAppSelector } from '../../app/hook'
-import { selectRunResultById } from './service/runResultSlice'
+import { selectRunResultById } from './runResultSlice'
 
 export default function RunResultPage() {
   const { runResultId } = useParams()

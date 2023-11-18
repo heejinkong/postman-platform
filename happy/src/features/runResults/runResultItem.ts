@@ -1,4 +1,4 @@
-import { repositoryItem } from '../../../repository/repositoryItem'
+import { repositoryItem } from '../../repository/repositoryItem'
 
 export class runResultItem implements repositoryItem {
   id: string = ''
