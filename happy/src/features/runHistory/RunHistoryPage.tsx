@@ -4,6 +4,7 @@ import {
   Divider,
   IconButton,
   ListItemButton,
+  Pagination,
   Paper,
   Table,
   TableBody,
@@ -19,6 +20,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { runResultItem } from '../runResults/runResultItem'
 import runResultService from '../runResults/service/runResultService'
+import { useState } from 'react'
 
 export default function RunHistoryPage() {
   const allRunResults = useSelector(selectAllRunResult).sort((a, b) =>
@@ -28,13 +30,24 @@ export default function RunHistoryPage() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  const rowsPerPage = 10
+  const [currentPage, setCurrentPage] = useState(1)
+  const indexOfLastRow = currentPage * rowsPerPage
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage
+  const currentRows = allRunResults.slice(indexOfFirstRow, indexOfLastRow)
+  const totalPages = Math.ceil(allRunResults.length / rowsPerPage)
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    setCurrentPage(page)
+  }
+
   const handleRunResult = (runResultId: string) => {
     navigate(`/workspaces/${workspaceId}/runResult/${runResultId}`)
   }
 
   const handleDeleteClick = (e: { stopPropagation: () => void }, runResult: runResultItem) => {
     e.stopPropagation()
-    dispatch(runResultService.delete(runResult))
+    // dispatch(runResultService.delete(runResult))
   }
 
   if (allRunResults.length === 0) {
@@ -91,12 +104,12 @@ export default function RunHistoryPage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {allRunResults.map((runResult) => (
+                  {currentRows.map((runResult) => (
                     <Box>
                       <ListItemButton
                         key={runResult.id}
                         onClick={() => handleRunResult(runResult.id)}
-                        sx={{ p: 3 }}
+                        sx={{ p: 2 }}
                       >
                         {new Date(runResult.created).toLocaleString()}
                         <Box sx={{ ml: 10 }}>{runResult.title}</Box>
@@ -115,6 +128,15 @@ export default function RunHistoryPage() {
                 </TableBody>
               </Table>
             </TableContainer>
+          </Box>
+          <Box sx={{ mt: 5 }}>
+            <Pagination
+              count={totalPages}
+              shape="rounded"
+              page={currentPage}
+              onChange={(e, page) => handlePageChange(e, page)}
+              sx={{ display: 'flex', justifyContent: 'center', pb: 3 }}
+            />
           </Box>
         </Container>
       </Box>
