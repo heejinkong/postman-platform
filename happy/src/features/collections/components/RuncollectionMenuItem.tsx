@@ -36,6 +36,7 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
 
     const newRunResultItem = new runResultItem()
     newRunResultItem.title = collection.title
+    newRunResultItem.workspaceId = collection.workspaceId
     newRunResultItem.parentId = collection?.id ?? ''
     newRunResultItem.created = Date.now()
     dispatch(runResultService.new(newRunResultItem))

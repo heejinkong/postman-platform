@@ -23,9 +23,11 @@ import runResultService from '../runResults/service/runResultService'
 import { useState } from 'react'
 
 export default function RunHistoryPage() {
-  const allRunResults = useSelector(selectAllRunResult)
-
   const { workspaceId } = useParams()
+  const allRunResults = useSelector(selectAllRunResult).filter((runResult) => {
+    return runResult.workspaceId === workspaceId
+  })
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -46,7 +48,7 @@ export default function RunHistoryPage() {
 
   const handleDeleteClick = (e: { stopPropagation: () => void }, runResult: runResultItem) => {
     e.stopPropagation()
-    // dispatch(runResultService.delete(runResult))
+    dispatch(runResultService.delete(runResult))
   }
 
   if (allRunResults.length === 0) {
