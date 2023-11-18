@@ -23,9 +23,8 @@ import runResultService from '../runResults/service/runResultService'
 import { useState } from 'react'
 
 export default function RunHistoryPage() {
-  const allRunResults = useSelector(selectAllRunResult).sort((a, b) =>
-    a.created < b.created ? 1 : -1
-  )
+  const allRunResults = useSelector(selectAllRunResult)
+
   const { workspaceId } = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
