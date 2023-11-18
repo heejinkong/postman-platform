@@ -22,9 +22,9 @@ const runTestsSlice = createSlice({
 
 export const { createRunTest } = runTestsSlice.actions
 
-export const selectAllRunResults = (state: RootState) =>
+export const selectAllRunTests = (state: RootState) =>
   repo.data(state.runTests.data).findAll() as runTestItem[]
-export const selectRunResultById = (state: RootState, id: string) =>
+export const selectRunTestsById = (state: RootState, id: string) =>
   repo.data(state.workspaces.data).findById(id) as runTestItem
 
 export default runTestsSlice.reducer

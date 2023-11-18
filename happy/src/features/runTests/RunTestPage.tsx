@@ -1,15 +1,23 @@
 import { Box, Breadcrumbs, Container, Divider, Grid, Link, List, Typography } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { selectAllRunResults } from './service/runTestSlice'
+import { selectAllRunResults, selectAllRunTests } from './service/runTestSlice'
 import ViewResult from './component/ViewResult'
+import { runResultItem } from '../runResults/service/runResultItem'
+
+type runResultPageProps = {
+  parent: runResultItem
+}
 
 function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
   event.preventDefault()
   console.info('You clicked a breadcrumb.')
 }
 
-export default function RunTestPage() {
-  const allRunTests = useSelector(selectAllRunResults)
+export default function RunTestPage(props: runResultPageProps) {
+  //parent.runTestList에 속한 runTest들을 모두 가져온다.
+  const allRunTests = useSelector(selectAllRunTests).filter((runTest) => {
+    return props.parent.runTestList?.includes(runTest.id) ?? false
+  })
 
   return (
     <Container

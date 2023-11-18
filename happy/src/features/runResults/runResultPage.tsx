@@ -1,7 +1,14 @@
 import { Box, Container, Divider, Typography } from '@mui/material'
 import RunTestPage from '../runTests/RunTestPage'
+import { useParams } from 'react-router-dom'
+import { useAppSelector } from '../../app/hook'
+import { selectRunResultById } from './service/runResultSlice'
 
 export default function RunResultPage() {
+  const { runResultId } = useParams()
+
+  const runResult = useAppSelector((state) => selectRunResultById(state, runResultId ?? ''))
+
   return (
     <Container sx={{ ml: 20 }}>
       <Box sx={{ mt: 2.2 }}>Run Result</Box>
@@ -16,7 +23,7 @@ export default function RunResultPage() {
         <Divider sx={{ my: 9 }} />
       </Box>
       <Box sx={{ mt: -20 }}>
-        <RunTestPage />
+        <RunTestPage parent={runResult} />
       </Box>
       <Box sx={{ mt: 3 }}></Box>
     </Container>
