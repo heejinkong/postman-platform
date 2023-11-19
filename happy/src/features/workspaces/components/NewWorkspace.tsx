@@ -39,7 +39,7 @@ export default function NewWorkspace() {
 
   return (
     <div>
-      <Button variant="contained" size="small" onClick={handleClickOpen}>
+      <Button variant="contained" size="large" onClick={handleClickOpen}>
         New Workspace
       </Button>
       <Dialog open={open} onClose={handleClose}>

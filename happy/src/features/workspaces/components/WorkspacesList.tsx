@@ -5,7 +5,21 @@ import Avatar from '@mui/material/Avatar'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline'
 import { useNavigate } from 'react-router-dom'
-import { Box, IconButton, ListItemButton, Pagination, Typography } from '@mui/material'
+import {
+  Box,
+  Divider,
+  IconButton,
+  ListItemButton,
+  Pagination,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { selectAllWorkspaces } from '../workspacesSlice'
 import workspaceService from '../service/workspaceService'
@@ -53,36 +67,48 @@ export default function WorkspacesList() {
     return (
       <Box>
         <Box>
-          <List sx={{ width: '100%', maxWidth: 380 }}>
-            {currentRows.map((ws) => (
-              <ListItemButton key={ws.id} onClick={() => handleNavWorkspace(ws.id)}>
-                <ListItemAvatar>
-                  <Avatar>
-                    <PersonOutlineIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={ws.title}
-                  secondary={new Date(ws.created).toLocaleString()}
-                />
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  onClick={(e) => handleDeleteClick(e, ws)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemButton>
-            ))}
-          </List>
+          <TableContainer component={Paper} sx={{ mt: -18, width: 900, ml: 15 }}>
+            <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+              <TableBody>
+                {currentRows.map((ws) => (
+                  <Box>
+                    <ListItemButton
+                      key={ws.id}
+                      onClick={() => handleNavWorkspace(ws.id)}
+                      sx={{ p: 1.6 }}
+                    >
+                      <ListItemAvatar>
+                        <Avatar sx={{ ml: 2, mr: 3, p: 2 }}>
+                          <PersonOutlineIcon />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={ws.title}
+                        secondary={new Date(ws.created).toLocaleString()}
+                      />
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
+                        onClick={(e) => handleDeleteClick(e, ws)}
+                        sx={{ ml: 50, mr: 2 }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </ListItemButton>
+                    <Divider />
+                  </Box>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Box>
-        <Box>
+        <Box sx={{ ml: 12, mt: 1.5 }}>
           <Pagination
             count={totalPages}
             shape="rounded"
             page={currentPage}
             onChange={(e, page) => handlePageChange(e, page)}
-            sx={{ display: 'flex', justifyContent: 'center', pb: 3 }}
+            sx={{ display: 'flex', justifyContent: 'center', pb: 10 }}
           />
         </Box>
       </Box>

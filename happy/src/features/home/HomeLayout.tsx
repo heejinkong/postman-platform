@@ -108,25 +108,30 @@ export default function HomeLayout() {
         <AppBar
           position="fixed"
           ref={headerBarRef}
-          sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
+          sx={{ zIndex: (theme) => theme.zIndex.drawer + 2, backgroundColor: '#FFFFFF' }}
         >
           <Box sx={{ mx: 2 }}>
             <Toolbar disableGutters>
-              <EmojiEmotionsIcon sx={{ display: 'flex', mr: 1 }} />
+              <Avatar
+                alt="ToolBal Icon"
+                src="/iconTool.jpg"
+                sx={{ display: 'flex', ml: 1, mr: 1 }}
+              />
               <Typography
                 variant="h6"
                 noWrap
                 component="a"
                 href="/"
                 sx={{
-                  mr: 2,
+                  mr: 6,
                   display: 'flex',
                   fontWeight: 700,
-                  color: 'inherit',
-                  textDecoration: 'none'
+                  color: '#1877F2',
+                  textDecoration: 'none',
+                  fontSize: '28px'
                 }}
               >
-                HAPPY
+                통합문서뷰어
               </Typography>
 
               <Box sx={{ flexGrow: 1, display: 'flex' }}>
@@ -135,10 +140,11 @@ export default function HomeLayout() {
                   aria-controls={open ? 'demo-customized-menu' : undefined}
                   aria-haspopup="true"
                   aria-expanded={open ? 'true' : undefined}
-                  variant="contained"
+                  variant="text"
                   disableElevation
                   onClick={handleClick}
                   endIcon={<KeyboardArrowDownIcon />}
+                  sx={{ fontSize: '20px', color: 'black', size: 'large' }}
                 >
                   Workpsace
                 </Button>

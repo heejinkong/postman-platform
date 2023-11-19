@@ -31,9 +31,7 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
     return folders.some((folder) => folder.id === request.parentId)
   })
 
-  const foldersByFolder = useAppSelector(selectAllFolders).filter((folder) => {
-    return folders.some((folder) => folder.id === folder.parentId)
-  })
+
 
   const handleRunClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     props.handleClose(e)
@@ -46,22 +44,7 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
     dispatch(runResultService.new(newRunResultItem))
 
     if (folders.length > 0) {
-      folders.forEach((folder) => {
-        //각 folder의 folders가 없을때까지 순회
-        if (folder.folders.length > 0) {
-          folder.folders.forEach((folder) => {
-            const newRunTestItem = new runTestItem()
-            newRunTestItem.title = request.title
-            newRunTestItem.parentId = collection?.id ?? ''
-            newRunTestItem.requestId = request.id
-            newRunTestItem.created = Date.now()
-            newRunTestItem.status = request.response.statusCode
-            newRunTestItem.result = request.response.body
-            dispatch(runTestService.new(newRunTestItem))
-            newRunResultItem.runTestList?.push(newRunTestItem.id)
-          })
-        }
-
+      folders.forEach(() => {
         if (requestsByFolder.length > 0) {
           requestsByFolder.forEach((request) => {
             const newRunTestItem = new runTestItem()
