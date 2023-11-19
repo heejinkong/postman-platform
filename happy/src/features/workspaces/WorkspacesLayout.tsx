@@ -72,7 +72,7 @@ export default function WorkspacesLayout() {
             Workspace
           </Typography>
           <Typography variant="h4" gutterBottom sx={{ ml: 2, color: `#1877F2` }}>
-            {workspace.title}
+            {workspace.title.length > 10 ? `${workspace.title.slice(0, 10)}...` : workspace.title}
           </Typography>
           <Box sx={{ pb: 2 }}>
             <WorkspaceOptions />

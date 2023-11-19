@@ -28,7 +28,7 @@ export default function HomePage() {
           <Box sx={{ mt: 9, display: 'flex' }}>
             <Box sx={{ ml: 80 }}>
               <Typography
-                variant="h3"
+                variant="h4"
                 display="block"
                 gutterBottom
                 sx={{ justifyItems: 'center', mt: 13, fontWeight: 'bold' }}

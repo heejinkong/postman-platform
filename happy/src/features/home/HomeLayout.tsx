@@ -163,7 +163,7 @@ export default function HomeLayout() {
                         flexWrap: 'wrap',
                         '& > :not(style)': {
                           m: 1,
-                          width: 250,
+                          width: 350,
                           height: 150
                         }
                       }}
@@ -188,19 +188,17 @@ export default function HomeLayout() {
                           </Typography>
                         </Box>
                       ) : (
-                        <Box>
+                        <Box sx={{ maxHeight: 200, overflowY: 'auto' }}>
                           {allWorkspaces.map((ws) => (
                             <MenuItem
                               key={ws.id}
                               onClick={() => handleNavWorkspace(ws.id)}
                               disableRipple
+                              sx={{ p: 1, m: 0.5, fontSize: '17px' }}
                             >
-                              {ws.title}
+                              {ws.title.length > 20 ? `${ws.title.slice(0, 20)}...` : ws.title}
                             </MenuItem>
                           ))}
-                          {/* <MenuItem onClick={handleClose} disableRipple>
-                  Duplicate
-                </MenuItem */}
                         </Box>
                       )}
                     </Box>
