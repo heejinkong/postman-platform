@@ -10,7 +10,7 @@ import {
   SelectChangeEvent,
   TextField
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
@@ -57,6 +57,8 @@ export default function RequestsPage() {
   const [currentMethod, setCurrentMethod] = React.useState('' as string)
   const [currentUrl, setCurrentUrl] = React.useState('' as string)
   // const [currentParams, setCurrentParams] = React.useState([] as reqParam[])
+
+  //add(currentUrl)값이 실시간으로 보이게 해줘
 
   useEffect(() => {
     setCurrentMethod(method)
@@ -126,30 +128,48 @@ export default function RequestsPage() {
 
   //------------url에 대한 params, header, body 값
   const addUrl = (url: string) => {
-    let fullUrl = url
-    selectedParams.forEach((param) => {
-      //selectedParams[index]가 0일경우
-      if (selectedParams.indexOf(param) === 0) {
-        if (param.paramKey !== '') {
-          if (fullUrl.indexOf('?') === -1) {
-            fullUrl += `?${param.paramKey}`
-            if (param.value !== '') {
-              fullUrl += `=${param.value}`
-            }
-          }
-        }
-      } //selectedParams[index]가 1일이상
-      else {
-        if (param.value !== '') {
-          fullUrl += `&${param.paramKey}`
-          if (param.value !== '') {
-            fullUrl += `=${param.value}`
-          }
-        }
+    const urlParts = selectedParams.map((param, index) => {
+      if (index === 0 && param.paramKey !== '') {
+        return param.value !== '' ? `${param.paramKey}=${param.value}` : param.paramKey
+      } else if (param.value !== '') {
+        return `${param.paramKey}=${param.value}`
       }
+      return ''
     })
+
+    const fullUrl = url + (urlParts.length > 0 ? `?${urlParts.join('&')}` : '')
+
     return fullUrl
   }
+
+  //내가 params를 입력하면 url에 실시간으로
+
+  // const addUrl = (url: string) => {
+  //   let fullUrl = url
+  //   selectedParams.forEach((param) => {
+  //     //selectedParams[index]가 0일경우
+  //     if (selectedParams.indexOf(param) === 0) {
+  //       if (param.paramKey !== '') {
+  //         if (fullUrl.indexOf('?') === -1) {
+  //           fullUrl += `?${param.paramKey}`
+  //           if (param.value !== '') {
+  //             fullUrl += `=${param.value}`
+  //           }
+  //         }
+  //       }
+  //     } //selectedParams[index]가 1일이상
+  //     else {
+  //       if (param.value !== '') {
+  //         fullUrl += `&${param.paramKey}`
+  //         if (param.value !== '') {
+  //           fullUrl += `=${param.value}`
+  //         }
+  //       }
+  //     }
+  //   })
+
+  //   return fullUrl
+  // }
 
   //------------current tab index
   const [tabOption, setTabOption] = useState('1')
@@ -254,7 +274,16 @@ export default function RequestsPage() {
     }
   }
 
-  console.log(addUrl(url))
+  const kong = () => {
+    const kongUrl = addUrl(currentUrl)
+    console.log('새로 만든 URL : ', kongUrl)
+    console.log('현재 URL : ', currentUrl)
+  }
+
+  // useEffect(() => {
+  //   console.log('hi')
+  //   console.log(addUrl(currentUrl))
+  // }, [currentUrl])
 
   const handleParamsDeleteClick = (index: number) => {
     const cloned = JSON.parse(JSON.stringify(params))
@@ -427,6 +456,7 @@ export default function RequestsPage() {
                               const cloned = JSON.parse(JSON.stringify(params))
                               cloned[index].paramKey = e.target.value
                               onChangeParams(index, cloned)
+                              kong()
                             }}
                             value={row.paramKey}
                           />
@@ -440,6 +470,7 @@ export default function RequestsPage() {
                               const cloned = JSON.parse(JSON.stringify(params))
                               cloned[index].value = e.target.value
                               onChangeParams(index, cloned)
+                              kong()
                             }}
                             value={row.value}
                           />
