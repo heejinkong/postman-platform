@@ -34,8 +34,8 @@ export default function CollectionsPage() {
   }, [collection, dispatch])
 
   return (
-    <Box>
-      <Box sx={{ p: 2 }}>
+    <Box sx={{ p: 2 }}>
+      <Box>
         <WorkspaceNavBar />
       </Box>
       <Container>

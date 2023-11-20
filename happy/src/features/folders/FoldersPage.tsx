@@ -35,8 +35,8 @@ export default function FoldersPage() {
   }
 
   return (
-    <Box>
-      <Box sx={{ p: 2 }}>
+    <Box sx={{ p: 2 }}>
+      <Box>
         <WorkspaceNavBar />
       </Box>
       <Container>

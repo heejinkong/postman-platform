@@ -15,6 +15,7 @@ const drawerWidth = 300
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean
 }>(({ theme, open }) => ({
+  height: '100%',
   flexGrow: 1,
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
@@ -91,7 +92,7 @@ export default function WorkspacesLayout() {
         </Box>
       </Drawer>
       <Main open={isDrawerOpen}>
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex', height: '100%' }}>
           <Box
             position={'fixed'}
             sx={{
@@ -155,7 +156,13 @@ export default function WorkspacesLayout() {
               </Box>
             </Box>
           </Box>
-          <Box sx={{ flexGrow: 1, ml: 5, ...(isDrawerOpen && { ml: 2.5 }) }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              ml: 5,
+              ...(isDrawerOpen && { ml: 2.5 })
+            }}
+          >
             <Outlet />
           </Box>
         </Box>

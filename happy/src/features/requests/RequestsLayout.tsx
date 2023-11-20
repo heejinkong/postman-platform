@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom'
 
 export default function RequestsLayout() {
   return (
-    <Box>
+    <Box sx={{ height: '100%' }}>
       <Outlet />
     </Box>
   )

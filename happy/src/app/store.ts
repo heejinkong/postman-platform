@@ -12,7 +12,8 @@ import runResultSlice from '../features/runResults/runResultSlice'
 const persistedWorkspacesReducer = persistReducer(
   {
     key: 'workspaces',
-    storage
+    storage,
+    version: 1
   },
   workspacesSlice
 )
@@ -20,7 +21,8 @@ const persistedWorkspacesReducer = persistReducer(
 const persistedCollectionsReducer = persistReducer(
   {
     key: 'collections',
-    storage
+    storage,
+    version: 1
   },
   collectionsSlice
 )
@@ -28,7 +30,8 @@ const persistedCollectionsReducer = persistReducer(
 const persistedRequestsReducer = persistReducer(
   {
     key: 'requests',
-    storage
+    storage,
+    version: 1
   },
   requestsSlice
 )
@@ -36,7 +39,8 @@ const persistedRequestsReducer = persistReducer(
 const persistedFoldersReducer = persistReducer(
   {
     key: 'folders',
-    storage
+    storage,
+    version: 1
   },
   foldersSlice
 )
@@ -44,7 +48,8 @@ const persistedFoldersReducer = persistReducer(
 const persistedConfigReducer = persistReducer(
   {
     key: 'config',
-    storage
+    storage,
+    version: 1
   },
   configSlice
 )
@@ -52,7 +57,8 @@ const persistedConfigReducer = persistReducer(
 const persistedRunTestsReducer = persistReducer(
   {
     key: 'runTests',
-    storage
+    storage,
+    version: 1
   },
   runTestSlice
 )
@@ -60,7 +66,8 @@ const persistedRunTestsReducer = persistReducer(
 const persistedRunResultsReducer = persistReducer(
   {
     key: 'runResults',
-    storage
+    storage,
+    version: 1
   },
   runResultSlice
 )

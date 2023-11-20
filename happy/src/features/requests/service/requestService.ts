@@ -58,16 +58,62 @@ class requestService implements requestDomain {
     thunkAPI.dispatch({ type: 'requests/updateRequest', payload: request })
   })
 
-  send = createAsyncThunk('requestService/update', async (request: requestItem, thunkAPI) => {
+  send = createAsyncThunk('requestService/send', async (request: requestItem, thunkAPI) => {
+    const start = Date.now()
     try {
-      const response = await axios({
-        url: request.url,
-        method: request.method,
-        params: request.params,
-        // params, header, body, user options, etc...
+      const params: { [key: string]: string } = {}
+      request.paramsSelection.map((id) => {
+        const item = request.params.find((item) => item.id === id)
+        if (item) {
+          params[item._key] = item._value
+        }
       })
-      return thunkAPI.fulfillWithValue(response)
+
+      const headers: { [key: string]: string } = {}
+      request.headersSelection.map((id) => {
+        const item = request.headers.find((item) => item.id === id)
+        if (item) {
+          headers[item._key] = item._value
+        }
+      })
+      const response = await axios({
+        method: request.method,
+        url: request.url,
+        headers: headers,
+        params: params
+      })
+      const end = Date.now()
+      const elapsed = end - start
+
+      const newRequest = JSON.parse(JSON.stringify(request)) as requestItem
+      newRequest.response.status = response.status
+      newRequest.response.statusText = response.statusText
+      newRequest.response.body = JSON.stringify(response.data, null, 2)
+      newRequest.response.headers = []
+      newRequest.response.elapsed = elapsed
+      Object.keys(response.headers).map((key) => {
+        newRequest.response.headers.push({
+          id: newRequest.response.headers.length,
+          _key: key,
+          _value: response.headers[key],
+          _desc: ''
+        })
+      })
+      thunkAPI.dispatch({ type: 'requests/updateRequest', payload: newRequest })
+
+      return response
     } catch (error) {
+      const end = Date.now()
+      const elapsed = end - start
+
+      const newRequest = JSON.parse(JSON.stringify(request)) as requestItem
+      newRequest.response.status = 0
+      newRequest.response.statusText = ''
+      newRequest.response.body = error?.toString() ?? ''
+      newRequest.response.headers = []
+      newRequest.response.elapsed = elapsed
+      thunkAPI.dispatch({ type: 'requests/updateRequest', payload: newRequest })
+
       return thunkAPI.rejectWithValue(error)
     }
   })

@@ -1,4 +1,4 @@
-import { repositoryItem } from '../../repository/repositoryItem'
+import { repositoryItem } from '../../../repository/repositoryItem'
 
 export class runTestItem implements repositoryItem {
   id: string = ''
@@ -8,6 +8,6 @@ export class runTestItem implements repositoryItem {
   created: number = 0
   duration: number = 0
   status: number = 0
-  result: string = ''
-  expected: string = ''
+  responseResult: string = ''
+  expectedResult: string = ''
 }

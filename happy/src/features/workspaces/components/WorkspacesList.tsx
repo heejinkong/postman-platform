@@ -1,4 +1,3 @@
-import List from '@mui/material/List'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import Avatar from '@mui/material/Avatar'
@@ -14,10 +13,7 @@ import {
   Paper,
   Table,
   TableBody,
-  TableCell,
   TableContainer,
-  TableHead,
-  TableRow,
   Typography
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -55,7 +51,7 @@ export default function WorkspacesList() {
   if (allWorkspaces.length === 0) {
     return (
       <Box>
-        <Typography variant="h3" gutterBottom sx={{ ml: 3 }}>
+        <Typography variant="h4" gutterBottom sx={{ ml: 3 }}>
           Workspace does not exist
         </Typography>
         <Typography variant="h6" gutterBottom>
@@ -75,7 +71,7 @@ export default function WorkspacesList() {
                     <ListItemButton
                       key={ws.id}
                       onClick={() => handleNavWorkspace(ws.id)}
-                      sx={{ p: 1.6 }}
+                      sx={{ p: 0.1 }}
                     >
                       <ListItemAvatar>
                         <Avatar sx={{ ml: 2, mr: 3, p: 2 }}>

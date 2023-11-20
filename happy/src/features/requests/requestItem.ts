@@ -8,21 +8,39 @@ export class requestItem implements repositoryItem {
   updated: number = Date.now()
   authorId: string = ''
   workspaceId: string = ''
-  method: string = ''
+  method: string = 'GET'
   url: string = ''
-  params: { paramKey: string; value: string; desc: string; isChecked: boolean }[] = []
-  header: { headerKey: string; value: string; desc: string; isChecked: boolean }[] = []
-  body: { bodyKey: string; value: string; desc: string; isChecked: boolean }[] = []
-  response: {
-    statusCode: number
-    statusMsg: string
-    header: { key: string; value: string; desc: string }[]
-    body: string
+  paramsSelection: number[] = []
+  params: { id: number; _key: string; _value: string; _desc: string }[] = [
+    { id: 0, _key: '', _value: '', _desc: '' }
+  ]
+  headersSelection: number[] = []
+  headers: { id: number; _key: string; _value: string; _desc: string }[] = [
+    { id: 0, _key: '', _value: '', _desc: '' }
+  ]
+  body: {
+    formDataSelection: number[]
+    formData: { id: number; _key: string; _value: string; _desc: string }[]
+    rawType: string
+    rawData: string
   } = {
-    statusCode: 0,
-    statusMsg: '',
-    header: [],
-    body: ''
+    formDataSelection: [],
+    formData: [{ id: 0, _key: '', _value: '', _desc: '' }],
+    rawType: 'Text',
+    rawData: ''
   }
-  expected: string = ''
+  response: {
+    status: number
+    statusText: string
+    headers: { id: number; _key: string; _value: string; _desc: string }[]
+    body: string
+    elapsed: number
+  } = {
+    status: 0,
+    statusText: '',
+    headers: [],
+    body: '',
+    elapsed: 0
+  }
+  expectedResult: string = ''
 }

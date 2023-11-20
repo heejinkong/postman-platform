@@ -16,7 +16,6 @@ import {
   alpha,
   styled
 } from '@mui/material'
-import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions'
 import React from 'react'
 import NewWorkspace from '../workspaces/components/NewWorkspace'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'

@@ -6,6 +6,7 @@ import { selectWorkspaceById } from './workspacesSlice'
 import { workspaceItem } from './workspaceItem'
 import workspaceService from './service/workspaceService'
 import WorkspaceNavBar from './components/WorkspaceNavBar'
+import configService from '../config/service/configService'
 
 export default function WorkspacesPage() {
   const navigate = useNavigate()
@@ -31,11 +32,12 @@ export default function WorkspacesPage() {
     }
     setTitle(workspace.title)
     setDesc(workspace.desc)
-  }, [navigate, workspace])
+    dispatch(configService.navItemOpened(workspace))
+  }, [dispatch, navigate, workspace])
 
   return (
-    <Box>
-      <Box sx={{ p: 2 }}>
+    <Box sx={{ p: 2 }}>
+      <Box>
         <WorkspaceNavBar />
       </Box>
       <Container>

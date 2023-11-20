@@ -1,10 +1,5 @@
 import React from 'react'
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import * as Diff from 'diff'
-import * as Diff2Html from 'diff2html'
-import 'diff2html/bundles/css/diff2html.min.css'
-import CodeMirror from '@uiw/react-codemirror'
-import { javascript } from '@codemirror/lang-javascript'
 
 type viewResultProps = {
   response: string
@@ -24,52 +19,6 @@ export default function ViewResult(props: viewResultProps) {
   const handleClose = () => {
     setOpen(false)
   }
-  const diff = Diff.createTwoFilesPatch(
-    'ExpectedData',
-    'ResposneData',
-    `${expected}`,
-    `${response}`
-  )
 
-  let outputHtml = ''
-  if (Diff2Html.html) {
-    const diff2htmlConfig: Diff2Html.Diff2HtmlConfig = {
-      matching: 'lines',
-      drawFileList: false,
-      outputFormat: 'side-by-side'
-    }
-
-    outputHtml = Diff2Html.html(diff, diff2htmlConfig)
-    //console.log(outputHtml)
-  }
-
-  return (
-    <div>
-      <Button variant="outlined" sx={{ size: 'large' }} onClick={handleClickOpen}>
-        View Result
-      </Button>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>View Result</DialogTitle>
-        <DialogContent>
-          {props.expected ? (
-            <div dangerouslySetInnerHTML={{ __html: outputHtml }} />
-          ) : (
-            <Box>
-              <CodeMirror
-                value={response}
-                height="200px"
-                theme="light"
-                extensions={[javascript({ jsx: true })]}
-                readOnly={true}
-              />
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          {/* <Button onClick={addWorkspace}>Create</Button> */}
-        </DialogActions>
-      </Dialog>
-    </div>
-  )
+  return <div></div>
 }
