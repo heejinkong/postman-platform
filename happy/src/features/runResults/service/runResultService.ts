@@ -4,6 +4,10 @@ import { repositoryItem } from '../../../repository/repositoryItem'
 import { runResultItem } from '../runResultItem'
 import { requestItem } from '../../requests/requestItem'
 import axios from 'axios'
+import { RootState } from '../../../app/store'
+import { selectFolderById } from '../../folders/foldersSlice'
+import { selectCollectionById } from '../../collections/collectionsSlice'
+import { folderItem } from '../../folders/folderItem'
 
 interface runResultDomain {
   new: unknown
@@ -92,7 +96,30 @@ class runResultService implements runResultDomain {
   runFolder = createAsyncThunk(
     'runResultService/runFolder',
     async (folder: folderItem, thunkAPI) => {
-      // TODO : Implement
+      const state = thunkAPI.getState() as RootState
+
+      let depth = 0
+      const expanded: string[] = [folder.id]
+      let parentId = folder.parentId
+      do {
+        const folderParent = selectFolderById(state, parentId)
+        if (folderParent) {
+          const requests = folderParent.requests
+          // requests.map((request) => {
+          //   thunkAPI.dispatch({ type: 'runResultService/runRequest', payload: request })
+          // })
+        }
+
+        const collectionParent = selectCollectionById(state, parentId)
+        if (collectionParent) {
+          const requests = collectionParent.requests
+          // requests.map((request) => {
+          //   thunkAPI.dispatch({ type: 'runResultService/runRequest', payload: request })
+          // })
+        }
+
+        break
+      } while (depth++ < 100)
     }
   )
 
