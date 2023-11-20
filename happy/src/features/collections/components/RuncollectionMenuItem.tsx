@@ -31,8 +31,6 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
     return folders.some((folder) => folder.id === request.parentId)
   })
 
-
-
   const handleRunClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     props.handleClose(e)
 

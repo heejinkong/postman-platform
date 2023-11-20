@@ -5,6 +5,7 @@ import { selectFolderById } from '../../folders/foldersSlice'
 import { selectCollectionById } from '../../collections/collectionsSlice'
 import { selectNavTreeExpanded } from '../configSlice'
 
+
 interface configDomain {
   navItemOpened: unknown
 }

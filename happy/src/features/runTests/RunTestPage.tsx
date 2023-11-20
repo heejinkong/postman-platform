@@ -1,24 +1,26 @@
 import { Box, Breadcrumbs, Container, Divider, Grid, Link, List, Typography } from '@mui/material'
-import { useSelector } from 'react-redux'
 import { selectAllRunTests } from './runTestSlice'
 import ViewResult from './component/ViewResult'
 import { runResultItem } from '../runResults/runResultItem'
+import { useAppSelector } from '../../app/hook'
+import { selectWorkspaceById } from '../workspaces/workspacesSlice'
 
 type runResultPageProps = {
   parent: runResultItem
 }
 
-function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-  event.preventDefault()
-  console.info('You clicked a breadcrumb.')
-}
-
 export default function RunTestPage(props: runResultPageProps) {
-  //parent.runTestList에 속한 runTest들을 모두 가져온다.
-  const allRunTests = useSelector(selectAllRunTests).filter((runTest) => {
+  const allRunTests = useAppSelector(selectAllRunTests).filter((runTest) => {
     return props.parent.runTestList?.includes(runTest.id) ?? false
   })
 
+  const workspace = useAppSelector((state) =>
+    selectWorkspaceById(state, props.parent.workspaceId ?? '')
+  )
+  if (!workspace) {
+    return <></>
+  }
+  console.log(allRunTests[0].expectedResult)
   return (
     <Container
       sx={{
@@ -35,8 +37,8 @@ export default function RunTestPage(props: runResultPageProps) {
           <Box sx={{ display: 'flex', mt: 1 }}>
             <Box>
               <Grid item xs={9}>
-                {(runTest.status === 200 && runTest.expected === '') ||
-                (runTest.status === 200 && runTest.expected === runTest.result) ? (
+                {(runTest.status === 200 && runTest.expectedResult === '') ||
+                (runTest.status === 200 && runTest.expectedResult === runTest.responseResult) ? (
                   <Box>
                     <Typography variant="h5" gutterBottom sx={{ color: `#2E7D32` }}>
                       Success
@@ -50,16 +52,16 @@ export default function RunTestPage(props: runResultPageProps) {
                     </Typography>
                   </Box>
                 )}
-                <div role="presentation" onClick={handleClick}>
+                <div role="presentation">
                   <Breadcrumbs aria-label="breadcrumb">
+                    <Link underline="hover" color="inherit" href={`/workspaces/${workspace.id}`}>
+                      {workspace.title}
+                    </Link>
                     <Link
                       underline="hover"
                       color="inherit"
-                      href="/material-ui/getting-started/installation/"
+                      href={`/workspaces/${workspace.id}/requests/${runTest.requestId}`}
                     >
-                      workspace
-                    </Link>
-                    <Link underline="hover" color="inherit" href="/">
                       {runTest.title}
                     </Link>
                   </Breadcrumbs>
@@ -68,7 +70,11 @@ export default function RunTestPage(props: runResultPageProps) {
             </Box>
             <Box sx={{ mt: 2, ml: 45 }}>
               <Grid item xs={3}>
-                <ViewResult response={runTest.result} expected={runTest.expected} />
+                <ViewResult
+                  title={runTest.title}
+                  response={runTest.responseResult}
+                  expected={runTest.expectedResult}
+                />
               </Grid>
             </Box>
             <Divider sx={{ my: 2 }} />

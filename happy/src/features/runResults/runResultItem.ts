@@ -5,7 +5,9 @@ export class runResultItem implements repositoryItem {
   title: string = ''
   workspaceId: string = ''
   parentId: string = ''
-  created: number = 0
+  method: string = ''
+  url: string = ''
+  created: number = Date.now()
   Iteration: number = 0
   Duration: number = 0
   runTestList: string[] = []

@@ -27,7 +27,9 @@ export default function RunHistoryPage() {
   const allRunResults = useSelector(selectAllRunResult).filter((runResult) => {
     return runResult.workspaceId === workspaceId
   })
-
+  allRunResults.sort((a, b) => {
+    return b.created - a.created
+  })
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -54,17 +56,16 @@ export default function RunHistoryPage() {
   if (allRunResults.length === 0) {
     return (
       <Box>
-        <Container sx={{ ml: 20 }}>
-          <Box sx={{ mt: 2.2 }}>Run History</Box>
-          <Box sx={{ mt: 10, ml: 19 }}>
-            <Typography variant="h3" gutterBottom>
+        <Container sx={{ ml: 3 }}>
+          <Box sx={{ mt: 10, ml: 23 }}>
+            <Typography variant="h4" gutterBottom>
               Run History
             </Typography>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="body1" gutterBottom>
               Please click on one item to check its run details.
             </Typography>
           </Box>
-          <Box sx={{ mt: 40, ml: 70 }}>
+          <Box sx={{ mt: 30, ml: 65 }}>
             <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
               Run History does not exist
             </Typography>
@@ -77,10 +78,10 @@ export default function RunHistoryPage() {
     )
   } else {
     return (
-      <Box>
-        <Container sx={{ ml: 40 }}>
-          <Box sx={{ mt: 2.2 }}>Run History</Box>
-          <Box sx={{ mt: 10, ml: 19 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+        <Box sx={{ minWidth: 750, p: 3, pb: 15 }}>
+          <Box>Run History</Box>
+          <Box>
             <Typography variant="h4" gutterBottom>
               Run History
             </Typography>
@@ -88,16 +89,16 @@ export default function RunHistoryPage() {
               Please click on one item to check its run details.
             </Typography>
           </Box>
-          <Box sx={{}}>
-            <TableContainer component={Paper} sx={{ mt: 5, width: 900, ml: 18 }}>
-              <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+          <Box>
+            <TableContainer component={Paper}>
+              <Table size="small" aria-label="a dense table">
                 <TableHead>
                   <TableRow>
-                    <Box sx={{ display: 'flex', ml: 1 }}>
-                      <Box>
+                    <Box sx={{ display: 'flex' }}>
+                      <Box sx={{ width: 250 }}>
                         <TableCell>Date/Time</TableCell>
                       </Box>
-                      <Box sx={{ ml: 21 }}>
+                      <Box>
                         <TableCell align="left">Run Target</TableCell>
                       </Box>
                     </Box>
@@ -112,16 +113,32 @@ export default function RunHistoryPage() {
                         onClick={() => handleRunResult(runResult.id)}
                         sx={{ p: 2 }}
                       >
-                        {new Date(runResult.created).toLocaleString()}
-                        <Box sx={{ ml: 10 }}>{runResult.title}</Box>
-                        <IconButton
-                          edge="end"
-                          aria-label="delete"
-                          onClick={(e) => handleDeleteClick(e, runResult)}
-                          sx={{ ml: 50 }}
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            width: '100%'
+                          }}
                         >
-                          <DeleteIcon />
-                        </IconButton>
+                          <Box
+                            sx={{
+                              display: 'flex'
+                            }}
+                          >
+                            <Box sx={{ width: 250 }}>
+                              {new Date(runResult.created).toLocaleString()}
+                            </Box>
+                            <Box>{runResult.title}</Box>
+                          </Box>
+                          <IconButton
+                            edge="end"
+                            aria-label="delete"
+                            onClick={(e) => handleDeleteClick(e, runResult)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Box>
                       </ListItemButton>
                       <Divider />
                     </Box>
@@ -139,7 +156,7 @@ export default function RunHistoryPage() {
               sx={{ display: 'flex', justifyContent: 'center', pb: 3 }}
             />
           </Box>
-        </Container>
+        </Box>
       </Box>
     )
   }

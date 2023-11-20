@@ -29,6 +29,10 @@ import { selectRequestById } from './requestsSlice'
 import requestService from './service/requestService'
 import { requestItem } from './requestItem'
 import configService from '../config/service/configService'
+import { runResultItem } from '../runResults/runResultItem'
+import runResultService from '../runResults/service/runResultService'
+import { runTestItem } from '../runTests/runTestItem'
+import runTestService from '../runTests/service/runTestService'
 
 export default function RequestsPage() {
   const { requestId } = useParams()
@@ -51,7 +55,29 @@ export default function RequestsPage() {
   }
 
   const handleSend = () => {
-    dispatch(requestService.send(requestClone))
+    dispatch(runResultService.runRequest(requestClone))
+
+    const newRunResult = new runResultItem()
+    newRunResult.title = requestClone.url
+    newRunResult.workspaceId = requestClone.workspaceId
+    newRunResult.parentId = requestClone.parentId
+    newRunResult.method = requestClone.method
+    newRunResult.url = requestClone.url
+    newRunResult.created = Date.now()
+    newRunResult.Duration = requestClone.response.elapsed
+
+    dispatch(runResultService.new(newRunResult))
+
+    const newRunTest = new runTestItem()
+    newRunTest.title = requestClone.title
+    newRunTest.parentId = requestClone.parentId
+    newRunTest.requestId = requestClone.id
+    newRunTest.created = Date.now()
+    newRunTest.status = requestClone.response.status
+    newRunTest.responseResult = requestClone.response.body
+    newRunTest.expectedResult = requestClone.expectedResult
+    dispatch(runTestService.new(newRunTest))
+    newRunResult.runTestList?.push(newRunTest.id)
   }
 
   const getExtension = (type: string) => {

@@ -26,13 +26,17 @@ export default function WorkspacesList() {
   const navigate = useNavigate()
 
   const dispatch = useAppDispatch()
-  const allWorkspaces = useAppSelector(selectAllWorkspaces)
+
+  const allWorkspaces = useAppSelector(selectAllWorkspaces).sort((a, b) => {
+    return b.created - a.created
+  })
 
   const rowsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)
   const indexOfLastRow = currentPage * rowsPerPage
   const indexOfFirstRow = indexOfLastRow - rowsPerPage
   const currentRows = allWorkspaces.slice(indexOfFirstRow, indexOfLastRow)
+
   const totalPages = Math.ceil(allWorkspaces.length / rowsPerPage)
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
