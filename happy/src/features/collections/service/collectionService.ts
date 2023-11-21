@@ -1,14 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { collectionItem } from '../collectionItem'
+import { collectionCommands, collectionItem } from '../domain/collectionEntity'
 import { RootState } from '../../../app/store'
-import { selectWorkspaceById } from '../../workspaces/workspacesSlice'
-interface collectionDomain {
-  new: unknown
-  delete: unknown
-  update: unknown
-}
+import { selectWorkspaceById } from '../../workspaces/service/workspacesSlice'
 
-class collectionService implements collectionDomain {
+class collectionService implements collectionCommands {
   new = createAsyncThunk('collectionService/new', async (collection: collectionItem, thunkAPI) => {
     thunkAPI.dispatch({ type: 'collections/createCollection', payload: collection })
 
@@ -47,8 +42,6 @@ class collectionService implements collectionDomain {
       thunkAPI.dispatch({ type: 'collections/updateCollection', payload: collection })
     }
   )
-
-  
 }
 
 export default new collectionService()

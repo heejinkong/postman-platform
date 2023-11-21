@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { memoryRepository } from '../../repository/memoryRepository'
-import { RootState } from '../../app/store'
-import { requestItem } from './requestItem'
+import { memoryRepository } from '../../../repository/memoryRepository'
+import { RootState } from '../../../app/store'
+import { requestItem } from '../domain/requestEntity'
 
 const repo = new memoryRepository()
 

@@ -2,8 +2,8 @@ import { IconButton } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
-import { selectWorkspaceById } from '../../workspaces/workspacesSlice'
-import { collectionItem } from '../collectionItem'
+import { selectWorkspaceById } from '../../workspaces/service/workspacesSlice'
+import { collectionItem } from '../domain/collectionEntity'
 import collectionService from '../service/collectionService'
 
 export default function NewCollection() {

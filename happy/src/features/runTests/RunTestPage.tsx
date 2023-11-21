@@ -1,9 +1,9 @@
 import { Box, Breadcrumbs, Container, Divider, Grid, Link, List, Typography } from '@mui/material'
-import { selectAllRunTests } from './runTestSlice'
+import { selectAllRunTests } from './service/runTestSlice'
 import ViewResult from './component/ViewResult'
-import { runResultItem } from '../runResults/runResultItem'
+import { runResultItem } from '../runResults/domain/runResultEntity'
 import { useAppSelector } from '../../app/hook'
-import { selectWorkspaceById } from '../workspaces/workspacesSlice'
+import { selectWorkspaceById } from '../workspaces/service/workspacesSlice'
 
 type runResultPageProps = {
   parent: runResultItem

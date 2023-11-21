@@ -6,7 +6,7 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import { useAppDispatch } from '../../../app/hook'
-import { workspaceItem } from '../workspaceItem'
+import { workspaceItem } from '../domain/workspaceEntity'
 import workspaceService from '../service/workspaceService'
 import { useNavigate } from 'react-router-dom'
 

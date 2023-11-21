@@ -20,7 +20,7 @@ import React from 'react'
 import NewWorkspace from '../workspaces/components/NewWorkspace'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { useAppSelector } from '../../app/hook'
-import { selectAllWorkspaces } from '../workspaces/workspacesSlice'
+import { selectAllWorkspaces } from '../workspaces/service/workspacesSlice'
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
@@ -107,7 +107,7 @@ export default function HomeLayout() {
         <AppBar
           position="fixed"
           ref={headerBarRef}
-          sx={{ zIndex: (theme) => theme.zIndex.drawer + 2, backgroundColor: '#FFFFFF' }}
+          sx={{ zIndex: (theme) => theme.zIndex.drawer + 2, backgroundColor: 'background.default' }}
         >
           <Box sx={{ mx: 2 }}>
             <Toolbar disableGutters>
@@ -121,13 +121,12 @@ export default function HomeLayout() {
                 noWrap
                 component="a"
                 href="/"
+                letterSpacing="-0.1rem"
+                fontWeight="bold"
+                color={'primary.main'}
                 sx={{
                   mr: 6,
-                  display: 'flex',
-                  fontWeight: 700,
-                  color: '#1877F2',
-                  textDecoration: 'none',
-                  fontSize: '28px'
+                  textDecoration: 'none'
                 }}
               >
                 통합문서뷰어
@@ -143,7 +142,7 @@ export default function HomeLayout() {
                   disableElevation
                   onClick={handleClick}
                   endIcon={<KeyboardArrowDownIcon />}
-                  sx={{ fontSize: '20px', color: 'black', size: 'large' }}
+                  sx={{ color: 'text.primary' }}
                 >
                   Workpsace
                 </Button>

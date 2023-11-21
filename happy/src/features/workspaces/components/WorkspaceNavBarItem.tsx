@@ -1,9 +1,9 @@
 import Link from '@mui/material/Link'
 import { useAppSelector } from '../../../app/hook'
-import { selectCollectionById } from '../../collections/collectionsSlice'
-import { selectRequestById } from '../../requests/requestsSlice'
-import { selectFolderById } from '../../folders/foldersSlice'
-import { selectWorkspaceById } from '../workspacesSlice'
+import { selectCollectionById } from '../../collections/service/collectionsSlice'
+import { selectRequestById } from '../../requests/service/requestsSlice'
+import { selectFolderById } from '../../folders/service/foldersSlice'
+import { selectWorkspaceById } from '../service/workspacesSlice'
 
 export default function WorkspaceNavBarItem(props: { _id: string }) {
   const workspace = useAppSelector((state) => selectWorkspaceById(state, props._id))

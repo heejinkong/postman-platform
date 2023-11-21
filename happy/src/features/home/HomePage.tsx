@@ -2,7 +2,7 @@ import { Avatar, Box, Typography } from '@mui/material'
 import WorkspacesList from '../workspaces/components/WorkspacesList'
 import NewWorkspace from '../workspaces/components/NewWorkspace'
 import { useAppSelector } from '../../app/hook'
-import { selectAllWorkspaces } from '../workspaces/workspacesSlice'
+import { selectAllWorkspaces } from '../workspaces/service/workspacesSlice'
 
 export default function HomePage() {
   const allWorkspaces = useAppSelector(selectAllWorkspaces)

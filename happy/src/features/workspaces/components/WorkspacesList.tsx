@@ -17,9 +17,9 @@ import {
   Typography
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { selectAllWorkspaces } from '../workspacesSlice'
+import { selectAllWorkspaces } from '../service/workspacesSlice'
 import workspaceService from '../service/workspaceService'
-import { workspaceItem } from '../workspaceItem'
+import { workspaceItem } from '../domain/workspaceEntity'
 import { useState } from 'react'
 
 export default function WorkspacesList() {
@@ -39,7 +39,7 @@ export default function WorkspacesList() {
 
   const totalPages = Math.ceil(allWorkspaces.length / rowsPerPage)
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
     setCurrentPage(page)
   }
 
@@ -55,7 +55,7 @@ export default function WorkspacesList() {
   if (allWorkspaces.length === 0) {
     return (
       <Box>
-        <Typography variant="h4" gutterBottom sx={{ ml: 3 }}>
+        <Typography variant="h4" gutterBottom sx={{ ml: 10 }}>
           Workspace does not exist
         </Typography>
         <Typography variant="h6" gutterBottom>

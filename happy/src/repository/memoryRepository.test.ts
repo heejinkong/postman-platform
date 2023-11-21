@@ -1,7 +1,7 @@
 import { memoryRepository } from './memoryRepository'
-import { repositoryItem } from './repositoryItem'
+import { Item } from './Item'
 
-class testItem implements repositoryItem {
+class testItem implements Item {
   id: string = ''
   title: string = ''
   type: string = 'test'
@@ -35,7 +35,7 @@ describe('memoryRepository', () => {
     })
 
     it('should remove the item from the repository', () => {
-      const item: repositoryItem = new testItem('test item 1')
+      const item: Item = new testItem('test item 1')
       repo.save(item)
       repo.deleteById(item.id)
       expect(repo.findById(item.id)).toBeUndefined()
@@ -48,7 +48,7 @@ describe('memoryRepository', () => {
     })
 
     it('should return true when the item exists', () => {
-      const item: repositoryItem = new testItem('test item 1')
+      const item: Item = new testItem('test item 1')
       repo.save(item)
       expect(repo.existsById(item.id)).toBe(true)
     })
@@ -60,7 +60,7 @@ describe('memoryRepository', () => {
     })
 
     it('should return the item when it exists', () => {
-      const item: repositoryItem = new testItem('test item 1')
+      const item: Item = new testItem('test item 1')
       repo.save(item)
       expect(repo.findById(item.id)).toEqual(item)
     })
@@ -72,8 +72,8 @@ describe('memoryRepository', () => {
     })
 
     it('should return all items in the repository', () => {
-      const item1: repositoryItem = new testItem('test item 1')
-      const item2: repositoryItem = new testItem('test item 2')
+      const item1: Item = new testItem('test item 1')
+      const item2: Item = new testItem('test item 2')
       repo.save(item1)
       repo.save(item2)
       expect(repo.findAll()).toEqual([item1, item2])
@@ -82,15 +82,15 @@ describe('memoryRepository', () => {
 
   describe('save', () => {
     it('should add the item to the repository', () => {
-      const item: repositoryItem = new testItem('test item 1')
+      const item: Item = new testItem('test item 1')
       repo.save(item)
       expect(repo.findById(item.id)).toEqual(item)
     })
 
     it('should update the item in the repository if it already exists', () => {
-      const item: repositoryItem = new testItem('test item 1')
+      const item: Item = new testItem('test item 1')
       repo.save(item)
-      const updatedItem: repositoryItem = Object.assign({}, item, { name: 'Item 2' })
+      const updatedItem: Item = Object.assign({}, item, { name: 'Item 2' })
       repo.save(updatedItem)
       expect(repo.findById(item.id)).toEqual(updatedItem)
     })

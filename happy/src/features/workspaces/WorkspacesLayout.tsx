@@ -7,7 +7,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { configAction, selectIsOpenDrawer } from '../config/configSlice'
-import { selectWorkspaceById } from './workspacesSlice'
+import { selectWorkspaceById } from './service/workspacesSlice'
 import WorkspaceOptions from './components/WorkspaceOptions'
 
 const drawerWidth = 300

@@ -88,6 +88,9 @@ export default function WorkspaceOptions() {
         <MenuItem onClick={handleHistoryClick} disableRipple sx={{ justifyContent: 'center' }}>
           Run History
         </MenuItem>
+        <MenuItem disableRipple sx={{ justifyContent: 'center' }}>
+          Run Workspace
+        </MenuItem>
         <Box>
           <Divider sx={{ my: 0.5 }} />
         </Box>

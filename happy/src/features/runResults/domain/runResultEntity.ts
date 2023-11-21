@@ -1,6 +1,6 @@
-import { repositoryItem } from '../../repository/repositoryItem'
+import { Item } from '../../../repository/Item'
 
-export class runResultItem implements repositoryItem {
+export class runResultItem implements Item {
   id: string = ''
   title: string = ''
   workspaceId: string = ''
@@ -11,4 +11,11 @@ export class runResultItem implements repositoryItem {
   Iteration: number = 0
   Duration: number = 0
   runTestList: string[] = []
+}
+
+export interface runResultCommands {
+  new: unknown
+  delete: unknown
+  runAgain: unknown
+  setStage: unknown
 }

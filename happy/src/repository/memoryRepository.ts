@@ -1,10 +1,10 @@
 import { repository } from './repository'
-import { repositoryItem } from './repositoryItem'
+import { Item } from './Item'
 import { v4 as uuidv4 } from 'uuid'
 
 export class memoryRepository implements repository {
-  _data: repositoryItem[] = []
-  data(data: repositoryItem[]): memoryRepository {
+  _data: Item[] = []
+  data(data: Item[]): memoryRepository {
     this._data = data
     return this
   }
@@ -13,24 +13,24 @@ export class memoryRepository implements repository {
     return this._data.length
   }
   deleteById(id: string): void {
-    const index = this._data.findIndex((_item: repositoryItem) => _item.id === id)
+    const index = this._data.findIndex((_item: Item) => _item.id === id)
     if (index !== -1) {
       this._data.splice(index, 1)
     }
   }
   existsById(id: string): boolean {
-    return this._data.findIndex((_item: repositoryItem) => _item.id === id) !== -1
+    return this._data.findIndex((_item: Item) => _item.id === id) !== -1
   }
-  findById(id: string): repositoryItem | undefined {
-    return this._data.find((_item: repositoryItem) => _item.id === id)
+  findById(id: string): Item | undefined {
+    return this._data.find((_item: Item) => _item.id === id)
   }
-  findAll(): repositoryItem[] {
+  findAll(): Item[] {
     return this._data
   }
-  save(item: repositoryItem): repositoryItem {
+  save(item: Item): Item {
     if (this.findById(item.id) !== undefined) {
       // if exist, update item
-      const index = this._data.findIndex((_item: repositoryItem) => _item.id === item.id)
+      const index = this._data.findIndex((_item: Item) => _item.id === item.id)
       if (index !== -1) {
         this._data[index] = item
       }

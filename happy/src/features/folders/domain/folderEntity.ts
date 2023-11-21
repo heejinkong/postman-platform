@@ -1,6 +1,6 @@
-import { repositoryItem } from '../../repository/repositoryItem'
+import { Item } from '../../../repository/Item'
 
-export class collectionItem implements repositoryItem {
+export class folderItem implements Item {
   id: string = ''
   title: string = ''
   parentId: string = ''
@@ -11,4 +11,10 @@ export class collectionItem implements repositoryItem {
   workspaceId: string = ''
   folders: string[] = []
   requests: string[] = []
+}
+
+export interface folderCommands {
+  new: unknown
+  delete: unknown
+  update: unknown
 }

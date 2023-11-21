@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import workspacesSlice from '../features/workspaces/workspacesSlice'
-import collectionsSlice from '../features/collections/collectionsSlice'
-import requestsSlice from '../features/requests/requestsSlice'
-import foldersSlice from '../features/folders/foldersSlice'
+import workspacesSlice from '../features/workspaces/service/workspacesSlice'
+import collectionsSlice from '../features/collections/service/collectionsSlice'
+import requestsSlice from '../features/requests/service/requestsSlice'
+import foldersSlice from '../features/folders/service/foldersSlice'
 import configSlice from '../features/config/configSlice'
-import runTestSlice from '../features/runTests/runTestSlice'
-import runResultSlice from '../features/runResults/runResultSlice'
+import runTestSlice from '../features/runTests/service/runTestSlice'
+import runResultSlice from '../features/runResults/service/runResultSlice'
 
 const persistedWorkspacesReducer = persistReducer(
   {

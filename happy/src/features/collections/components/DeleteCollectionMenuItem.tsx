@@ -1,6 +1,6 @@
 import { MenuItem, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
-import { selectCollectionById } from '../collectionsSlice'
+import { selectCollectionById } from '../service/collectionsSlice'
 import { useNavigate } from 'react-router-dom'
 import collectionService from '../service/collectionService'
 

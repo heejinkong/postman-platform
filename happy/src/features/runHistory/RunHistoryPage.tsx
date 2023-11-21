@@ -14,13 +14,14 @@ import {
   TableRow,
   Typography
 } from '@mui/material'
-import { selectAllRunResult } from '../runResults/runResultSlice'
-import { useDispatch, useSelector } from 'react-redux'
+import { selectAllRunResult } from '../runResults/service/runResultSlice'
+import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { runResultItem } from '../runResults/runResultItem'
+import { runResultItem } from '../runResults/domain/runResultEntity'
 import runResultService from '../runResults/service/runResultService'
 import { useState } from 'react'
+import { useAppDispatch } from '../../app/hook'
 
 export default function RunHistoryPage() {
   const { workspaceId } = useParams()
@@ -31,7 +32,7 @@ export default function RunHistoryPage() {
     return b.created - a.created
   })
   const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const rowsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)
@@ -40,7 +41,7 @@ export default function RunHistoryPage() {
   const currentRows = allRunResults.slice(indexOfFirstRow, indexOfLastRow)
   const totalPages = Math.ceil(allRunResults.length / rowsPerPage)
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
     setCurrentPage(page)
   }
 

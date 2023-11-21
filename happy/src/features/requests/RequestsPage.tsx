@@ -3,6 +3,7 @@ import {
   Button,
   Chip,
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -12,12 +13,12 @@ import {
   TextField
 } from '@mui/material'
 import { useParams } from 'react-router-dom'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Divider } from '@mui/joy'
 import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
 import SaveIcon from '@mui/icons-material/Save'
 import SendIcon from '@mui/icons-material/Send'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { DataGrid, GridEventListener, GridColDef, useGridApiRef, GridRowId } from '@mui/x-data-grid'
 import CodeMirror from '@uiw/react-codemirror'
 import CodeMirrorMerge from 'react-codemirror-merge'
 import { javascript } from '@codemirror/lang-javascript'
@@ -25,18 +26,31 @@ import { html } from '@codemirror/lang-html'
 import { json } from '@codemirror/lang-json'
 import { xml } from '@codemirror/lang-xml'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
-import { selectRequestById } from './requestsSlice'
+import { selectRequestById } from './service/requestsSlice'
 import requestService from './service/requestService'
-import { requestItem } from './requestItem'
+import { requestItem } from './domain/requestEntity'
 import configService from '../config/service/configService'
-import { runResultItem } from '../runResults/runResultItem'
+import { runResultItem } from '../runResults/domain/runResultEntity'
 import runResultService from '../runResults/service/runResultService'
-import { runTestItem } from '../runTests/runTestItem'
+import { runTestItem } from '../runTests/domain/runTestEntity'
 import runTestService from '../runTests/service/runTestService'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { v4 as uuidv4 } from 'uuid'
 
 export default function RequestsPage() {
   const { requestId } = useParams()
   const codeBoxRef = useRef<HTMLDivElement>(null)
+
+  const [rowIdHover, setRowIdHover] = useState<GridRowId>(-1)
+  const paramsRef = useGridApiRef()
+  const headersRef = useGridApiRef()
+  const handleMouseEnter: GridEventListener<'rowMouseEnter'> = (params) => {
+    setRowIdHover(params.id)
+  }
+  const handleMouseLeave: GridEventListener<'rowMouseLeave'> = () => {
+    setRowIdHover(-1)
+  }
+
   const dispatch = useAppDispatch()
   const request = useAppSelector((state) => selectRequestById(state, requestId ?? ''))
   const [requestClone, setRequestClone] = React.useState(new requestItem())
@@ -95,19 +109,44 @@ export default function RequestsPage() {
   }
 
   type Row = {
-    id: number
+    id: string
     _key: string
     _value: string
     _desc: string
   }
   const handleProcessNewRows = (newRow: Row, targetRows: Row[]) => {
     const newRows = [...targetRows]
-    newRows[newRow.id] = newRow
+    const index = newRows.findIndex((row) => row.id === newRow.id)
+    newRows[index] = newRow
     const lastRow = newRows[newRows.length - 1]
     if (lastRow._key !== '' || lastRow._value !== '' || lastRow._desc !== '') {
-      newRows.push({ id: lastRow.id + 1, _key: '', _value: '', _desc: '' })
+      newRows.push({ id: uuidv4(), _key: '', _value: '', _desc: '' })
     }
     return newRows
+  }
+
+  const isLastRow = (id: GridRowId) => {
+    if (reqTabIndex === 0) {
+      return id === requestClone.params[requestClone.params.length - 1].id
+    } else if (reqTabIndex === 1) {
+      return id === requestClone.headers[requestClone.headers.length - 1].id
+    } else {
+      return false
+    }
+  }
+
+  const deleteRow = (id: GridRowId) => {
+    if (reqTabIndex === 0) {
+      const newRows = [...requestClone.params]
+      const index = newRows.findIndex((row) => row.id === id)
+      newRows.splice(index, 1)
+      setRequestClone({ ...requestClone, params: newRows })
+    } else if (reqTabIndex === 1) {
+      const newRows = [...requestClone.headers]
+      const index = newRows.findIndex((row) => row.id === id)
+      newRows.splice(index, 1)
+      setRequestClone({ ...requestClone, headers: newRows })
+    }
   }
 
   const editableColumns: GridColDef[] = [
@@ -131,6 +170,24 @@ export default function RequestsPage() {
       flex: 1,
       editable: true,
       sortable: false
+    },
+    {
+      field: '_delete',
+      headerName: '',
+      width: 50,
+      editable: false,
+      sortable: false,
+      renderCell: (params) => {
+        return rowIdHover === params.id && !isLastRow(params.id) ? (
+          <IconButton
+            onClick={() => {
+              deleteRow(params.id)
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        ) : null
+      }
     }
   ]
 
@@ -159,12 +216,43 @@ export default function RequestsPage() {
   ]
 
   useEffect(() => {
-    if (!request) {
-      return
+    if (request) {
+      setRequestClone(JSON.parse(JSON.stringify(request)))
+      dispatch(configService.navItemOpened(request))
     }
-    setRequestClone(JSON.parse(JSON.stringify(request)))
-    dispatch(configService.navItemOpened(request))
   }, [dispatch, request])
+
+  useEffect(() => {
+    try {
+      return paramsRef.current.subscribeEvent('rowMouseEnter', handleMouseEnter)
+    } catch {
+      /* empty */
+    }
+  }, [paramsRef, reqTabIndex])
+
+  useEffect(() => {
+    try {
+      return paramsRef.current.subscribeEvent('rowMouseLeave', handleMouseLeave)
+    } catch {
+      /* empty */
+    }
+  }, [paramsRef, reqTabIndex])
+
+  useEffect(() => {
+    try {
+      return headersRef.current.subscribeEvent('rowMouseEnter', handleMouseEnter)
+    } catch {
+      /* empty */
+    }
+  }, [headersRef, reqTabIndex])
+
+  useEffect(() => {
+    try {
+      return headersRef.current.subscribeEvent('rowMouseLeave', handleMouseLeave)
+    } catch {
+      /* empty */
+    }
+  }, [headersRef, reqTabIndex])
 
   return (
     <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -228,7 +316,6 @@ export default function RequestsPage() {
             variant="contained"
             startIcon={<SendIcon />}
             onClick={() => {
-              handleSave()
               handleSend()
               handleSave()
             }}
@@ -249,6 +336,7 @@ export default function RequestsPage() {
         {reqTabIndex === 0 && (
           <Box sx={{ height: '40%', overflow: 'auto' }}>
             <DataGrid
+              apiRef={paramsRef}
               rows={requestClone.params}
               columns={editableColumns}
               editMode="row"
@@ -260,7 +348,7 @@ export default function RequestsPage() {
               onRowSelectionModelChange={(newRowSelectionModel) => {
                 setRequestClone({
                   ...requestClone,
-                  paramsSelection: newRowSelectionModel as number[]
+                  paramsSelection: newRowSelectionModel as string[]
                 })
               }}
               processRowUpdate={(newRow) => {
@@ -275,6 +363,7 @@ export default function RequestsPage() {
         {reqTabIndex === 1 && (
           <Box sx={{ height: '40%', overflow: 'auto' }}>
             <DataGrid
+              apiRef={headersRef}
               rows={requestClone.headers}
               columns={editableColumns}
               editMode="row"
@@ -286,7 +375,7 @@ export default function RequestsPage() {
               onRowSelectionModelChange={(newRowSelectionModel) => {
                 setRequestClone({
                   ...requestClone,
-                  headersSelection: newRowSelectionModel as number[]
+                  headersSelection: newRowSelectionModel as string[]
                 })
               }}
               processRowUpdate={(newRow) => {

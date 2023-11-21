@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import React from 'react'
 import folderService from '../service/folderService'
-import { selectFolderById } from '../foldersSlice'
+import { selectFolderById } from '../service/foldersSlice'
 
 type deleteFolderMenuItemProps = {
   folderId: string

@@ -1,12 +1,12 @@
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
-import { runTestItem } from '../../runTests/runTestItem'
+import { runTestItem } from '../../runTests/domain/runTestEntity'
 import runTestService from '../../runTests/service/runTestService'
-import { selectCollectionById } from '../collectionsSlice'
+import { selectCollectionById } from '../service/collectionsSlice'
 import { MenuItem, Typography } from '@mui/material'
-import { selectAllRequests } from '../../requests/requestsSlice'
-import { selectAllFolders } from '../../folders/foldersSlice'
+import { selectAllRequests } from '../../requests/service/requestsSlice'
+import { selectAllFolders } from '../../folders/service/foldersSlice'
 import runResultService from '../../runResults/service/runResultService'
-import { runResultItem } from '../../runResults/runResultItem'
+import { runResultItem } from '../../runResults/domain/runResultEntity'
 import { useNavigate } from 'react-router-dom'
 
 type runCollectionMenuItemProps = {
@@ -50,8 +50,8 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
             newRunTestItem.parentId = collection?.id ?? ''
             newRunTestItem.requestId = request.id
             newRunTestItem.created = Date.now()
-            newRunTestItem.status = request.response.statusCode
-            newRunTestItem.result = request.response.body
+            newRunTestItem.status = request.response.status
+            newRunTestItem.responseResult = request.response.body
             dispatch(runTestService.new(newRunTestItem))
             newRunResultItem.runTestList?.push(newRunTestItem.id)
           })
@@ -66,8 +66,8 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
         newRunTestItem.parentId = collection?.id ?? ''
         newRunTestItem.requestId = request.id
         newRunTestItem.created = Date.now()
-        newRunTestItem.status = request.response.statusCode
-        newRunTestItem.result = request.response.body
+        newRunTestItem.status = request.response.status
+        newRunTestItem.responseResult = request.response.body
         dispatch(runTestService.new(newRunTestItem))
         newRunResultItem.runTestList?.push(newRunTestItem.id)
       })

@@ -1,12 +1,12 @@
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import { MenuItem, Typography } from '@mui/material'
-import { selectAllFolders, selectFolderById } from '../foldersSlice'
-import { runTestItem } from '../../runTests/runTestItem'
-import { selectAllRequests } from '../../requests/requestsSlice'
+import { selectAllFolders, selectFolderById } from '../service/foldersSlice'
+import { runTestItem } from '../../runTests/domain/runTestEntity'
+import { selectAllRequests } from '../../requests/service/requestsSlice'
 import runTestService from '../../runTests/service/runTestService'
 import { useNavigate } from 'react-router-dom'
-import { selectCollectionById } from '../../collections/collectionsSlice'
-import { runResultItem } from '../../runResults/runResultItem'
+import { selectCollectionById } from '../../collections/service/collectionsSlice'
+import { runResultItem } from '../../runResults/domain/runResultEntity'
 import runResultService from '../../runResults/service/runResultService'
 
 type runFolderMenuItemProps = {
@@ -47,8 +47,8 @@ export default function RunFolderMenuItem(props: runFolderMenuItemProps) {
         newRunTestItem.parentId = folder?.id ?? ''
         newRunTestItem.requestId = request.id
         newRunTestItem.created = Date.now()
-        newRunTestItem.status = request.response.statusCode
-        newRunTestItem.result = request.response.body
+        newRunTestItem.status = request.response.status
+        newRunTestItem.responseResult = request.response.body
         dispatch(runTestService.new(newRunTestItem))
         newRunResultItem.runTestList?.push(newRunTestItem.id)
       })

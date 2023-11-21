@@ -1,7 +1,7 @@
 import { Box, Button, Container, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
-import { selectCollectionById } from './collectionsSlice'
+import { selectCollectionById } from './service/collectionsSlice'
 import { useNavigate, useParams } from 'react-router-dom'
 import collectionService from './service/collectionService'
 import configService from '../config/service/configService'

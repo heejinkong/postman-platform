@@ -1,10 +1,10 @@
-import { repositoryItem } from './repositoryItem'
+import { Item } from './Item'
 
 export interface repository {
   count(): number
   deleteById(id: string): void
   existsById(id: string): boolean
-  findById(id: string): repositoryItem | undefined
-  findAll(): repositoryItem[]
-  save(item: repositoryItem): repositoryItem
+  findById(id: string): Item | undefined
+  findAll(): Item[]
+  save(item: Item): Item
 }

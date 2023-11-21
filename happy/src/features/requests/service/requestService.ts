@@ -1,18 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { requestItem } from '../requestItem'
+import { requestCommands, requestItem } from '../domain/requestEntity'
 import { RootState } from '../../../app/store'
-import { selectCollectionById } from '../../collections/collectionsSlice'
+import { selectCollectionById } from '../../collections/service/collectionsSlice'
+import { selectFolderById } from '../../folders/service/foldersSlice'
+import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
-import { selectFolderById } from '../../folders/foldersSlice'
 
-interface requestDomain {
-  new: unknown
-  delete: unknown
-  update: unknown
-  send: unknown
-}
-
-class requestService implements requestDomain {
+class requestService implements requestCommands {
   new = createAsyncThunk('requestService/new', async (request: requestItem, thunkAPI) => {
     const state = thunkAPI.getState() as RootState
 
@@ -93,7 +87,7 @@ class requestService implements requestDomain {
       newRequest.response.elapsed = elapsed
       Object.keys(response.headers).map((key) => {
         newRequest.response.headers.push({
-          id: newRequest.response.headers.length,
+          id: uuidv4(),
           _key: key,
           _value: response.headers[key],
           _desc: ''
