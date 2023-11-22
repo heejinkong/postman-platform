@@ -1,37 +1,38 @@
 import { Box, Button, Container, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
-import { selectCollectionById } from './service/collectionsSlice'
-import { useNavigate, useParams } from 'react-router-dom'
-import collectionService from './service/collectionService'
+import { useParams } from 'react-router-dom'
+import { selectFolderById } from './service/folderSlice'
+import { folderItem } from './domain/folderEntity'
+import folderService from './service/folderService'
 import configService from '../config/service/configService'
 import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
 
-export default function CollectionsPage() {
-  const navigate = useNavigate()
-  const { collectionId } = useParams()
+export default function FolderPage() {
+  const { folderId } = useParams()
 
   const [title, setTitle] = useState('')
   const [desc, setDesc] = useState('')
 
   const dispatch = useAppDispatch()
-  const collection = useAppSelector((state) => selectCollectionById(state, collectionId ?? ''))
-  if (!collection) {
-    navigate(`/NotFoundPage`)
-  }
-
-  const handleUpdateClick = () => {
-    const cloned = JSON.parse(JSON.stringify(collection))
-    cloned.title = title
-    cloned.desc = desc
-    dispatch(collectionService.update(cloned))
-  }
+  const folder = useAppSelector((state) => selectFolderById(state, folderId ?? ''))
 
   useEffect(() => {
-    setTitle(collection.title)
-    setDesc(collection.desc)
-    dispatch(configService.navItemOpened(collection))
-  }, [collection, dispatch])
+    if (!folder) {
+      return
+    }
+    setTitle(folder.title)
+    setDesc(folder.desc)
+    dispatch(configService.navItemOpened(folder))
+  }, [dispatch, folder])
+
+  const handleUpdateClick = () => {
+    const cloned: folderItem = JSON.parse(JSON.stringify(folder))
+    cloned.title = title
+    cloned.desc = desc
+    cloned.updated = Date.now()
+    dispatch(folderService.update(cloned))
+  }
 
   return (
     <Box sx={{ p: 2 }}>
@@ -41,7 +42,7 @@ export default function CollectionsPage() {
       <Container>
         <Box sx={{ mt: 5 }}>
           <Typography variant="h3" gutterBottom>
-            Collection
+            Folder
           </Typography>
         </Box>
         <Box sx={{ mt: 3 }}>

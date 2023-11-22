@@ -17,12 +17,12 @@ import {
   Typography
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { selectAllWorkspaces } from '../service/workspacesSlice'
+import { selectAllWorkspaces } from '../service/workspaceSlice'
 import workspaceService from '../service/workspaceService'
 import { workspaceItem } from '../domain/workspaceEntity'
 import { useState } from 'react'
 
-export default function WorkspacesList() {
+export default function WorkspaceList() {
   const navigate = useNavigate()
 
   const dispatch = useAppDispatch()

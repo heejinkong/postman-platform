@@ -2,36 +2,36 @@ import { Route, Routes } from 'react-router-dom'
 import HomeLayout from './features/home/HomeLayout'
 import HomePage from './features/home/HomePage'
 import NotFoundPage from './NotFoundPage'
-import WorkspacesLayout from './features/workspaces/WorkspacesLayout'
-import WorkspacesPage from './features/workspaces/WorkspacesPage'
-import CollectionsLayout from './features/collections/CollectionsLayout'
-import CollectionsPage from './features/collections/CollectionsPage'
-import RequestsLayout from './features/requests/RequestsLayout'
-import RequestsPage from './features/requests/RequestsPage'
-import FoldersLayout from './features/folders/FoldersLayout'
-import FoldersPage from './features/folders/FoldersPage'
+import WorkspaceLayout from './features/workspaces/WorkspaceLayout'
+import WorkspacePage from './features/workspaces/WorkspacePage'
+import CollectionLayout from './features/collections/CollectionLayout'
+import CollectionPage from './features/collections/CollectionPage'
+import RequestLayout from './features/requests/RequestLayout'
+import RequestPage from './features/requests/RequestPage'
+import FolderLayout from './features/folders/FolderLayout'
+import FolderPage from './features/folders/FolderPage'
 import RunHistoryLayout from './features/runHistory/RunHistoryLayout'
 import RunHistoryPage from './features/runHistory/RunHistoryPage'
-import RunResultLayout from './features/runResults/runResultLayout'
+import RunResultLayout from './features/runResults/RunResultLayout'
 import RunTestLayout from './features/runTests/RunTestLayout'
 import RunTestPage from './features/runTests/RunTestPage'
-import RunResultPage from './features/runResults/runResultPage'
+import RunResultPage from './features/runResults/RunResultPage'
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<HomeLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="workspaces/:workspaceId" element={<WorkspacesLayout />}>
-          <Route index element={<WorkspacesPage />} />
-          <Route path="collections/:collectionId" element={<CollectionsLayout />}>
-            <Route index element={<CollectionsPage />} />
+        <Route path="workspaces/:workspaceId" element={<WorkspaceLayout />}>
+          <Route index element={<WorkspacePage />} />
+          <Route path="collections/:collectionId" element={<CollectionLayout />}>
+            <Route index element={<CollectionPage />} />
           </Route>
-          <Route path="folders/:folderId" element={<FoldersLayout />}>
-            <Route index element={<FoldersPage />} />
+          <Route path="folders/:folderId" element={<FolderLayout />}>
+            <Route index element={<FolderPage />} />
           </Route>
-          <Route path="requests/:requestId" element={<RequestsLayout />}>
-            <Route index element={<RequestsPage />} />
+          <Route path="requests/:requestId" element={<RequestLayout />}>
+            <Route index element={<RequestPage />} />
           </Route>
           <Route path="runHistory" element={<RunHistoryLayout />}>
             <Route index element={<RunHistoryPage />} />

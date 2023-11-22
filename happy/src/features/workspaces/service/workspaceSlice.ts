@@ -5,7 +5,7 @@ import { RootState } from '../../../app/store'
 
 const repo = new memoryRepository()
 
-const workspacesSlice = createSlice({
+const workspaceSlice = createSlice({
   name: 'workspaces',
   initialState: {
     data: repo._data
@@ -23,11 +23,11 @@ const workspacesSlice = createSlice({
   }
 })
 
-export const { createWorkspace, updateWorkspace, deleteWorkspaceById } = workspacesSlice.actions
+export const { createWorkspace, updateWorkspace, deleteWorkspaceById } = workspaceSlice.actions
 
 export const selectAllWorkspaces = (state: RootState) =>
   repo.data(state.workspaces.data).findAll() as workspaceItem[]
 export const selectWorkspaceById = (state: RootState, id: string) =>
   repo.data(state.workspaces.data).findById(id) as workspaceItem
 
-export default workspacesSlice.reducer
+export default workspaceSlice.reducer

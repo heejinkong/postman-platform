@@ -20,7 +20,7 @@ import React from 'react'
 import NewWorkspace from '../workspaces/components/NewWorkspace'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { useAppSelector } from '../../app/hook'
-import { selectAllWorkspaces } from '../workspaces/service/workspacesSlice'
+import { selectAllWorkspaces } from '../workspaces/service/workspaceSlice'
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 

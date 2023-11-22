@@ -5,7 +5,7 @@ import { collectionItem } from '../domain/collectionEntity'
 
 const repo = new memoryRepository()
 
-const collectionsSlice = createSlice({
+const collectionSlice = createSlice({
   name: 'collections',
   initialState: {
     data: repo._data
@@ -23,11 +23,11 @@ const collectionsSlice = createSlice({
   }
 })
 
-export const { createCollection, updateCollection, deleteCollectionById } = collectionsSlice.actions
+export const { createCollection, updateCollection, deleteCollectionById } = collectionSlice.actions
 
 export const selectAllCollections = (state: RootState) =>
   repo.data(state.collections.data).findAll() as collectionItem[]
 export const selectCollectionById = (state: RootState, id: string) =>
   repo.data(state.collections.data).findById(id) as collectionItem
 
-export default collectionsSlice.reducer
+export default collectionSlice.reducer

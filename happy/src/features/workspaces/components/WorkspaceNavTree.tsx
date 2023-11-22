@@ -4,7 +4,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { TreeView } from '@mui/x-tree-view/TreeView'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
-import { selectWorkspaceById } from '../service/workspacesSlice'
+import { selectWorkspaceById } from '../service/workspaceSlice'
 import CollectionTreeItem from '../../collections/components/CollectionTreeItem'
 import {
   configAction,

@@ -1,5 +1,5 @@
-import { Box, Divider, Drawer, IconButton, Typography } from '@mui/material'
-import { Outlet, useParams } from 'react-router-dom'
+import { Box, Divider, Drawer, IconButton, Link, Typography } from '@mui/material'
+import { Outlet, useNavigate, useParams } from 'react-router-dom'
 import { styled } from '@mui/material/styles'
 import WorkspaceNavTree from './components/WorkspaceNavTree'
 import NewCollection from '../collections/components/NewCollection'
@@ -7,7 +7,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { configAction, selectIsOpenDrawer } from '../config/configSlice'
-import { selectWorkspaceById } from './service/workspacesSlice'
+import { selectWorkspaceById } from './service/workspaceSlice'
 import WorkspaceOptions from './components/WorkspaceOptions'
 
 const drawerWidth = 300
@@ -37,6 +37,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }))
 
 export default function WorkspacesLayout() {
+  const navigate = useNavigate()
   const isDrawerOpen = useAppSelector(selectIsOpenDrawer)
   const dispatch = useAppDispatch()
 
@@ -69,12 +70,20 @@ export default function WorkspacesLayout() {
       >
         <DrawerHeader />
         <Box>
-          <Typography variant="subtitle1" gutterBottom sx={{ ml: 1, mt: 1 }}>
+          <Typography variant="subtitle1" gutterBottom sx={{ pl: 1, pt: 1 }}>
             Workspace
           </Typography>
-          <Typography variant="h4" gutterBottom sx={{ ml: 2, color: `#1877F2` }}>
-            {workspace.title.length > 10 ? `${workspace.title.slice(0, 10)}...` : workspace.title}
-          </Typography>
+          <Link
+            sx={{ textDecoration: 'none' }}
+            component="button"
+            onClick={() => {
+              navigate(`/workspaces/${workspaceId}`)
+            }}
+          >
+            <Typography variant="h4" gutterBottom sx={{ pl: 2, color: `primary.main` }}>
+              {workspace.title.length > 10 ? `${workspace.title.slice(0, 10)}...` : workspace.title}
+            </Typography>
+          </Link>
           <Box sx={{ pb: 2 }}>
             <WorkspaceOptions />
           </Box>

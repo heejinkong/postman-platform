@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import workspacesSlice from '../features/workspaces/service/workspacesSlice'
-import collectionsSlice from '../features/collections/service/collectionsSlice'
-import requestsSlice from '../features/requests/service/requestsSlice'
-import foldersSlice from '../features/folders/service/foldersSlice'
+import workspaceSlice from '../features/workspaces/service/workspaceSlice'
+import collectionSlice from '../features/collections/service/collectionSlice'
+import requestSlice from '../features/requests/service/requestSlice'
+import folderSlice from '../features/folders/service/folderSlice'
 import configSlice from '../features/config/configSlice'
 import runTestSlice from '../features/runTests/service/runTestSlice'
 import runResultSlice from '../features/runResults/service/runResultSlice'
@@ -15,7 +15,7 @@ const persistedWorkspacesReducer = persistReducer(
     storage,
     version: 1
   },
-  workspacesSlice
+  workspaceSlice
 )
 
 const persistedCollectionsReducer = persistReducer(
@@ -24,7 +24,7 @@ const persistedCollectionsReducer = persistReducer(
     storage,
     version: 1
   },
-  collectionsSlice
+  collectionSlice
 )
 
 const persistedRequestsReducer = persistReducer(
@@ -33,7 +33,7 @@ const persistedRequestsReducer = persistReducer(
     storage,
     version: 1
   },
-  requestsSlice
+  requestSlice
 )
 
 const persistedFoldersReducer = persistReducer(
@@ -42,7 +42,7 @@ const persistedFoldersReducer = persistReducer(
     storage,
     version: 1
   },
-  foldersSlice
+  folderSlice
 )
 
 const persistedConfigReducer = persistReducer(

@@ -1,38 +1,37 @@
 import { Box, Button, Container, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
-import { useParams } from 'react-router-dom'
-import { selectFolderById } from './service/foldersSlice'
-import { folderItem } from './domain/folderEntity'
-import folderService from './service/folderService'
+import { selectCollectionById } from './service/collectionSlice'
+import { useNavigate, useParams } from 'react-router-dom'
+import collectionService from './service/collectionService'
 import configService from '../config/service/configService'
 import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
 
-export default function FoldersPage() {
-  const { folderId } = useParams()
+export default function CollectionPage() {
+  const navigate = useNavigate()
+  const { collectionId } = useParams()
 
   const [title, setTitle] = useState('')
   const [desc, setDesc] = useState('')
 
   const dispatch = useAppDispatch()
-  const folder = useAppSelector((state) => selectFolderById(state, folderId ?? ''))
-
-  useEffect(() => {
-    if (!folder) {
-      return
-    }
-    setTitle(folder.title)
-    setDesc(folder.desc)
-    dispatch(configService.navItemOpened(folder))
-  }, [dispatch, folder])
+  const collection = useAppSelector((state) => selectCollectionById(state, collectionId ?? ''))
+  if (!collection) {
+    navigate(`/NotFoundPage`)
+  }
 
   const handleUpdateClick = () => {
-    const cloned: folderItem = JSON.parse(JSON.stringify(folder))
+    const cloned = JSON.parse(JSON.stringify(collection))
     cloned.title = title
     cloned.desc = desc
-    cloned.updated = Date.now()
-    dispatch(folderService.update(cloned))
+    dispatch(collectionService.update(cloned))
   }
+
+  useEffect(() => {
+    setTitle(collection.title)
+    setDesc(collection.desc)
+    dispatch(configService.navItemOpened(collection))
+  }, [collection, dispatch])
 
   return (
     <Box sx={{ p: 2 }}>
@@ -42,7 +41,7 @@ export default function FoldersPage() {
       <Container>
         <Box sx={{ mt: 5 }}>
           <Typography variant="h3" gutterBottom>
-            Folder
+            Collection
           </Typography>
         </Box>
         <Box sx={{ mt: 3 }}>

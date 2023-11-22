@@ -14,7 +14,7 @@ export default function WorkspaceNavBar() {
           <WorkspaceNavBarItem key={_id} _id={_id} />
         ))}
       </Breadcrumbs>
-      <Box sx={{ mt: 1 }}>
+      <Box sx={{ pt: 1 }}>
         <Divider />
       </Box>
     </Box>

@@ -26,7 +26,7 @@ import { html } from '@codemirror/lang-html'
 import { json } from '@codemirror/lang-json'
 import { xml } from '@codemirror/lang-xml'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
-import { selectRequestById } from './service/requestsSlice'
+import { selectRequestById } from './service/requestSlice'
 import requestService from './service/requestService'
 import { requestItem } from './domain/requestEntity'
 import configService from '../config/service/configService'
@@ -37,7 +37,7 @@ import runTestService from '../runTests/service/runTestService'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { v4 as uuidv4 } from 'uuid'
 
-export default function RequestsPage() {
+export default function RequestPage() {
   const { requestId } = useParams()
   const codeBoxRef = useRef<HTMLDivElement>(null)
 
@@ -451,7 +451,7 @@ export default function RequestsPage() {
             <Box>Response</Box>
             <Stack direction="row" spacing={1}>
               <Chip
-                label={`status ${request.response.status}`}
+                label={`${request.response.status} status`}
                 variant="outlined"
                 color="primary"
               />

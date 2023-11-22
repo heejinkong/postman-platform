@@ -5,7 +5,7 @@ import { folderItem } from '../domain/folderEntity'
 
 const repo = new memoryRepository()
 
-const foldersSlice = createSlice({
+const folderSlice = createSlice({
   name: 'folders',
   initialState: {
     data: repo._data
@@ -23,11 +23,11 @@ const foldersSlice = createSlice({
   }
 })
 
-export const { createFolder, updateFolder, deleteFolderById } = foldersSlice.actions
+export const { createFolder, updateFolder, deleteFolderById } = folderSlice.actions
 
 export const selectAllFolders = (state: RootState) =>
   repo.data(state.folders.data).findAll() as folderItem[]
 export const selectFolderById = (state: RootState, id: string) =>
   repo.data(state.folders.data).findById(id) as folderItem
 
-export default foldersSlice.reducer
+export default folderSlice.reducer

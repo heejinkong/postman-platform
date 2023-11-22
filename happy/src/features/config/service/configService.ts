@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { Item } from '../../../repository/Item'
 import { RootState } from '../../../app/store'
-import { selectFolderById } from '../../folders/service/foldersSlice'
-import { selectCollectionById } from '../../collections/service/collectionsSlice'
+import { selectFolderById } from '../../folders/service/folderSlice'
+import { selectCollectionById } from '../../collections/service/collectionSlice'
 import { selectNavTreeExpanded } from '../configSlice'
 import { configCommands } from '../domain/configEntity'
 

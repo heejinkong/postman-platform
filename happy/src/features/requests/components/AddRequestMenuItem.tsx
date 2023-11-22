@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
-import { selectCollectionById } from '../../collections/service/collectionsSlice'
-import { selectFolderById } from '../../folders/service/foldersSlice'
+import { selectCollectionById } from '../../collections/service/collectionSlice'
+import { selectFolderById } from '../../folders/service/folderSlice'
 import { requestItem } from '../domain/requestEntity'
 import { collectionItem } from '../../collections/domain/collectionEntity'
 import { folderItem } from '../../folders/domain/folderEntity'

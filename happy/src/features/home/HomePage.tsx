@@ -1,8 +1,8 @@
 import { Avatar, Box, Typography } from '@mui/material'
-import WorkspacesList from '../workspaces/components/WorkspacesList'
+import WorkspaceList from '../workspaces/components/WorkspaceList'
 import NewWorkspace from '../workspaces/components/NewWorkspace'
 import { useAppSelector } from '../../app/hook'
-import { selectAllWorkspaces } from '../workspaces/service/workspacesSlice'
+import { selectAllWorkspaces } from '../workspaces/service/workspaceSlice'
 
 export default function HomePage() {
   const allWorkspaces = useAppSelector(selectAllWorkspaces)
@@ -59,13 +59,13 @@ export default function HomePage() {
               <NewWorkspace />
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 20, mr: 23 }}>
-              <WorkspacesList />
+              <WorkspaceList />
             </Box>
           </Box>
         ) : (
           <Box sx={{ width: '100%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 33 }}>
-              <WorkspacesList />
+              <WorkspaceList />
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
               <NewWorkspace />

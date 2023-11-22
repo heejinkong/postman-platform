@@ -3,7 +3,7 @@ import { selectAllRunTests } from './service/runTestSlice'
 import ViewResult from './component/ViewResult'
 import { runResultItem } from '../runResults/domain/runResultEntity'
 import { useAppSelector } from '../../app/hook'
-import { selectWorkspaceById } from '../workspaces/service/workspacesSlice'
+import { selectWorkspaceById } from '../workspaces/service/workspaceSlice'
 
 type runResultPageProps = {
   parent: runResultItem

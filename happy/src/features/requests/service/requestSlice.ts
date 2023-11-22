@@ -5,7 +5,7 @@ import { requestItem } from '../domain/requestEntity'
 
 const repo = new memoryRepository()
 
-const requestsSlice = createSlice({
+const requestSlice = createSlice({
   name: 'requests',
   initialState: {
     data: repo._data
@@ -23,11 +23,11 @@ const requestsSlice = createSlice({
   }
 })
 
-export const { createRequest, updateRequest, deleteRequestById } = requestsSlice.actions
+export const { createRequest, updateRequest, deleteRequestById } = requestSlice.actions
 
 export const selectAllRequests = (state: RootState) =>
   repo.data(state.requests.data).findAll() as requestItem[]
 export const selectRequestById = (state: RootState, id: string) =>
   repo.data(state.requests.data).findById(id) as requestItem
 
-export default requestsSlice.reducer
+export default requestSlice.reducer

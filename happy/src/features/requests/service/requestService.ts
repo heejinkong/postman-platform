@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { requestCommands, requestItem } from '../domain/requestEntity'
 import { RootState } from '../../../app/store'
-import { selectCollectionById } from '../../collections/service/collectionsSlice'
-import { selectFolderById } from '../../folders/service/foldersSlice'
+import { selectCollectionById } from '../../collections/service/collectionSlice'
+import { selectFolderById } from '../../folders/service/folderSlice'
 import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
 
