@@ -50,6 +50,7 @@ export default function WorkspaceList() {
   const handleDeleteClick = (e: { stopPropagation: () => void }, workspace: workspaceItem) => {
     e.stopPropagation()
     dispatch(workspaceService.delete(workspace))
+    navigate(``)
   }
 
   if (allWorkspaces.length === 0) {
@@ -91,6 +92,7 @@ export default function WorkspaceList() {
                         aria-label="delete"
                         onClick={(e) => handleDeleteClick(e, ws)}
                         sx={{ ml: 50, mr: 2 }}
+                        href="/"
                       >
                         <DeleteIcon />
                       </IconButton>
