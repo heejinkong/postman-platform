@@ -12,10 +12,10 @@ import FolderLayout from './features/folders/FolderLayout'
 import FolderPage from './features/folders/FolderPage'
 import RunHistoryLayout from './features/runHistory/RunHistoryLayout'
 import RunHistoryPage from './features/runHistory/RunHistoryPage'
-import RunResultLayout from './features/runResults/RunResultLayout'
 import RunTestLayout from './features/runTests/RunTestLayout'
 import RunTestPage from './features/runTests/RunTestPage'
-import RunResultPage from './features/runResults/RunResultPage'
+import RunResultLayout from './features/runResults/runResultLayout'
+import RunResultPage from './features/runResults/runResultPage'
 
 function App() {
   return (

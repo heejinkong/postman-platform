@@ -1,4 +1,4 @@
-import { Box, Button, Container, TextField, Typography } from '@mui/material'
+import { Box, Button, Container, Divider, TextField, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -39,6 +39,9 @@ export default function WorkspacesPage() {
     <Box sx={{ p: 2 }}>
       <Box>
         <WorkspaceNavBar />
+        <Box sx={{ pt: 1 }}>
+          <Divider />
+        </Box>
       </Box>
       <Container>
         <Box sx={{ mt: 5 }}>

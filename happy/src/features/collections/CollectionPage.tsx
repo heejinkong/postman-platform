@@ -1,4 +1,4 @@
-import { Box, Button, Container, TextField, Typography } from '@mui/material'
+import { Box, Button, Container, Divider, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { selectCollectionById } from './service/collectionSlice'
@@ -37,6 +37,9 @@ export default function CollectionPage() {
     <Box sx={{ p: 2 }}>
       <Box>
         <WorkspaceNavBar />
+        <Box sx={{ pt: 1 }}>
+          <Divider />
+        </Box>
       </Box>
       <Container>
         <Box sx={{ mt: 5 }}>

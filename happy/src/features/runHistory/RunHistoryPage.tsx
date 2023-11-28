@@ -1,17 +1,12 @@
 import {
   Box,
   Container,
-  Divider,
   IconButton,
+  List,
+  ListItem,
   ListItemButton,
+  ListItemText,
   Pagination,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography
 } from '@mui/material'
 import { selectAllRunResult } from '../runResults/service/runResultSlice'
@@ -22,6 +17,7 @@ import { runResultItem } from '../runResults/domain/runResultEntity'
 import runResultService from '../runResults/service/runResultService'
 import { useState } from 'react'
 import { useAppDispatch } from '../../app/hook'
+import { ListItemDecorator } from '@mui/joy'
 
 export default function RunHistoryPage() {
   const { workspaceId } = useParams()
@@ -54,111 +50,77 @@ export default function RunHistoryPage() {
     dispatch(runResultService.delete(runResult))
   }
 
-  if (allRunResults.length === 0) {
-    return (
-      <Box>
-        <Container sx={{ ml: 3 }}>
-          <Box sx={{ mt: 10, ml: 23 }}>
-            <Typography variant="h4" gutterBottom>
-              Run History
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              Please click on one item to check its run details.
-            </Typography>
-          </Box>
-          <Box sx={{ mt: 30, ml: 65 }}>
-            <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-              Run History does not exist
-            </Typography>
-            <Typography variant="body1" gutterBottom>
+  return (
+    <Container sx={{ height: '100%', p: 10, display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ pb: 5 }}>
+        <Typography variant="h4">Run History</Typography>
+        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+          Please click on one item to check its run details.
+        </Typography>
+      </Box>
+      <Box sx={{ flexGrow: 1, pb: 5 }}>
+        {allRunResults.length > 0 && (
+          <List
+            subheader={
+              <ListItem alignItems="flex-start" sx={{ backgroundColor: 'action.hover' }}>
+                <ListItemDecorator sx={{ width: 220 }}>
+                  <ListItemText secondary="Date/Time" />
+                </ListItemDecorator>
+                <ListItemText secondary="Run Target" />
+              </ListItem>
+            }
+          >
+            {currentRows.map((runResult) => (
+              <ListItem
+                alignItems="flex-start"
+                disablePadding
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={(e) => handleDeleteClick(e, runResult)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                }
+              >
+                <ListItemButton key={runResult.id} onClick={() => handleRunResult(runResult.id)}>
+                  <ListItemDecorator sx={{ width: 220 }}>
+                    <ListItemText secondary={new Date(runResult.created).toLocaleString()} />
+                  </ListItemDecorator>
+                  <ListItemText primary={runResult.title} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        )}
+        {allRunResults.length === 0 && (
+          <Box
+            sx={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              pb: 5
+            }}
+          >
+            <Typography variant="h5">Run History does not exist</Typography>
+            <Typography variant="subtitle1" color="text.secondary" gutterBottom>
               You can run all items in the workspace using the button below
             </Typography>
           </Box>
-        </Container>
+        )}
       </Box>
-    )
-  } else {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-        <Box sx={{ minWidth: 750, p: 3, pb: 15 }}>
-          <Box>Run History</Box>
-          <Box>
-            <Typography variant="h4" gutterBottom>
-              Run History
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              Please click on one item to check its run details.
-            </Typography>
-          </Box>
-          <Box>
-            <TableContainer component={Paper}>
-              <Table size="small" aria-label="a dense table">
-                <TableHead>
-                  <TableRow>
-                    <Box sx={{ display: 'flex' }}>
-                      <Box sx={{ width: 250 }}>
-                        <TableCell>Date/Time</TableCell>
-                      </Box>
-                      <Box>
-                        <TableCell align="left">Run Target</TableCell>
-                      </Box>
-                    </Box>
-                    <Divider />
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {currentRows.map((runResult) => (
-                    <Box>
-                      <ListItemButton
-                        key={runResult.id}
-                        onClick={() => handleRunResult(runResult.id)}
-                        sx={{ p: 2 }}
-                      >
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            width: '100%'
-                          }}
-                        >
-                          <Box
-                            sx={{
-                              display: 'flex'
-                            }}
-                          >
-                            <Box sx={{ width: 250 }}>
-                              {new Date(runResult.created).toLocaleString()}
-                            </Box>
-                            <Box>{runResult.title}</Box>
-                          </Box>
-                          <IconButton
-                            edge="end"
-                            aria-label="delete"
-                            onClick={(e) => handleDeleteClick(e, runResult)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Box>
-                      </ListItemButton>
-                      <Divider />
-                    </Box>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-          <Box sx={{ mt: 5 }}>
-            <Pagination
-              count={totalPages}
-              shape="rounded"
-              page={currentPage}
-              onChange={(e, page) => handlePageChange(e, page)}
-              sx={{ display: 'flex', justifyContent: 'center', pb: 3 }}
-            />
-          </Box>
-        </Box>
+      <Box>
+        <Pagination
+          count={totalPages}
+          shape="rounded"
+          page={currentPage}
+          onChange={(e, page) => handlePageChange(e, page)}
+          sx={{ display: 'flex', justifyContent: 'center', pb: 3 }}
+        />
       </Box>
-    )
-  }
+    </Container>
+  )
 }

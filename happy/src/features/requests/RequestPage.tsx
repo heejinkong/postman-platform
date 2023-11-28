@@ -258,6 +258,9 @@ export default function RequestPage() {
     <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Box>
         <WorkspaceNavBar />
+        <Box sx={{ pt: 1 }}>
+          <Divider />
+        </Box>
       </Box>
       <Box sx={{ pt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box>
