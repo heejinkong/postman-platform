@@ -38,8 +38,9 @@ export default function RunTestPage(props: runResultPageProps) {
           <Box sx={{ display: 'flex', mt: 1 }}>
             <Box>
               <Grid item xs={9}>
-                {(runTest.status === 200 && runTest.expectedResult === '') ||
-                (runTest.status === 200 && runTest.expectedResult === runTest.responseResult) ? (
+                {(runTest.status === 200 || runTest.status === 201) &&
+                (runTest.expectedResult === '' ||
+                  runTest.expectedResult === runTest.responseResult) ? (
                   <Box>
                     <Typography variant="h5" gutterBottom sx={{ color: `#2E7D32` }}>
                       Success
