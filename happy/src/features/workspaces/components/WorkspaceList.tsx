@@ -50,7 +50,6 @@ export default function WorkspaceList() {
   const handleDeleteClick = (e: { stopPropagation: () => void }, workspace: workspaceItem) => {
     e.stopPropagation()
     dispatch(workspaceService.delete(workspace))
-    navigate(``)
   }
 
   if (allWorkspaces.length === 0) {

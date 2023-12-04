@@ -1,10 +1,9 @@
-import { Box, Container, Divider, Grid, Link, List, Typography } from '@mui/material'
+import { Box, Breadcrumbs, Container, Divider, Grid, Link, List, Typography } from '@mui/material'
 import { selectAllRunTests } from './service/runTestSlice'
 import ViewResult from './component/ViewResult'
 import { runResultItem } from '../runResults/domain/runResultEntity'
 import { useAppSelector } from '../../app/hook'
 import { selectWorkspaceById } from '../workspaces/service/workspaceSlice'
-import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
 
 type runResultPageProps = {
   parent: runResultItem
@@ -21,7 +20,7 @@ export default function RunTestPage(props: runResultPageProps) {
   if (!workspace) {
     return <></>
   }
-  console.log(allRunTests[0].expectedResult)
+
   return (
     <Container
       sx={{
@@ -55,7 +54,19 @@ export default function RunTestPage(props: runResultPageProps) {
                   </Box>
                 )}
                 <div role="presentation">
-                  <WorkspaceNavBar />
+                  <Breadcrumbs separator="/" aria-label="breadcrumb">
+                    <Link underline="hover" color="inherit" href={`/workspaces/${workspace.id}`}>
+                      {workspace.title}
+                    </Link>
+
+                    <Typography variant="body1" gutterBottom>
+                      {props.parent.title}
+                    </Typography>
+
+                    <Typography variant="body1" gutterBottom>
+                      {runTest.title}
+                    </Typography>
+                  </Breadcrumbs>
                 </div>
               </Grid>
             </Box>

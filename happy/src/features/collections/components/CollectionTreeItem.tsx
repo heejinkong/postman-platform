@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAppSelector } from '../../../app/hook'
 import { selectCollectionById } from '../service/collectionSlice'
 import { collectionItem } from '../domain/collectionEntity'
-import RunCollectionMenuItem from './RunCollectionMenuItem'
+import RunCollectionMenuItem from './RuncollectionMenuItem'
 
 type TreeItemProps = {
   _id: string

@@ -3,6 +3,9 @@ import React from 'react'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import NewWorkspace from './NewWorkspace'
 import { useNavigate, useParams } from 'react-router-dom'
+import RunWorkspaceOptionItem from './RunWorkspaceOptionItem'
+import { selectWorkspaceById } from '../service/workspaceSlice'
+import { useAppSelector } from '../../../app/hook'
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -47,6 +50,8 @@ export default function WorkspaceOptions() {
   const navigate = useNavigate()
 
   const { workspaceId } = useParams()
+  const workspaceID = workspaceId as string
+  const workspace = useAppSelector((state) => selectWorkspaceById(state, workspaceID))
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -88,9 +93,7 @@ export default function WorkspaceOptions() {
         <MenuItem onClick={handleHistoryClick} disableRipple sx={{ justifyContent: 'center' }}>
           Run History
         </MenuItem>
-        <MenuItem disableRipple sx={{ justifyContent: 'center' }}>
-          Run Workspace
-        </MenuItem>
+        <RunWorkspaceOptionItem workspaceId={workspace.id} handleClose={() => handleClose} />
         <Box>
           <Divider sx={{ my: 0.5 }} />
         </Box>

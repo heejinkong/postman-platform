@@ -31,7 +31,6 @@ class configService implements configCommands {
       break
     } while (depth++ < 100)
 
-
     const navTreeExpanded = expanded.concat(selectNavTreeExpanded(state))
     const navBarExpanded = expanded
 
