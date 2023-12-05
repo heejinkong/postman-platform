@@ -34,6 +34,9 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
   const dfs = (folderId: string) => {
     const requestInFolder = requests.filter((request) => request.parentId === folderId)
     requestList.push(...requestInFolder)
+    // requestInFolder.forEach((request) => {
+    //   dispatch(runResultService.runRequest(request))
+    // })
 
     const subFolder = folders.filter((folder) => folder.parentId === folderId)
     if (subFolder.length > 0) {
@@ -50,21 +53,21 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
       dfs(collection.id)
     })
 
-    const newRunResultItem = new runResultItem()
-    newRunResultItem.title = workspace.title
-    newRunResultItem.workspaceId = workspace.id
-    newRunResultItem.parentId = workspace?.id ?? ''
-    newRunResultItem.created = Date.now()
-    dispatch(runResultService.new(newRunResultItem))
+    const newRunResult = new runResultItem()
+    newRunResult.title = workspace.title
+    newRunResult.workspaceId = workspace.id
+    newRunResult.parentId = workspace?.id ?? ''
+    newRunResult.created = Date.now()
+    dispatch(runResultService.new(newRunResult))
 
     requestList.forEach((request) => {
-      const newRunTestItem = new runTestItem()
-      newRunTestItem.title = request.title
-      newRunTestItem.parentId = workspace?.id ?? ''
-      newRunTestItem.requestId = request.id
-      newRunTestItem.created = Date.now()
-      dispatch(runTestService.new(newRunTestItem))
-      newRunResultItem.runTestList?.push(newRunTestItem.id)
+      const newRunTest = new runTestItem()
+      newRunTest.title = request.title
+      newRunTest.parentId = workspace?.id ?? ''
+      newRunTest.requestId = request.id
+      newRunTest.created = Date.now()
+      dispatch(runTestService.new(newRunTest))
+      newRunResult.runTestList?.push(newRunTest.id)
     })
 
     navigate(`/workspaces/${workspace.id}/runHistory`)
