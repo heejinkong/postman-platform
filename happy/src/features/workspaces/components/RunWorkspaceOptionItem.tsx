@@ -34,9 +34,6 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
   const dfs = (folderId: string) => {
     const requestInFolder = requests.filter((request) => request.parentId === folderId)
     requestList.push(...requestInFolder)
-    // requestInFolder.forEach((request) => {
-    //   dispatch(runResultService.runRequest(request))
-    // })
 
     const subFolder = folders.filter((folder) => folder.parentId === folderId)
     if (subFolder.length > 0) {
@@ -66,6 +63,8 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
       newRunTest.parentId = workspace?.id ?? ''
       newRunTest.requestId = request.id
       newRunTest.created = Date.now()
+      newRunTest.status = request.response.status
+      newRunTest.responseResult = request.response.body
       dispatch(runTestService.new(newRunTest))
       newRunResult.runTestList?.push(newRunTest.id)
     })

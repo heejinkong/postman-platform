@@ -56,6 +56,8 @@ export default function RunFolderMenuItem(props: runFolderMenuItemProps) {
       newRunTestItem.parentId = folder?.id ?? ''
       newRunTestItem.requestId = request.id
       newRunTestItem.created = Date.now()
+      newRunTestItem.status = request.response.status
+      newRunTestItem.responseResult = request.response.body
       dispatch(runTestService.new(newRunTestItem))
       newRunResultItem.runTestList?.push(newRunTestItem.id)
     })
