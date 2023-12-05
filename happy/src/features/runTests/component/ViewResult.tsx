@@ -27,24 +27,32 @@ export default function ViewResult(props: viewResultProps) {
         View Result
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title">
-        <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
-        <DialogContent>
-          {props.expected !== '' ? (
-            <Box sx={{ height: '100%', overflow: 'auto' }}>
-              <CodeMirrorMerge>
-                <CodeMirrorMerge.Original value={props.expected} extensions={[json()]} />
-                <CodeMirrorMerge.Modified value={props.response} extensions={[json()]} />
-              </CodeMirrorMerge>
+        <Box sx={{ width: 600, height: 500 }}>
+          <DialogTitle sx={{ pt: 1, pb: 1 }} id="alert-dialog-title">
+            {props.title}
+          </DialogTitle>
+          <Box sx={{ height: '90%', width: '100%' }}>
+            <Box sx={{ height: '85%' }}>
+              <DialogContent>
+                {props.expected !== '' ? (
+                  <Box sx={{ height: '100%', overflow: 'auto' }}>
+                    <CodeMirrorMerge>
+                      <CodeMirrorMerge.Original value={props.expected} extensions={[json()]} />
+                      <CodeMirrorMerge.Modified value={props.response} extensions={[json()]} />
+                    </CodeMirrorMerge>
+                  </Box>
+                ) : (
+                  <Box sx={{ height: '100%', overflow: 'auto' }}>
+                    <CodeMirror extensions={[json()]} value={props.response} editable={false} />
+                  </Box>
+                )}
+              </DialogContent>
             </Box>
-          ) : (
-            <Box sx={{ height: '100%', overflow: 'auto' }}>
-              <CodeMirror extensions={[json()]} value={props.response} editable={false} />
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
-        </DialogActions>
+            <DialogActions sx={{ pb: 1 }}>
+              <Button onClick={handleClose}>Close</Button>
+            </DialogActions>
+          </Box>
+        </Box>
       </Dialog>
     </Box>
   )

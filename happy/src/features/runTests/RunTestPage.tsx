@@ -22,68 +22,68 @@ export default function RunTestPage(props: runResultPageProps) {
   }
 
   return (
-    <Container
-      sx={{
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginLeft: 10
-      }}
-    >
-      {/* <Divider sx={{ my: 0.5 }} /> */}
-      <List sx={{ width: '100%', maxWidth: 900, mt: 10 }}>
-        {allRunTests.map((runTest) => (
-          <Box sx={{ display: 'flex', mt: 1 }}>
-            <Box>
-              <Grid item xs={9}>
-                {(runTest.status === 200 || runTest.status === 201) &&
-                (runTest.expectedResult === '' ||
-                  runTest.expectedResult === runTest.responseResult) ? (
-                  <Box>
-                    <Typography variant="h5" gutterBottom sx={{ color: `#2E7D32` }}>
-                      Success
-                    </Typography>
-                  </Box>
-                ) : (
-                  <Box>
-                    {' '}
-                    <Typography variant="h5" gutterBottom sx={{ color: `#C62828` }}>
-                      Fail
-                    </Typography>
-                  </Box>
-                )}
-                <div role="presentation">
-                  <Breadcrumbs separator="/" aria-label="breadcrumb">
-                    <Link underline="hover" color="inherit" href={`/workspaces/${workspace.id}`}>
-                      {workspace.title}
-                    </Link>
+    <Container sx={{ pb: 5 }}>
+      <Box sx={{ pl: 9 }}>
+        <List sx={{ width: '100%', maxWidth: 900 }}>
+          <Box sx={{ maxHeight: 620, overflowY: 'auto' }}>
+            {allRunTests.map((runTest) => (
+              <Box>
+                <Divider />
+                <Box sx={{ pt: 0.75, pb: 0.5, display: 'flex', maxHeight: 600, overflowY: 'auto' }}>
+                  <Box sx={{ flex: 1, pb: 0.5, mr: 1.5 }}>
+                    <Grid item xs={9}>
+                      {(runTest.status === 200 || runTest.status === 201) &&
+                      (runTest.expectedResult === '' ||
+                        runTest.expectedResult === runTest.responseResult) ? (
+                        <Box>
+                          <Typography variant="h5" gutterBottom sx={{ color: `#2E7D32` }}>
+                            Success
+                          </Typography>
+                        </Box>
+                      ) : (
+                        <Box>
+                          {' '}
+                          <Typography variant="h5" gutterBottom sx={{ color: `#C62828` }}>
+                            Fail
+                          </Typography>
+                        </Box>
+                      )}
+                      <div role="presentation">
+                        <Breadcrumbs separator="/" aria-label="breadcrumb">
+                          <Link
+                            underline="hover"
+                            color="inherit"
+                            href={`/workspaces/${workspace.id}`}
+                          >
+                            {workspace.title}
+                          </Link>
 
-                    <Typography variant="body1" gutterBottom>
-                      {props.parent.title}
-                    </Typography>
+                          <Typography variant="body1" gutterBottom>
+                            {props.parent.title}
+                          </Typography>
 
-                    <Typography variant="body1" gutterBottom>
-                      {runTest.title}
-                    </Typography>
-                  </Breadcrumbs>
-                </div>
-              </Grid>
-            </Box>
-            <Box sx={{ mt: 2, ml: 45 }}>
-              <Grid item xs={3}>
-                <ViewResult
-                  title={runTest.title}
-                  response={runTest.responseResult}
-                  expected={runTest.expectedResult}
-                />
-              </Grid>
-            </Box>
-            <Divider sx={{ my: 2 }} />
+                          <Typography variant="body1" gutterBottom>
+                            {runTest.title}
+                          </Typography>
+                        </Breadcrumbs>
+                      </div>
+                    </Grid>
+                  </Box>
+                  <Box sx={{ mt: 2.5, pb: 1, mr: 1 }}>
+                    <Grid item xs={3}>
+                      <ViewResult
+                        title={runTest.title}
+                        response={runTest.responseResult}
+                        expected={runTest.expectedResult}
+                      />
+                    </Grid>
+                  </Box>
+                </Box>
+              </Box>
+            ))}
           </Box>
-        ))}
-        <Divider sx={{ my: 2 }} />
-      </List>
+        </List>
+      </Box>
     </Container>
   )
 }
