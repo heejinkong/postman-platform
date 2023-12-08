@@ -3,9 +3,12 @@ import {
   Button,
   Chip,
   FormControl,
+  FormControlLabel,
   IconButton,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   Stack,
   Tab,
@@ -44,6 +47,8 @@ export default function RequestPage() {
   const [rowIdHover, setRowIdHover] = useState<GridRowId>(-1)
   const paramsRef = useGridApiRef()
   const headersRef = useGridApiRef()
+  const bodyRef = useGridApiRef()
+
   const handleMouseEnter: GridEventListener<'rowMouseEnter'> = (params) => {
     setRowIdHover(params.id)
   }
@@ -87,11 +92,20 @@ export default function RequestPage() {
     newRunTest.parentId = requestClone.parentId
     newRunTest.requestId = requestClone.id
     newRunTest.created = Date.now()
-    newRunTest.status = requestClone.response.status
+    newRunTest.status = request.response.status
     newRunTest.responseResult = requestClone.response.body
     newRunTest.expectedResult = requestClone.expectedResult
     dispatch(runTestService.new(newRunTest))
     newRunResult.runTestList?.push(newRunTest.id)
+
+    console.log(`requestClone`, requestClone.response.status)
+    console.log(`newRunTest.status`, newRunTest.status)
+  }
+
+  const [selectedBodyType, setSelectedBodyType] = useState('form-data')
+
+  const handleChangeBodyType = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedBodyType(e.target.value)
   }
 
   const getExtension = (type: string) => {
@@ -163,6 +177,77 @@ export default function RequestPage() {
       flex: 1,
       editable: true,
       sortable: false
+    },
+    {
+      field: '_desc',
+      headerName: 'Description',
+      flex: 1,
+      editable: true,
+      sortable: false
+    },
+    {
+      field: '_delete',
+      headerName: '',
+      width: 50,
+      editable: false,
+      sortable: false,
+      renderCell: (params) => {
+        return rowIdHover === params.id && !isLastRow(params.id) ? (
+          <IconButton
+            onClick={() => {
+              deleteRow(params.id)
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        ) : null
+      }
+    }
+  ]
+
+  const [selectedFormType, setSelectedFormType] = useState(requestClone.body.formData)
+
+  const handleChangeFormType = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedFormType(e.target.value)
+  }
+
+  const editableBodyColumns: GridColDef[] = [
+    {
+      field: '_key',
+      headerName: 'Key',
+      flex: 1,
+      editable: true,
+      sortable: false,
+      renderCell: () => {
+        return (
+          <Box>
+            <FormControl sx={{ py: 0.5, minWidth: '8rem', pl: 36 }} size="small">
+              <Select
+                sx={{ height: '1.5rem', width: `5rem`, fontSize: '0.9rem' }}
+                value={selectedFormType}
+                onChange={handleChangeFormType}
+              >
+                <MenuItem value={'Text'}>Text</MenuItem>
+                <MenuItem value={'File'}>File</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        )
+      }
+    },
+    {
+      field: '_value',
+      headerName: 'Value',
+      flex: 1,
+      editable: true,
+      sortable: false,
+      renderCell: () => {
+        return selectedFormType === `File` ? (
+          <Box>
+            <Button>Select Files</Button>
+          </Box>
+        ) : null
+      }
     },
     {
       field: '_desc',
@@ -391,10 +476,22 @@ export default function RequestPage() {
           </Box>
         )}
         {reqTabIndex === 2 && (
-          <Box sx={{ height: '40%', overflow: 'auto' }}>
-            <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ py: 1 }}>
-                <FormControl sx={{ minWidth: '8rem' }} size="small">
+          <Box sx={{ height: '40%', width: `100%` }}>
+            <Box>
+              <FormControl sx={{ height: `10%`, pl: 1.5 }}>
+                <RadioGroup
+                  row
+                  aria-labelledby="demo-row-radio-buttons-group-label"
+                  name="row-radio-buttons-group"
+                  value={selectedBodyType}
+                  onChange={handleChangeBodyType}
+                >
+                  <FormControlLabel value="form-data" control={<Radio />} label="form-data" />
+                  <FormControlLabel value="raw" control={<Radio />} label="raw" />
+                </RadioGroup>
+              </FormControl>
+              {selectedBodyType === 'raw' && (
+                <FormControl sx={{ py: 0.5, minWidth: '8rem' }} size="small">
                   <Select
                     sx={{ height: '2rem' }}
                     value={requestClone.body.rawType}
@@ -412,20 +509,57 @@ export default function RequestPage() {
                     <MenuItem value={'XML'}>XML</MenuItem>
                   </Select>
                 </FormControl>
-              </Box>
-              <Box ref={codeBoxRef} sx={{ flexGrow: 1 }}>
-                <CodeMirror
-                  extensions={getExtension(requestClone.body.rawType)}
-                  value={requestClone.body.rawData}
-                  onChange={(value) =>
+              )}
+            </Box>
+
+            {selectedBodyType === 'form-data' ? (
+              <Box sx={{ height: '85%', overflow: 'auto' }}>
+                <DataGrid
+                  apiRef={bodyRef}
+                  rows={requestClone.body.formData}
+                  columns={editableBodyColumns}
+                  editMode="row"
+                  checkboxSelection
+                  disableRowSelectionOnClick
+                  hideFooter
+                  disableColumnMenu
+                  rowSelectionModel={requestClone.body.formDataSelection}
+                  onRowSelectionModelChange={(newRowSelectionModel) => {
                     setRequestClone({
                       ...requestClone,
-                      body: { ...requestClone.body, rawData: value }
+                      body: {
+                        ...requestClone.body,
+                        formDataSelection: newRowSelectionModel as string[]
+                      }
                     })
-                  }
+                  }}
+                  processRowUpdate={(newRow) => {
+                    const newRows = handleProcessNewRows(newRow, requestClone.body.formData)
+                    setRequestClone({
+                      ...requestClone,
+                      body: { ...requestClone.body, formData: newRows }
+                    })
+                    return newRow
+                  }}
+                  onProcessRowUpdateError={(e) => console.log(e)}
                 />
               </Box>
-            </Box>
+            ) : (
+              <Box sx={{ height: `85%`, overflow: `auto` }}>
+                <Box ref={codeBoxRef} sx={{ flexGrow: 1 }}>
+                  <CodeMirror
+                    extensions={getExtension(requestClone.body.rawType)}
+                    value={requestClone.body.rawData}
+                    onChange={(value) =>
+                      setRequestClone({
+                        ...requestClone,
+                        body: { ...requestClone.body, rawData: value }
+                      })
+                    }
+                  />
+                </Box>
+              </Box>
+            )}
           </Box>
         )}
         {reqTabIndex === 3 && (

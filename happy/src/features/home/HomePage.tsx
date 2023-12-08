@@ -73,29 +73,6 @@ export default function HomePage() {
           </Box>
         )}
       </Box>
-      {/* <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-        <Box sx={{ minWidth: 750, pt: 20, p: 30 }}>
-          {allWorkspaces.length !== 0 ? (
-            <Box>
-              <Box sx={{ justifyContent: 'end', pt: -10 }}>
-                <NewWorkspace />
-              </Box>
-              <Box>
-                <WorkspacesList />
-              </Box>
-            </Box>
-          ) : (
-            <Box sx={{ width: '100%' }}>
-              <Box>
-                <WorkspacesList />
-              </Box>
-              <Box>
-                <NewWorkspace />
-              </Box>
-            </Box>
-          )}
-        </Box>
-      </Box> */}
     </Box>
   )
 }

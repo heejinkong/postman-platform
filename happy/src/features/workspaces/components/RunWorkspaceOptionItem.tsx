@@ -50,23 +50,21 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
       dfs(collection.id)
     })
 
-    const newRunResult = new runResultItem()
-    newRunResult.title = workspace.title
-    newRunResult.workspaceId = workspace.id
-    newRunResult.parentId = workspace?.id ?? ''
-    newRunResult.created = Date.now()
-    dispatch(runResultService.new(newRunResult))
+    const newRunResultItem = new runResultItem()
+    newRunResultItem.title = workspace.title
+    newRunResultItem.workspaceId = workspace.id
+    newRunResultItem.parentId = workspace?.id ?? ''
+    newRunResultItem.created = Date.now()
+    dispatch(runResultService.new(newRunResultItem))
 
     requestList.forEach((request) => {
-      const newRunTest = new runTestItem()
-      newRunTest.title = request.title
-      newRunTest.parentId = workspace?.id ?? ''
-      newRunTest.requestId = request.id
-      newRunTest.created = Date.now()
-      newRunTest.status = request.response.status
-      newRunTest.responseResult = request.response.body
-      dispatch(runTestService.new(newRunTest))
-      newRunResult.runTestList?.push(newRunTest.id)
+      const newRunTestItem = new runTestItem()
+      newRunTestItem.title = request.title
+      newRunTestItem.parentId = workspace?.id ?? ''
+      newRunTestItem.requestId = request.id
+      newRunTestItem.created = Date.now()
+      dispatch(runTestService.new(newRunTestItem))
+      newRunResultItem.runTestList?.push(newRunTestItem.id)
     })
 
     navigate(`/workspaces/${workspace.id}/runHistory`)
