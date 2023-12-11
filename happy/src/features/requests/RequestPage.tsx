@@ -73,33 +73,44 @@ export default function RequestPage() {
     dispatch(requestService.update(requestClone))
   }
 
-  const handleSend = () => {
-    dispatch(requestService.send(requestClone))
+  const handleSend = async () => {
+    try {
+      const response = await dispatch(requestService.send(requestClone))
+      const resError = response.payload
+      const resUrl = (response.payload as any)?.url
+      const resMethod = (response.payload as any)?.method
+      const resDuration = (response.payload as any)?.response?.elapsed
+      const resBody = (response.payload as any)?.response?.body
+      const resTitle = (response.payload as any)?.title
+      const resStatus = (response.payload as any)?.response?.status
+      const resExpectedResult = (response.payload as any)?.expectedResult
 
-    const newRunResult = new runResultItem()
-    newRunResult.title = requestClone.url
-    newRunResult.workspaceId = requestClone.workspaceId
-    newRunResult.parentId = requestClone.parentId
-    newRunResult.method = requestClone.method
-    newRunResult.url = requestClone.url
-    newRunResult.created = Date.now()
-    newRunResult.Duration = requestClone.response.elapsed
+      const newRunResult = new runResultItem()
+      newRunResult.title = resUrl
+      newRunResult.workspaceId = requestClone.workspaceId
+      newRunResult.parentId = requestClone.parentId
+      newRunResult.method = resMethod
+      newRunResult.url = resUrl
+      newRunResult.created = Date.now()
+      newRunResult.Duration = resDuration ?? 0
 
-    dispatch(runResultService.new(newRunResult))
+      dispatch(runResultService.new(newRunResult))
 
-    const newRunTest = new runTestItem()
-    newRunTest.title = requestClone.title
-    newRunTest.parentId = requestClone.parentId
-    newRunTest.requestId = requestClone.id
-    newRunTest.created = Date.now()
-    newRunTest.status = request.response.status
-    newRunTest.responseResult = requestClone.response.body
-    newRunTest.expectedResult = requestClone.expectedResult
-    dispatch(runTestService.new(newRunTest))
-    newRunResult.runTestList?.push(newRunTest.id)
+      const newRunTest = new runTestItem()
+      newRunTest.title = resTitle
+      newRunTest.parentId = requestClone.parentId
+      newRunTest.requestId = requestClone.id
+      newRunTest.created = Date.now()
+      newRunTest.status = resStatus
+      newRunTest.responseResult = resBody
+      newRunTest.expectedResult = resExpectedResult
+      dispatch(runTestService.new(newRunTest))
+      newRunResult.runTestList?.push(newRunTest.id)
 
-    console.log(`requestClone`, requestClone.response.status)
-    console.log(`newRunTest.status`, newRunTest.status)
+      console.log(`body`, newRunTest.responseResult)
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   const [selectedBodyType, setSelectedBodyType] = useState('form-data')

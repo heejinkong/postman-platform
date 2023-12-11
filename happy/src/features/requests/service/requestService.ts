@@ -95,7 +95,7 @@ class requestService implements requestCommands {
       })
       thunkAPI.dispatch({ type: 'requests/updateRequest', payload: newRequest })
 
-      return response
+      return newRequest
     } catch (error) {
       const end = Date.now()
       const elapsed = end - start
