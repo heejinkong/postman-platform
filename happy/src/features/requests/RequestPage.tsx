@@ -40,6 +40,20 @@ import runTestService from '../runTests/service/runTestService'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { v4 as uuidv4 } from 'uuid'
 
+interface ResponseType {
+  elapsed?: number
+  body?: string
+  status?: number
+}
+
+interface PayloadType {
+  url: string
+  method: string
+  response?: ResponseType
+  title?: string
+  expectedResult?: string
+}
+
 export default function RequestPage() {
   const { requestId } = useParams()
   const codeBoxRef = useRef<HTMLDivElement>(null)
@@ -76,14 +90,13 @@ export default function RequestPage() {
   const handleSend = async () => {
     try {
       const response = await dispatch(requestService.send(requestClone))
-      const resError = response.payload
-      const resUrl = (response.payload as any)?.url
-      const resMethod = (response.payload as any)?.method
-      const resDuration = (response.payload as any)?.response?.elapsed
-      const resBody = (response.payload as any)?.response?.body
-      const resTitle = (response.payload as any)?.title
-      const resStatus = (response.payload as any)?.response?.status
-      const resExpectedResult = (response.payload as any)?.expectedResult
+      const resUrl = (response.payload as PayloadType)?.url
+      const resMethod = (response.payload as PayloadType)?.method
+      const resDuration = (response.payload as PayloadType)?.response?.elapsed
+      const resBody = (response.payload as PayloadType)?.response?.body
+      const resTitle = (response.payload as PayloadType)?.title
+      const resStatus = (response.payload as PayloadType)?.response?.status
+      const resExpectedResult = (response.payload as PayloadType)?.expectedResult
 
       const newRunResult = new runResultItem()
       newRunResult.title = resUrl
@@ -97,13 +110,13 @@ export default function RequestPage() {
       dispatch(runResultService.new(newRunResult))
 
       const newRunTest = new runTestItem()
-      newRunTest.title = resTitle
+      newRunTest.title = resTitle || ''
       newRunTest.parentId = requestClone.parentId
       newRunTest.requestId = requestClone.id
       newRunTest.created = Date.now()
-      newRunTest.status = resStatus
-      newRunTest.responseResult = resBody
-      newRunTest.expectedResult = resExpectedResult
+      newRunTest.status = resStatus || 0
+      newRunTest.responseResult = resBody || ''
+      newRunTest.expectedResult = resExpectedResult || ''
       dispatch(runTestService.new(newRunTest))
       newRunResult.runTestList?.push(newRunTest.id)
 
