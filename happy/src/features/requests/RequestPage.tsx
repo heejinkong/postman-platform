@@ -74,7 +74,7 @@ export default function RequestPage() {
   }
 
   const handleSend = () => {
-    dispatch(runResultService.runRequest(requestClone))
+    dispatch(requestService.send(requestClone))
 
     const newRunResult = new runResultItem()
     newRunResult.title = requestClone.url
@@ -205,11 +205,11 @@ export default function RequestPage() {
     }
   ]
 
-  const [selectedFormType, setSelectedFormType] = useState(requestClone.body.formData)
+  // const [selectedFormType, setSelectedFormType] = useState(requestClone.body.formData)
 
-  const handleChangeFormType = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedFormType(e.target.value)
-  }
+  // const handleChangeFormType = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSelectedFormType(e.target.value)
+  // }
 
   const editableBodyColumns: GridColDef[] = [
     {
@@ -224,8 +224,8 @@ export default function RequestPage() {
             <FormControl sx={{ py: 0.5, minWidth: '8rem', pl: 36 }} size="small">
               <Select
                 sx={{ height: '1.5rem', width: `5rem`, fontSize: '0.9rem' }}
-                value={selectedFormType}
-                onChange={handleChangeFormType}
+                // value={selectedFormType}
+                // onChange={handleChangeFormType}
               >
                 <MenuItem value={'Text'}>Text</MenuItem>
                 <MenuItem value={'File'}>File</MenuItem>
@@ -240,14 +240,14 @@ export default function RequestPage() {
       headerName: 'Value',
       flex: 1,
       editable: true,
-      sortable: false,
-      renderCell: () => {
-        return selectedFormType === `File` ? (
-          <Box>
-            <Button>Select Files</Button>
-          </Box>
-        ) : null
-      }
+      sortable: false
+      // renderCell: () => {
+      //   return selectedFormType === `File` ? (
+      //     <Box>
+      //       <Button>Select Files</Button>
+      //     </Box>
+      //   ) : null
+      // }
     },
     {
       field: '_desc',
