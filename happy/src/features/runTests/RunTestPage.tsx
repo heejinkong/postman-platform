@@ -30,8 +30,9 @@ export default function RunTestPage(props: runResultPageProps) {
         justifyContent: 'center'
       }}
     >
-      <List sx={{ width: '100%', maxWidth: 900, mt: 10 }}>
-        <Box>
+      <List sx={{ width: '100%', maxWidth: 900 }}>
+        <Divider sx={{ my: 2 }} />
+        <Box sx={{ maxHeight: 550, overflowY: 'auto' }}>
           {allRunTests.map((runTest) => (
             <Box sx={{ display: 'flex', mt: 1 }}>
               <Box sx={{ flex: 1 }}>
@@ -69,7 +70,7 @@ export default function RunTestPage(props: runResultPageProps) {
                   </div>
                 </Grid>
               </Box>
-              <Box sx={{ mt: 2 }}>
+              <Box sx={{ mt: 2, pr: 1 }}>
                 <Grid item xs={3}>
                   <ViewResult
                     title={runTest.title}

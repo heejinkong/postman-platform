@@ -6,6 +6,9 @@ import { requestItem } from '../../requests/domain/requestEntity'
 import axios from 'axios'
 import { folderItem } from '../../folders/domain/folderEntity'
 import { v4 as uuidv4 } from 'uuid'
+import { runTestItem } from '../../runTests/domain/runTestEntity'
+
+
 
 class runResultService implements runResultCommands {
   new = createAsyncThunk('runResultService/new', async (runResult: runResultItem, thunkAPI) => {
@@ -65,9 +68,38 @@ class runResultService implements runResultCommands {
             _desc: ''
           })
         })
-        thunkAPI.dispatch({ type: 'requests/updateRequest', payload: newRequest })
+        const resUrl = response.config.url
+    const resMethod = response.config.method
+    const resDuration =  elapsed
+    const resBody = JSON.stringify(response.data, null, 2)
+    const resStatus = response.status
+    const resExpectedResult = request.expectedResult
 
-        return response
+    const newRunResult = new runResultItem()
+    newRunResult.workspaceId =  request.workspaceId
+    newRunResult.parentId = request.parentId
+    newRunResult.method = resMethod || ''
+    newRunResult.url = resUrl || ''
+    newRunResult.created = Date.now()
+    newRunResult.Duration = resDuration ?? 0
+   
+   
+    const newRunTest = new runTestItem()
+    newRunTest.title = request.title || ''
+    newRunTest.parentId = request.parentId
+    newRunTest.requestId = request.id
+    newRunTest.created = Date.now()
+    newRunTest.status = resStatus || 0
+    newRunTest.responseResult = resBody || ''
+    newRunTest.expectedResult = resExpectedResult || ''
+
+    thunkAPI.dispatch({type: 'runTest/createRunTest', payload: newRunTest})
+
+    newRunResult.runTestList?.push(newRunTest.id)
+    thunkAPI.dispatch({ type: 'runResult/newRunResult', payload: newRunResult })
+
+
+        return newRequest
       } catch (error) {
         const end = Date.now()
         const elapsed = end - start

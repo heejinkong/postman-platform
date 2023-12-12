@@ -10,10 +10,24 @@ import { runResultItem } from '../../runResults/domain/runResultEntity'
 import runResultService from '../../runResults/service/runResultService'
 import { runTestItem } from '../../runTests/domain/runTestEntity'
 import runTestService from '../../runTests/service/runTestService'
+import requestService from '../../requests/service/requestService'
 
 type runWorkspaceOptionItemProps = {
   workspaceId: string
   handleClose: () => void
+}
+
+interface ResponseType {
+  elapsed?: number
+  body?: string
+  status?: number
+}
+interface PayloadType {
+  url: string
+  method: string
+  response?: ResponseType
+  title?: string
+  expectedResult?: string
 }
 
 export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProps) {
@@ -46,28 +60,37 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
   const handleRunClick = () => {
     props.handleClose()
 
+    const newRunResult = new runResultItem()
+    newRunResult.title = workspace.title
+    newRunResult.workspaceId = workspace.id
+    newRunResult.parentId = workspace?.id ?? ''
+    newRunResult.created = Date.now()
+
     collection.forEach((collection) => {
       dfs(collection.id)
     })
 
-    const newRunResultItem = new runResultItem()
-    newRunResultItem.title = workspace.title
-    newRunResultItem.workspaceId = workspace.id
-    newRunResultItem.parentId = workspace?.id ?? ''
-    newRunResultItem.created = Date.now()
-    dispatch(runResultService.new(newRunResultItem))
+    requestList.forEach(async (request) => {
+      const response = await dispatch(requestService.send(request))
+      const resBody = (response.payload as PayloadType)?.response?.body
+      const resTitle = (response.payload as PayloadType)?.title
+      const resStatus = (response.payload as PayloadType)?.response?.status
+      const resExpectedResult = (response.payload as PayloadType)?.expectedResult
 
-    requestList.forEach((request) => {
-      const newRunTestItem = new runTestItem()
-      newRunTestItem.title = request.title
-      newRunTestItem.parentId = workspace?.id ?? ''
-      newRunTestItem.requestId = request.id
-      newRunTestItem.created = Date.now()
-      dispatch(runTestService.new(newRunTestItem))
-      newRunResultItem.runTestList?.push(newRunTestItem.id)
+      const newRunTest = new runTestItem()
+      newRunTest.title = resTitle || ''
+      newRunTest.parentId = workspace?.id ?? ''
+      newRunTest.requestId = request.id
+      newRunTest.created = Date.now()
+      newRunTest.status = resStatus || 0
+      newRunTest.responseResult = resBody || ''
+      newRunTest.expectedResult = resExpectedResult || ''
+      dispatch(runTestService.new(newRunTest))
+      newRunResult.runTestList?.push(newRunTest.id)
     })
 
     navigate(`/workspaces/${workspace.id}/runHistory`)
+    dispatch(runResultService.new(newRunResult))
   }
 
   return (

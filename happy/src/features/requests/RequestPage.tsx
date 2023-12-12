@@ -33,19 +33,18 @@ import { selectRequestById } from './service/requestSlice'
 import requestService from './service/requestService'
 import { requestItem } from './domain/requestEntity'
 import configService from '../config/service/configService'
-import { runResultItem } from '../runResults/domain/runResultEntity'
-import runResultService from '../runResults/service/runResultService'
-import { runTestItem } from '../runTests/domain/runTestEntity'
-import runTestService from '../runTests/service/runTestService'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { v4 as uuidv4 } from 'uuid'
+import { runResultItem } from '../runResults/domain/runResultEntity'
+import { runTestItem } from '../runTests/domain/runTestEntity'
+import runResultService from '../runResults/service/runResultService'
+import runTestService from '../runTests/service/runTestService'
 
 interface ResponseType {
   elapsed?: number
   body?: string
   status?: number
 }
-
 interface PayloadType {
   url: string
   method: string
@@ -88,42 +87,37 @@ export default function RequestPage() {
   }
 
   const handleSend = async () => {
-    try {
-      const response = await dispatch(requestService.send(requestClone))
-      const resUrl = (response.payload as PayloadType)?.url
-      const resMethod = (response.payload as PayloadType)?.method
-      const resDuration = (response.payload as PayloadType)?.response?.elapsed
-      const resBody = (response.payload as PayloadType)?.response?.body
-      const resTitle = (response.payload as PayloadType)?.title
-      const resStatus = (response.payload as PayloadType)?.response?.status
-      const resExpectedResult = (response.payload as PayloadType)?.expectedResult
+    // dispatch(requestService.send(requestClone))
+    const response = await dispatch(requestService.send(requestClone))
+    const resUrl = (response.payload as PayloadType)?.url
+    const resMethod = (response.payload as PayloadType)?.method
+    const resDuration = (response.payload as PayloadType)?.response?.elapsed
+    const resBody = (response.payload as PayloadType)?.response?.body
+    const resTitle = (response.payload as PayloadType)?.title
+    const resStatus = (response.payload as PayloadType)?.response?.status
+    const resExpectedResult = (response.payload as PayloadType)?.expectedResult
 
-      const newRunResult = new runResultItem()
-      newRunResult.title = resUrl
-      newRunResult.workspaceId = requestClone.workspaceId
-      newRunResult.parentId = requestClone.parentId
-      newRunResult.method = resMethod
-      newRunResult.url = resUrl
-      newRunResult.created = Date.now()
-      newRunResult.Duration = resDuration ?? 0
+    const newRunResult = new runResultItem()
+    newRunResult.title = resUrl
+    newRunResult.workspaceId = requestClone.workspaceId
+    newRunResult.parentId = requestClone.parentId
+    newRunResult.method = resMethod
+    newRunResult.url = resUrl
+    newRunResult.created = Date.now()
+    newRunResult.Duration = resDuration ?? 0
 
-      dispatch(runResultService.new(newRunResult))
+    dispatch(runResultService.new(newRunResult))
 
-      const newRunTest = new runTestItem()
-      newRunTest.title = resTitle || ''
-      newRunTest.parentId = requestClone.parentId
-      newRunTest.requestId = requestClone.id
-      newRunTest.created = Date.now()
-      newRunTest.status = resStatus || 0
-      newRunTest.responseResult = resBody || ''
-      newRunTest.expectedResult = resExpectedResult || ''
-      dispatch(runTestService.new(newRunTest))
-      newRunResult.runTestList?.push(newRunTest.id)
-
-      console.log(`body`, newRunTest.responseResult)
-    } catch (e) {
-      console.error(e)
-    }
+    const newRunTest = new runTestItem()
+    newRunTest.title = resTitle || ''
+    newRunTest.parentId = requestClone.parentId
+    newRunTest.requestId = requestClone.id
+    newRunTest.created = Date.now()
+    newRunTest.status = resStatus || 0
+    newRunTest.responseResult = resBody || ''
+    newRunTest.expectedResult = resExpectedResult || ''
+    dispatch(runTestService.new(newRunTest))
+    newRunResult.runTestList?.push(newRunTest.id)
   }
 
   const [selectedBodyType, setSelectedBodyType] = useState('form-data')

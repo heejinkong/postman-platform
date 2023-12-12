@@ -10,21 +10,23 @@ export default function RunResultPage() {
   const runResult = useAppSelector((state) => selectRunResultById(state, runResultId ?? ''))
 
   return (
-    <Container>
-      <Box sx={{ mt: 2.2 }}>Run Result</Box>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ px: 1, py: 0.75 }}>Run Result</Box>
       <Divider />
-      <Box sx={{ mt: 10, ml: 23 }}>
-        <Typography variant="h4" gutterBottom>
-          Run Results
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          Please click on one item to check its run details.
-        </Typography>
-        <Divider sx={{ my: 7 }} />
-      </Box>
-      <Box sx={{ mt: -17 }}>
-        <RunTestPage parent={runResult} />
-      </Box>
-    </Container>
+      <Container sx={{ pt: 3, flexGrow: 1 }}>
+        <Box sx={{ pb: 3.75 }}>
+          <Typography variant="h4" sx={{ pb: 0.75 }}>
+            Run Results
+          </Typography>
+          <Typography variant="subtitle1" color="text.secondary">
+            Please click on one item to check its run details.
+          </Typography>
+        </Box>
+        {/* <Divider sx={{ my: 7 }} /> */}
+        <Box sx={{ pb: 5 }}>
+          <RunTestPage parent={runResult} />
+        </Box>
+      </Container>
+    </Box>
   )
 }

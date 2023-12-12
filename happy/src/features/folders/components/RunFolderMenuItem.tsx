@@ -8,10 +8,24 @@ import { runResultItem } from '../../runResults/domain/runResultEntity'
 import runResultService from '../../runResults/service/runResultService'
 import { requestItem } from '../../requests/domain/requestEntity'
 import runTestService from '../../runTests/service/runTestService'
+import requestService from '../../requests/service/requestService'
 
 type runFolderMenuItemProps = {
   parentId: string
   handleClose: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
+}
+
+interface ResponseType {
+  elapsed?: number
+  body?: string
+  status?: number
+}
+interface PayloadType {
+  url: string
+  method: string
+  response?: ResponseType
+  title?: string
+  expectedResult?: string
 }
 
 export default function RunFolderMenuItem(props: runFolderMenuItemProps) {
@@ -40,39 +54,35 @@ export default function RunFolderMenuItem(props: runFolderMenuItemProps) {
 
   const handleRunClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     props.handleClose(e)
+    const newRunResult = new runResultItem()
+    newRunResult.title = folder.title
+    newRunResult.workspaceId = folder.workspaceId
+    newRunResult.parentId = folder?.id ?? ''
+    newRunResult.created = Date.now()
 
     dfs(folder?.id ?? '')
 
-    const newRunResultItem = new runResultItem()
-    newRunResultItem.title = folder.title
-    newRunResultItem.workspaceId = folder.workspaceId
-    newRunResultItem.parentId = folder?.id ?? ''
-    newRunResultItem.created = Date.now()
-    dispatch(runResultService.new(newRunResultItem))
+    requestList.forEach(async (request) => {
+      const response = await dispatch(requestService.send(request))
+      const resBody = (response.payload as PayloadType)?.response?.body
+      const resTitle = (response.payload as PayloadType)?.title
+      const resStatus = (response.payload as PayloadType)?.response?.status
+      const resExpectedResult = (response.payload as PayloadType)?.expectedResult
 
-    requestList.forEach((request) => {
-      const newRunTestItem = new runTestItem()
-      newRunTestItem.title = request.title
-      newRunTestItem.parentId = folder?.id ?? ''
-      newRunTestItem.requestId = request.id
-      newRunTestItem.created = Date.now()
-      dispatch(runTestService.new(newRunTestItem))
-      newRunResultItem.runTestList?.push(newRunTestItem.id)
+      const newRunTest = new runTestItem()
+      newRunTest.title = resTitle || ''
+      newRunTest.parentId = folder?.id ?? ''
+      newRunTest.requestId = request.id
+      newRunTest.created = Date.now()
+      newRunTest.status = resStatus || 0
+      newRunTest.responseResult = resBody || ''
+      newRunTest.expectedResult = resExpectedResult || ''
+      dispatch(runTestService.new(newRunTest))
+      newRunResult.runTestList?.push(newRunTest.id)
     })
 
-    // if (requests.length > 0) {
-    //   requests.forEach((request) => {
-    //     const newRunTestItem = new runTestItem()
-    //     newRunTestItem.title = request.title
-    //     newRunTestItem.parentId = folder?.id ?? ''
-    //     newRunTestItem.requestId = request.id
-    //     newRunTestItem.created = Date.now()
-    //     newRunTestItem.status = request.response.status
-    //     newRunTestItem.responseResult = request.response.body
-    //     dispatch(runTestService.new(newRunTestItem))
-    //     newRunResultItem.runTestList?.push(newRunTestItem.id)
-    //   })
-    // }
+    dispatch(runResultService.new(newRunResult))
+
     navigate(`/workspaces/${workspaceId}/runHistory`)
   }
 
