@@ -20,6 +20,7 @@ import { useState } from 'react'
 import { useAppDispatch } from '../../app/hook'
 import { ListItemDecorator } from '@mui/joy'
 import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
+import CircleIcon from '@mui/icons-material/Circle'
 
 export default function RunHistoryPage() {
   const { workspaceId } = useParams()
@@ -29,6 +30,31 @@ export default function RunHistoryPage() {
   allRunResults.sort((a, b) => {
     return b.created - a.created
   })
+
+  const runTestStatus = (runResult: runResultItem) => {
+    const runTestList = runResult.runTestList
+    let status = ''
+    runTestList?.forEach((runTest) => {
+      if (
+        (runTest as unknown as { status: number }).status === 200 ||
+        (runTest as unknown as { status: number }).status === 201
+      ) {
+        if (
+          (runTest as unknown as { expectedResult: string }).expectedResult === '' ||
+          (runTest as unknown as { expectedResult: string }).expectedResult ===
+            (runTest as unknown as { responseResult: string }).responseResult
+        ) {
+          status = 'success'
+        } else {
+          status = `fail`
+        }
+      } else {
+        status = `fail`
+      }
+    })
+    return status
+  }
+
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
@@ -98,6 +124,11 @@ export default function RunHistoryPage() {
                     <ListItemDecorator sx={{ width: '10.5rem', mr: 1.5 }}>
                       <ListItemText secondary={new Date(runResult.created).toLocaleString()} />
                     </ListItemDecorator>
+                    {runTestStatus === `success` ? (
+                      <CircleIcon sx={{ color: `#2E7D32` }} />
+                    ) : (
+                      <CircleIcon sx={{ color: `#C62828` }} />
+                    )}
                     <ListItemText primary={runResult.title} />
                   </ListItemButton>
                 </ListItem>

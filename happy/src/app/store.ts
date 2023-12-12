@@ -8,6 +8,7 @@ import folderSlice from '../features/folders/service/folderSlice'
 import configSlice from '../features/config/configSlice'
 import runTestSlice from '../features/runTests/service/runTestSlice'
 import runResultSlice from '../features/runResults/service/runResultSlice'
+import pathSlice from '../features/path/pathSlice'
 
 const persistedWorkspacesReducer = persistReducer(
   {
@@ -72,6 +73,15 @@ const persistedRunResultsReducer = persistReducer(
   runResultSlice
 )
 
+const persistPathReducer = persistReducer(
+  {
+    key: 'path',
+    storage,
+    version: 1
+  },
+  pathSlice
+)
+
 export const store = configureStore({
   reducer: {
     workspaces: persistedWorkspacesReducer,
@@ -80,7 +90,8 @@ export const store = configureStore({
     folders: persistedFoldersReducer,
     config: persistedConfigReducer,
     runTests: persistedRunTestsReducer,
-    runResults: persistedRunResultsReducer
+    runResults: persistedRunResultsReducer,
+    path: persistPathReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -71,7 +71,7 @@ export default function RunFolderMenuItem(props: runFolderMenuItemProps) {
 
       const newRunTest = new runTestItem()
       newRunTest.title = resTitle || ''
-      newRunTest.parentId = folder?.id ?? ''
+      newRunTest.parentId = folder?.parentId ?? ''
       newRunTest.requestId = request.id
       newRunTest.created = Date.now()
       newRunTest.status = resStatus || 0

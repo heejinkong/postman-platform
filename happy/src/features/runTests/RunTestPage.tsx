@@ -1,9 +1,10 @@
-import { Box, Breadcrumbs, Container, Divider, Grid, Link, List, Typography } from '@mui/material'
+import { Box, Container, Divider, Grid, List, Typography } from '@mui/material'
 import { selectAllRunTests } from './service/runTestSlice'
 import ViewResult from './component/ViewResult'
 import { runResultItem } from '../runResults/domain/runResultEntity'
 import { useAppSelector } from '../../app/hook'
 import { selectWorkspaceById } from '../workspaces/service/workspaceSlice'
+import RunTestPath from './component/RunTestPath'
 
 type runResultPageProps = {
   parent: runResultItem
@@ -20,7 +21,7 @@ export default function RunTestPage(props: runResultPageProps) {
   if (!workspace) {
     return <></>
   }
-
+  console.log(props.parent.runTestList)
   return (
     <Container
       sx={{
@@ -54,19 +55,7 @@ export default function RunTestPage(props: runResultPageProps) {
                     </Box>
                   )}
                   <div role="presentation">
-                    <Breadcrumbs separator="/" aria-label="breadcrumb">
-                      <Link underline="hover" color="inherit" href={`/workspaces/${workspace.id}`}>
-                        {workspace.title}
-                      </Link>
-
-                      <Typography variant="body1" gutterBottom>
-                        {props.parent.title}
-                      </Typography>
-
-                      <Typography variant="body1" gutterBottom>
-                        {runTest.title}
-                      </Typography>
-                    </Breadcrumbs>
+                    <RunTestPath />
                   </div>
                 </Grid>
               </Box>
