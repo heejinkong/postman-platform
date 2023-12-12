@@ -81,6 +81,7 @@ export default function RunHistoryPage() {
             >
               {currentRows.map((runResult) => (
                 <ListItem
+                  key={runResult.id}
                   alignItems="flex-start"
                   disablePadding
                   secondaryAction={

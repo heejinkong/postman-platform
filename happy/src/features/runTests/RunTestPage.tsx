@@ -36,7 +36,7 @@ export default function RunTestPage(props: runResultPageProps) {
           {allRunTests.map((runTest) => (
             <Box sx={{ display: 'flex', mt: 1 }}>
               <Box sx={{ flex: 1 }}>
-                <Grid item xs={9}>
+                <Grid item xs={9} key={runTest.id}>
                   {(runTest.status === 200 || runTest.status === 201) &&
                   (runTest.expectedResult === '' ||
                     runTest.expectedResult === runTest.responseResult) ? (
