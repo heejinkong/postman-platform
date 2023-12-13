@@ -37,7 +37,7 @@ export default function FolderPage() {
   return (
     <Box sx={{ p: 2 }}>
       <Box>
-        <WorkspaceNavBar />
+        <WorkspaceNavBar _id={folderId ?? ''} />
         <Box sx={{ pt: 1 }}>
           <Divider />
         </Box>

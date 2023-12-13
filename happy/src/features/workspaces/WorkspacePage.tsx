@@ -38,7 +38,7 @@ export default function WorkspacesPage() {
   return (
     <Box sx={{ p: 2 }}>
       <Box>
-        <WorkspaceNavBar />
+        <WorkspaceNavBar _id={workspaceId ?? ''} />
         <Box sx={{ pt: 1 }}>
           <Divider />
         </Box>

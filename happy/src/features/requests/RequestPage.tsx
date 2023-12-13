@@ -360,7 +360,7 @@ export default function RequestPage() {
   return (
     <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Box>
-        <WorkspaceNavBar />
+        <WorkspaceNavBar _id={requestId ?? ''} />
         <Box sx={{ pt: 1 }}>
           <Divider />
         </Box>

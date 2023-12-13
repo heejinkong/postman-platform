@@ -4,7 +4,7 @@ import ViewResult from './component/ViewResult'
 import { runResultItem } from '../runResults/domain/runResultEntity'
 import { useAppSelector } from '../../app/hook'
 import { selectWorkspaceById } from '../workspaces/service/workspaceSlice'
-import RunTestPath from './component/RunTestPath'
+import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
 
 type runResultPageProps = {
   parent: runResultItem
@@ -21,58 +21,54 @@ export default function RunTestPage(props: runResultPageProps) {
   if (!workspace) {
     return <></>
   }
-  console.log(props.parent.runTestList)
+
   return (
-    <Container
-      sx={{
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}
-    >
-      <List sx={{ width: '100%', maxWidth: 900 }}>
-        <Divider sx={{ my: 2 }} />
-        <Box sx={{ maxHeight: 550, overflowY: 'auto' }}>
-          {allRunTests.map((runTest) => (
-            <Box sx={{ display: 'flex', mt: 1 }}>
-              <Box sx={{ flex: 1 }}>
-                <Grid item xs={9} key={runTest.id}>
-                  {(runTest.status === 200 || runTest.status === 201) &&
-                  (runTest.expectedResult === '' ||
-                    runTest.expectedResult === runTest.responseResult) ? (
-                    <Box>
-                      <Typography variant="h5" gutterBottom sx={{ color: `#2E7D32` }}>
-                        Success
-                      </Typography>
-                    </Box>
-                  ) : (
-                    <Box>
-                      {' '}
-                      <Typography variant="h5" gutterBottom sx={{ color: `#C62828` }}>
-                        Fail
-                      </Typography>
-                    </Box>
-                  )}
-                  <div role="presentation">
-                    <RunTestPath />
-                  </div>
-                </Grid>
+    <Container sx={{ pb: 5 }}>
+      <Box sx={{ pl: 9 }}>
+        <List sx={{ width: '100%', maxWidth: 900 }}>
+          <Box sx={{ maxHeight: 620, overflowY: 'auto' }}>
+            {allRunTests.map((runTest) => (
+              <Box>
+                <Divider />
+                <Box sx={{ pt: 0.75, pb: 0.5, display: 'flex', maxHeight: 600, overflowY: 'auto' }}>
+                  <Box sx={{ flex: 1, pb: 0.5, mr: 1.5 }}>
+                    <Grid item xs={9}>
+                      {(runTest.status === 200 || runTest.status === 201) &&
+                      (runTest.expectedResult === '' ||
+                        runTest.expectedResult === runTest.responseResult) ? (
+                        <Box>
+                          <Typography variant="h5" gutterBottom sx={{ color: `#2E7D32` }}>
+                            Success
+                          </Typography>
+                        </Box>
+                      ) : (
+                        <Box>
+                          {' '}
+                          <Typography variant="h5" gutterBottom sx={{ color: `#C62828` }}>
+                            Fail
+                          </Typography>
+                        </Box>
+                      )}
+                      <div role="presentation">
+                        <WorkspaceNavBar _id={runTest.requestId ?? ''} />
+                      </div>
+                    </Grid>
+                  </Box>
+                  <Box sx={{ mt: 2.5, pb: 1, mr: 1 }}>
+                    <Grid item xs={3}>
+                      <ViewResult
+                        title={runTest.title}
+                        response={runTest.responseResult}
+                        expected={runTest.expectedResult}
+                      />
+                    </Grid>
+                  </Box>
+                </Box>
               </Box>
-              <Box sx={{ mt: 2, pr: 1 }}>
-                <Grid item xs={3}>
-                  <ViewResult
-                    title={runTest.title}
-                    response={runTest.responseResult}
-                    expected={runTest.expectedResult}
-                  />
-                </Grid>
-              </Box>
-            </Box>
-          ))}
-        </Box>
-        <Divider sx={{ my: 2 }} />
-      </List>
+            ))}
+          </Box>
+        </List>
+      </Box>
     </Container>
   )
 }

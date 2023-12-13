@@ -3,7 +3,7 @@ import { Item } from '../../../repository/Item'
 import { RootState } from '../../../app/store'
 import { selectFolderById } from '../../folders/service/folderSlice'
 import { selectCollectionById } from '../../collections/service/collectionSlice'
-import { selectNavTreeExpanded } from '../configSlice'
+import { selectNavBarData, selectNavTreeExpanded } from '../configSlice'
 import { configCommands } from '../domain/configEntity'
 
 class configService implements configCommands {
@@ -48,6 +48,47 @@ class configService implements configCommands {
     })
 
     return expanded
+  })
+
+  navBarCreated = createAsyncThunk('configService/navBarCreated', async (item: Item, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState
+
+    let depth = 0
+    const navItemIdList: string[] = [item.id]
+    let parentId = item.parentId
+    do {
+      const folderParent = selectFolderById(state, parentId)
+      if (folderParent) {
+        navItemIdList.push(folderParent.id)
+        parentId = folderParent.parentId
+        continue
+      }
+
+      const collectionParent = selectCollectionById(state, parentId)
+      if (collectionParent) {
+        navItemIdList.push(collectionParent.id)
+        parentId = collectionParent.parentId
+        continue
+      }
+
+      break
+    } while (depth++ < 100)
+
+    const navBarData = selectNavBarData(state)
+    const navBarDataClone = [...navBarData]
+    const navBarItem = navBarDataClone.find((target) => item.id === target.targetId)
+    if (navBarItem) {
+      navBarItem.itemIdList = navItemIdList
+    } else {
+      navBarDataClone.push({ targetId: item.id, itemIdList: navItemIdList })
+    }
+
+    thunkAPI.dispatch({
+      type: 'config/setNavBarData',
+      payload: navBarDataClone
+    })
+
+    return navBarDataClone
   })
 }
 
