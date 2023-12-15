@@ -10,6 +10,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  SelectChangeEvent,
   Stack,
   Tab,
   Tabs,
@@ -162,6 +163,8 @@ export default function RequestPage() {
       return id === requestClone.params[requestClone.params.length - 1].id
     } else if (reqTabIndex === 1) {
       return id === requestClone.headers[requestClone.headers.length - 1].id
+    } else if (reqTabIndex === 2) {
+      return id === requestClone.body.formData[requestClone.body.formData.length - 1].id
     } else {
       return false
     }
@@ -178,6 +181,11 @@ export default function RequestPage() {
       const index = newRows.findIndex((row) => row.id === id)
       newRows.splice(index, 1)
       setRequestClone({ ...requestClone, headers: newRows })
+    } else if (reqTabIndex === 2) {
+      const newRows = [...requestClone.body.formData]
+      const index = newRows.findIndex((row) => row.id === id)
+      newRows.splice(index, 1)
+      setRequestClone({ ...requestClone, body: { ...requestClone.body, formData: newRows } })
     }
   }
 
@@ -223,11 +231,35 @@ export default function RequestPage() {
     }
   ]
 
-  // const [selectedFormType, setSelectedFormType] = useState(requestClone.body.formData)
+  const [selectedFormType, setSelectedFormType] = useState(`1`)
 
-  // const handleChangeFormType = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setSelectedFormType(e.target.value)
-  // }
+  const handleChangeFormType = (event: SelectChangeEvent) => {
+    setSelectedFormType(event.target.value as string)
+  }
+
+  const handleClickFile = () => {
+    const fileInput = document.createElement('input')
+    fileInput.type = 'file'
+    fileInput.multiple = true
+    fileInput.click()
+
+    fileInput.addEventListener('change', (e) => {
+      const files = (e.target as HTMLInputElement).files
+      const fileUrlList = []
+      if (files) {
+        const newRows = [...requestClone.body.formData]
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i]
+          const index = newRows.findIndex((row) => row.id === rowIdHover)
+          newRows[index]._value = file.name
+          newRows[index]._desc = file.type
+          const nowUrl = URL.createObjectURL(file)
+          fileUrlList.push(nowUrl[i])
+        }
+        setRequestClone({ ...requestClone, body: { ...requestClone.body, formData: newRows } })
+      }
+    })
+  }
 
   const editableBodyColumns: GridColDef[] = [
     {
@@ -235,18 +267,25 @@ export default function RequestPage() {
       headerName: 'Key',
       flex: 1,
       editable: true,
+      sortable: false
+    },
+    {
+      field: `_type`,
+      headerName: '',
+      width: 100,
+      editable: false,
       sortable: false,
-      renderCell: () => {
+      renderCell: (params) => {
         return (
           <Box>
-            <FormControl sx={{ py: 0.5, minWidth: '8rem', pl: 36 }} size="small">
+            <FormControl sx={{ py: 0.5, minWidth: '8rem' }} size="small">
               <Select
                 sx={{ height: '1.5rem', width: `5rem`, fontSize: '0.9rem' }}
-                // value={selectedFormType}
-                // onChange={handleChangeFormType}
+                value={selectedFormType}
+                onChange={handleChangeFormType}
               >
-                <MenuItem value={'Text'}>Text</MenuItem>
-                <MenuItem value={'File'}>File</MenuItem>
+                <MenuItem value={1}>Text</MenuItem>
+                <MenuItem value={2}>File</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -258,14 +297,14 @@ export default function RequestPage() {
       headerName: 'Value',
       flex: 1,
       editable: true,
-      sortable: false
-      // renderCell: () => {
-      //   return selectedFormType === `File` ? (
-      //     <Box>
-      //       <Button>Select Files</Button>
-      //     </Box>
-      //   ) : null
-      // }
+      sortable: false,
+      renderCell: () => {
+        return selectedFormType === 2 ? (
+          <Box>
+            <Button onClick={handleClickFile}>Select Files</Button>
+          </Box>
+        ) : null
+      }
     },
     {
       field: '_desc',
@@ -293,6 +332,8 @@ export default function RequestPage() {
       }
     }
   ]
+
+  console.log(selectedFormType)
 
   const readonlyColumns: GridColDef[] = [
     {
