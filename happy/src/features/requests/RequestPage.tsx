@@ -230,11 +230,13 @@ export default function RequestPage() {
       }
     }
   ]
+  const [selectedFormType, setSelectedFormType] = useState<{ [key: string]: string }>({})
 
-  const [selectedFormType, setSelectedFormType] = useState(`1`)
-
-  const handleChangeFormType = (event: SelectChangeEvent) => {
-    setSelectedFormType(event.target.value as string)
+  const handleChangeFormType = (event: SelectChangeEvent<string>, rowId: string) => {
+    setSelectedFormType((prev) => ({
+      ...prev,
+      [rowId]: event.target.value as string
+    }))
   }
 
   const handleClickFile = () => {
@@ -243,20 +245,23 @@ export default function RequestPage() {
     fileInput.multiple = true
     fileInput.click()
 
+    // 파일 선택 이벤트 리스너 등록
     fileInput.addEventListener('change', (e) => {
       const files = (e.target as HTMLInputElement).files
       if (files) {
-        setRequestClone({
-          ...requestClone,
+        setRequestClone((prevRequestClone) => ({
+          ...prevRequestClone,
           body: {
-            ...requestClone.body,
-            selectedFiles: files // 선택된 파일을 body 객체에 저장
+            ...prevRequestClone.body,
+            selectedFiles: files
           }
-        })
+        }))
       }
     })
-  }
 
+    // 파일 입력란을 문서에 추가
+    document.body.appendChild(fileInput)
+  }
   const createEditableColumns = (isFile: boolean) => [
     {
       field: '_key',
@@ -276,11 +281,13 @@ export default function RequestPage() {
           <FormControl sx={{ py: 0.5, minWidth: '8rem' }} size="small">
             <Select
               sx={{ height: '1.5rem', width: `5rem`, fontSize: '0.9rem' }}
-              value={selectedFormType}
-              onChange={handleChangeFormType}
+              value={selectedFormType[params.id] || '1'} // 기본값 "1"로 설정
+              onChange={(e: SelectChangeEvent<string>) => {
+                handleChangeFormType(e, params.id)
+              }}
             >
-              <MenuItem value={1}>Text</MenuItem>
-              <MenuItem value={2}>File</MenuItem>
+              <MenuItem value="1">Text</MenuItem>
+              <MenuItem value="2">File</MenuItem>
             </Select>
           </FormControl>
         </Box>
