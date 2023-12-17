@@ -245,23 +245,137 @@ export default function RequestPage() {
 
     fileInput.addEventListener('change', (e) => {
       const files = (e.target as HTMLInputElement).files
-      const fileUrlList = []
       if (files) {
-        const newRows = [...requestClone.body.formData]
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i]
-          const index = newRows.findIndex((row) => row.id === rowIdHover)
-          newRows[index]._value = file.name
-          newRows[index]._desc = file.type
-          const nowUrl = URL.createObjectURL(file)
-          fileUrlList.push(nowUrl[i])
-        }
-        setRequestClone({ ...requestClone, body: { ...requestClone.body, formData: newRows } })
+        setRequestClone({
+          ...requestClone,
+          body: {
+            ...requestClone.body,
+            selectedFiles: files // 선택된 파일을 body 객체에 저장
+          }
+        })
       }
     })
   }
 
-  const editableBodyColumns: GridColDef[] = [
+  // const handleClickFile = () => {
+  //   const fileInput = document.createElement('input')
+  //   fileInput.type = 'file'
+  //   fileInput.multiple = true
+  //   fileInput.click()
+
+  //   fileInput.addEventListener('change', (e) => {
+  //     const files = (e.target as HTMLInputElement).files
+  //     const fileUrlList = []
+  //     if (files) {
+  //       const newRows = [...requestClone.body.formData]
+  //       for (let i = 0; i < files.length; i++) {
+  //         const file = files[i]
+  //         const index = newRows.findIndex((row) => row.id === rowIdHover)
+  //         newRows[index]._value = file.name
+  //         newRows[index]._desc = file.type
+  //         const nowUrl = URL.createObjectURL(file)
+  //         fileUrlList.push(nowUrl[i])
+  //       }
+  //       setRequestClone({ ...requestClone, body: { ...requestClone.body, formData: newRows } })
+  //     }
+  //   })
+  // }
+
+  // const editableBodyColumns: GridColDef[] = [
+  //   {
+  //     field: '_key',
+  //     headerName: 'Key',
+  //     flex: 1,
+  //     editable: true,
+  //     sortable: false
+  //   },
+  //   {
+  //     field: `_type`,
+  //     headerName: '',
+  //     width: 100,
+  //     editable: false,
+  //     sortable: false,
+  //     renderCell: (params) => {
+  //       return (
+  //         <Box>
+  //           <FormControl sx={{ py: 0.5, minWidth: '8rem' }} size="small">
+  //             <Select
+  //               sx={{ height: '1.5rem', width: `5rem`, fontSize: '0.9rem' }}
+  //               value={selectedFormType}
+  //               onChange={handleChangeFormType}
+  //             >
+  //               <MenuItem value={1}>Text</MenuItem>
+  //               <MenuItem value={2}>File</MenuItem>
+  //             </Select>
+  //           </FormControl>
+  //         </Box>
+  //       )
+  //     }
+  //   },
+  //   {
+  //     field: '_value',
+  //     headerName: 'Value',
+  //     flex: 1,
+  //     editable: true,
+  //     sortable: false,
+  //     renderCell: (params) => {
+  //       return (
+  //         <Box
+  //           onClick={() => {
+  //             if (selectedFormType === 2) {
+  //               handleClickFile()
+  //             }
+  //           }}
+  //         >
+  //           <Button style={{ width: '100%', textAlign: 'left' }}>파일 선택</Button>
+  //           {requestClone.body.selectedFiles && (
+  //             <div>
+  //               선택된 파일:
+  //               {Array.from(requestClone.body.selectedFiles).map((file, index) => (
+  //                 <div key={index}>{file.name}</div>
+  //               ))}
+  //             </div>
+  //           )}
+  //         </Box>
+  //       )
+  //     }
+
+  //     // renderCell: () => {
+  //     //   return selectedFormType === 2 ? (
+  //     //     <Box>
+  //     //       <Button onClick={handleClickFile}>Select Files</Button>
+  //     //     </Box>
+  //     //   ) : null
+  //     // }
+  //   },
+  //   {
+  //     field: '_desc',
+  //     headerName: 'Description',
+  //     flex: 1,
+  //     editable: true,
+  //     sortable: false
+  //   },
+  //   {
+  //     field: '_delete',
+  //     headerName: '',
+  //     width: 50,
+  //     editable: false,
+  //     sortable: false,
+  //     renderCell: (params) => {
+  //       return rowIdHover === params.id && !isLastRow(params.id) ? (
+  //         <IconButton
+  //           onClick={() => {
+  //             deleteRow(params.id)
+  //           }}
+  //         >
+  //           <DeleteIcon />
+  //         </IconButton>
+  //       ) : null
+  //     }
+  //   }
+  // ]
+
+  const createEditableColumns = (isFile: boolean) => [
     {
       field: '_key',
       headerName: 'Key',
@@ -270,40 +384,58 @@ export default function RequestPage() {
       sortable: false
     },
     {
-      field: `_type`,
+      field: '_type',
       headerName: '',
       width: 100,
       editable: false,
       sortable: false,
-      renderCell: (params) => {
-        return (
-          <Box>
-            <FormControl sx={{ py: 0.5, minWidth: '8rem' }} size="small">
-              <Select
-                sx={{ height: '1.5rem', width: `5rem`, fontSize: '0.9rem' }}
-                value={selectedFormType}
-                onChange={handleChangeFormType}
-              >
-                <MenuItem value={1}>Text</MenuItem>
-                <MenuItem value={2}>File</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-        )
-      }
+      renderCell: (params) => (
+        <Box>
+          <FormControl sx={{ py: 0.5, minWidth: '8rem' }} size="small">
+            <Select
+              sx={{ height: '1.5rem', width: `5rem`, fontSize: '0.9rem' }}
+              value={selectedFormType}
+              onChange={handleChangeFormType}
+            >
+              <MenuItem value={1}>Text</MenuItem>
+              <MenuItem value={2}>File</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+      )
     },
     {
       field: '_value',
       headerName: 'Value',
       flex: 1,
-      editable: true,
+      editable: !isFile,
       sortable: false,
-      renderCell: () => {
-        return selectedFormType === 2 ? (
-          <Box>
-            <Button onClick={handleClickFile}>Select Files</Button>
+      renderCell: (params) => {
+        const handleClick = () => {
+          if (isFile) {
+            handleClickFile()
+          } else {
+            params.api.setCellMode(params.id, params.field, 'edit')
+          }
+        }
+
+        return (
+          <Box onClick={handleClick} sx={{ cursor: isFile ? 'pointer' : 'text' }}>
+            {isFile ? (
+              <Button style={{ width: '100%', textAlign: 'left' }}>파일 선택</Button>
+            ) : (
+              <div>{params.value}</div>
+            )}
+            {requestClone.body.selectedFiles && isFile && (
+              <div>
+                선택된 파일:
+                {Array.from(requestClone.body.selectedFiles).map((file, index) => (
+                  <div key={index}>{file.name}</div>
+                ))}
+              </div>
+            )}
           </Box>
-        ) : null
+        )
       }
     },
     {
@@ -319,8 +451,8 @@ export default function RequestPage() {
       width: 50,
       editable: false,
       sortable: false,
-      renderCell: (params) => {
-        return rowIdHover === params.id && !isLastRow(params.id) ? (
+      renderCell: (params) =>
+        rowIdHover === params.id && !isLastRow(params.id) ? (
           <IconButton
             onClick={() => {
               deleteRow(params.id)
@@ -329,9 +461,10 @@ export default function RequestPage() {
             <DeleteIcon />
           </IconButton>
         ) : null
-      }
     }
   ]
+
+  const editableBodyColumns = createEditableColumns(selectedFormType === 2)
 
   console.log(selectedFormType)
 
