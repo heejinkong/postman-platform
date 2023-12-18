@@ -24,13 +24,13 @@ export class requestItem implements Item {
     formData: { id: string; _key: string; _value: string; _desc: string }[];
     rawType: string;
     rawData: string;
-    selectedFiles: FileList | null;  // 선택된 파일을 저장할 속성 추가
+    selectedFiles: FileList | null; 
   } = {
     formDataSelection: [],
     formData: [{ id: uuidv4(), _key: '', _value: '', _desc: '' }],
     rawType: 'Text',
     rawData: '',
-    selectedFiles: null,  // 초기값은 null로 설정
+    selectedFiles: null,  
   };
   
 

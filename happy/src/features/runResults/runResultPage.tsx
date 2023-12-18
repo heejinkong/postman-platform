@@ -3,7 +3,6 @@ import RunTestPage from '../runTests/RunTestPage'
 import { useParams } from 'react-router-dom'
 import { useAppSelector } from '../../app/hook'
 import { selectRunResultById } from './service/runResultSlice'
-import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
 
 export default function RunResultPage() {
   const { runResultId } = useParams()

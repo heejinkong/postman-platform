@@ -10,14 +10,13 @@ import {
   Radio,
   RadioGroup,
   Select,
-  SelectChangeEvent,
   Stack,
   Tab,
   Tabs,
   TextField
 } from '@mui/material'
 import { useParams } from 'react-router-dom'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Divider } from '@mui/joy'
 import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
 import SaveIcon from '@mui/icons-material/Save'
@@ -230,38 +229,50 @@ export default function RequestPage() {
       }
     }
   ]
-  const [selectedFormType, setSelectedFormType] = useState<{ [key: string]: string }>({})
 
-  const handleChangeFormType = (event: SelectChangeEvent<string>, rowId: string) => {
-    setSelectedFormType((prev) => ({
-      ...prev,
-      [rowId]: event.target.value as string
-    }))
+  const [selectedFormType, setSelectedFormType] = useState(`1`)
+
+  const handleChangeFormType = (event: ChangeEvent<{ value: unknown }>) => {
+    setSelectedFormType(event.target.value as string)
   }
 
   const handleClickFile = () => {
     const fileInput = document.createElement('input')
     fileInput.type = 'file'
     fileInput.multiple = true
-    fileInput.click()
 
-    // 파일 선택 이벤트 리스너 등록
     fileInput.addEventListener('change', (e) => {
       const files = (e.target as HTMLInputElement).files
       if (files) {
-        setRequestClone((prevRequestClone) => ({
-          ...prevRequestClone,
+        console.log(files)
+
+        setRequestClone({
+          ...requestClone,
           body: {
-            ...prevRequestClone.body,
+            ...requestClone.body,
             selectedFiles: files
           }
-        }))
+        })
       }
     })
-
-    // 파일 입력란을 문서에 추가
-    document.body.appendChild(fileInput)
+    fileInput.click()
   }
+
+  const handleDelete = (index: number) => {
+    setRequestClone((requestClone) => {
+      const updatedSelectedFiles = [...requestClone.body.selectedFiles]
+      updatedSelectedFiles.splice(index, 1)
+
+      return {
+        ...requestClone,
+        body: {
+          ...requestClone.body,
+          selectedFiles: updatedSelectedFiles.length > 0 ? updatedSelectedFiles : null
+        }
+      }
+    })
+  }
+
   const createEditableColumns = (isFile: boolean) => [
     {
       field: '_key',
@@ -281,13 +292,11 @@ export default function RequestPage() {
           <FormControl sx={{ py: 0.5, minWidth: '8rem' }} size="small">
             <Select
               sx={{ height: '1.5rem', width: `5rem`, fontSize: '0.9rem' }}
-              value={selectedFormType[params.id] || '1'} // 기본값 "1"로 설정
-              onChange={(e: SelectChangeEvent<string>) => {
-                handleChangeFormType(e, params.id)
-              }}
+              value={selectedFormType}
+              onChange={handleChangeFormType}
             >
-              <MenuItem value="1">Text</MenuItem>
-              <MenuItem value="2">File</MenuItem>
+              <MenuItem value={1}>Text</MenuItem>
+              <MenuItem value={2}>File</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -309,19 +318,32 @@ export default function RequestPage() {
         }
 
         return (
-          <Box onClick={handleClick} sx={{ cursor: isFile ? 'pointer' : 'text' }}>
+          <Box
+            onClick={handleClick}
+            sx={{
+              width: '100%',
+              cursor: isFile ? 'pointer' : 'text',
+              maxWidth: 440,
+              overflowX: `auto`
+            }}
+          >
             {isFile ? (
-              <Button style={{ width: '100%', textAlign: 'left' }}>파일 선택</Button>
+              requestClone.body.selectedFiles && requestClone.body.selectedFiles.length > 0 ? (
+                <div>
+                  {Array.from(requestClone.body.selectedFiles).map((file, index) => (
+                    <Chip
+                      key={index}
+                      label={file.name}
+                      onDelete={() => handleDelete(index)}
+                      size="small"
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div>Select files</div>
+              )
             ) : (
               <div>{params.value}</div>
-            )}
-            {requestClone.body.selectedFiles && isFile && (
-              <div>
-                선택된 파일:
-                {Array.from(requestClone.body.selectedFiles).map((file, index) => (
-                  <div key={index}>{file.name}</div>
-                ))}
-              </div>
             )}
           </Box>
         )
