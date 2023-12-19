@@ -10,13 +10,14 @@ import {
   Radio,
   RadioGroup,
   Select,
+  SelectChangeEvent,
   Stack,
   Tab,
   Tabs,
   TextField
 } from '@mui/material'
 import { useParams } from 'react-router-dom'
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Divider } from '@mui/joy'
 import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
 import SaveIcon from '@mui/icons-material/Save'
@@ -157,6 +158,25 @@ export default function RequestPage() {
     return newRows
   }
 
+  type RowFormData = {
+    id: string
+    _key: string
+    _dataType: string
+    _value: string
+    _desc: string
+  }
+
+  const handleProcessNewRowsFormData = (newRowFormData: RowFormData, targetRows: RowFormData[]) => {
+    const newRowsFormData = [...targetRows]
+    const index = newRowsFormData.findIndex((row) => row.id === newRowFormData.id)
+    newRowsFormData[index] = newRowFormData
+    const lastRow = newRowsFormData[newRowsFormData.length - 1]
+    if (lastRow._key !== '' || lastRow._value !== '' || lastRow._desc !== '') {
+      newRowsFormData.push({ id: uuidv4(), _key: '', _dataType: '', _value: '', _desc: '' })
+    }
+    return newRowsFormData
+  }
+
   const isLastRow = (id: GridRowId) => {
     if (reqTabIndex === 0) {
       return id === requestClone.params[requestClone.params.length - 1].id
@@ -230,12 +250,23 @@ export default function RequestPage() {
     }
   ]
 
-  const [selectedFormType, setSelectedFormType] = useState(`1`)
+  const [formData, setFormData] = useState([...requestClone.body.formData])
 
-  const handleChangeFormType = (event: ChangeEvent<{ value: unknown }>) => {
-    setSelectedFormType(event.target.value as string)
+  const handleChangeFormType = (event: SelectChangeEvent<string>, id: GridRowId) => {
+    const newRowsFormData = formData.map((row) => {
+      if (row.id === id) {
+        return { ...row, _dataType: event.target.value as string }
+      }
+      return row
+    })
+
+    setFormData(newRowsFormData)
+    setRequestClone({
+      ...requestClone,
+      body: { ...requestClone.body, formData: [...newRowsFormData] }
+    })
   }
-
+  console.log(requestClone.body.formData)
   const handleClickFile = () => {
     const fileInput = document.createElement('input')
     fileInput.type = 'file'
@@ -259,18 +290,18 @@ export default function RequestPage() {
   }
 
   const handleDelete = (index: number) => {
-    setRequestClone((requestClone) => {
-      const updatedSelectedFiles = [...requestClone.body.selectedFiles]
-      updatedSelectedFiles.splice(index, 1)
-
-      return {
-        ...requestClone,
-        body: {
-          ...requestClone.body,
-          selectedFiles: updatedSelectedFiles.length > 0 ? updatedSelectedFiles : null
-        }
-      }
-    })
+    console.log(index)
+    // setRequestClone((requestClone) => {
+    //   const updatedSelectedFiles = [...requestClone.body.selectedFiles]
+    //   updatedSelectedFiles.splice(index, 1)
+    //   return {
+    //     ...requestClone,
+    //     body: {
+    //       ...requestClone.body,
+    //       selectedFiles: updatedSelectedFiles.length > 0 ? updatedSelectedFiles : null
+    //     }
+    //   }
+    // })
   }
 
   const createEditableColumns = (isFile: boolean) => [
@@ -282,7 +313,7 @@ export default function RequestPage() {
       sortable: false
     },
     {
-      field: '_type',
+      field: '_dataType',
       headerName: '',
       width: 100,
       editable: false,
@@ -292,11 +323,11 @@ export default function RequestPage() {
           <FormControl sx={{ py: 0.5, minWidth: '8rem' }} size="small">
             <Select
               sx={{ height: '1.5rem', width: `5rem`, fontSize: '0.9rem' }}
-              value={selectedFormType}
-              onChange={handleChangeFormType}
+              value={params.row._dataType || 'Text'}
+              onChange={(event) => handleChangeFormType(event, params.id)}
             >
-              <MenuItem value={1}>Text</MenuItem>
-              <MenuItem value={2}>File</MenuItem>
+              <MenuItem value="Text">Text</MenuItem>
+              <MenuItem value="File">File</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -310,7 +341,7 @@ export default function RequestPage() {
       sortable: false,
       renderCell: (params) => {
         const handleClick = () => {
-          if (isFile) {
+          if (params.row._dataType === 'File') {
             handleClickFile()
           } else {
             params.api.setCellMode(params.id, params.field, 'edit')
@@ -322,12 +353,12 @@ export default function RequestPage() {
             onClick={handleClick}
             sx={{
               width: '100%',
-              cursor: isFile ? 'pointer' : 'text',
+              cursor: params.row._dataType === 'File' ? 'pointer' : 'text',
               maxWidth: 440,
               overflowX: `auto`
             }}
           >
-            {isFile ? (
+            {params.row._dataType === 'File' ? (
               requestClone.body.selectedFiles && requestClone.body.selectedFiles.length > 0 ? (
                 <div>
                   {Array.from(requestClone.body.selectedFiles).map((file, index) => (
@@ -375,9 +406,7 @@ export default function RequestPage() {
     }
   ]
 
-  const editableBodyColumns = createEditableColumns(selectedFormType === 2)
-
-  console.log(selectedFormType)
+  const editableBodyColumns = createEditableColumns(false)
 
   const readonlyColumns: GridColDef[] = [
     {
@@ -637,7 +666,7 @@ export default function RequestPage() {
                     })
                   }}
                   processRowUpdate={(newRow) => {
-                    const newRows = handleProcessNewRows(newRow, requestClone.body.formData)
+                    const newRows = handleProcessNewRowsFormData(newRow, requestClone.body.formData)
                     setRequestClone({
                       ...requestClone,
                       body: { ...requestClone.body, formData: newRows }
