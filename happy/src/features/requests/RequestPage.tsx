@@ -92,7 +92,6 @@ export default function RequestPage() {
 
   const handleSave = () => {
     dispatch(requestService.update(requestClone))
-    console.log(`save:`, requestClone)
   }
 
   const handleSend = async () => {
@@ -278,8 +277,6 @@ export default function RequestPage() {
       body: { ...requestClone.body, formData: [...newRowsFormData] }
     })
   }
-  // console.log(requestClone.body.formData)
-  console.log(requestClone)
 
   const handleClickFile = (id: GridRowId) => {
     const fileInput = document.createElement('input')
@@ -289,15 +286,18 @@ export default function RequestPage() {
     fileInput.addEventListener('change', (e) => {
       const files = (e.target as HTMLInputElement).files
       if (files) {
-        const newSelectedFiles = Array.from(files).map(
-          (file) => new File([file], file.name, { type: file.type })
-        )
+        const newSelectedFiles = Array.from(files)
 
         const newRowsFormData = formData.map((row) => {
           if (row.id === id) {
+            const existingFiles = row._value ? Array.from(row._value as FileList) : []
+            const updatedFiles = [...existingFiles, ...newSelectedFiles]
+
             const newFileList = new DataTransfer()
-            newSelectedFiles.forEach((file) => {
-              newFileList.items.add(new File([file], file.name, { type: file.type }))
+            updatedFiles.forEach((file) => {
+              if (file instanceof File) {
+                newFileList.items.add(new File([file], file.name, { type: file.type }))
+              }
             })
 
             return { ...row, _value: newFileList.files, _dataType: 'File' }
@@ -396,7 +396,7 @@ export default function RequestPage() {
             }}
           >
             {params.row._dataType === 'File' ? (
-              params.value ? (
+              params.value && (params.value as FileList).length > 0 ? (
                 <div>
                   {Array.from(params.value as FileList).map((file, index) => (
                     <Chip key={index} label={file.name} size="small" />
