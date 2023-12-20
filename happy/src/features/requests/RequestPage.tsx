@@ -22,7 +22,14 @@ import { Divider } from '@mui/joy'
 import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
 import SaveIcon from '@mui/icons-material/Save'
 import SendIcon from '@mui/icons-material/Send'
-import { DataGrid, GridEventListener, GridColDef, useGridApiRef, GridRowId } from '@mui/x-data-grid'
+import {
+  DataGrid,
+  GridEventListener,
+  GridColDef,
+  useGridApiRef,
+  GridRowId,
+  GridRenderCellParams
+} from '@mui/x-data-grid'
 import CodeMirror from '@uiw/react-codemirror'
 import CodeMirrorMerge from 'react-codemirror-merge'
 import { javascript } from '@codemirror/lang-javascript'
@@ -85,6 +92,7 @@ export default function RequestPage() {
 
   const handleSave = () => {
     dispatch(requestService.update(requestClone))
+    console.log(`save:`, requestClone)
   }
 
   const handleSend = async () => {
@@ -162,7 +170,7 @@ export default function RequestPage() {
     id: string
     _key: string
     _dataType: string
-    _value: string
+    _value: string | FileList | null
     _desc: string
   }
 
@@ -250,7 +258,11 @@ export default function RequestPage() {
     }
   ]
 
-  const [formData, setFormData] = useState([...requestClone.body.formData])
+  const [formData, setFormData] = useState<RowFormData[]>(requestClone.body.formData)
+
+  useEffect(() => {
+    setFormData(requestClone.body.formData)
+  }, [requestClone.body.formData])
 
   const handleChangeFormType = (event: SelectChangeEvent<string>, id: GridRowId) => {
     const newRowsFormData = formData.map((row) => {
@@ -266,8 +278,10 @@ export default function RequestPage() {
       body: { ...requestClone.body, formData: [...newRowsFormData] }
     })
   }
-  console.log(requestClone.body.formData)
-  const handleClickFile = () => {
+  // console.log(requestClone.body.formData)
+  console.log(requestClone)
+
+  const handleClickFile = (id: GridRowId) => {
     const fileInput = document.createElement('input')
     fileInput.type = 'file'
     fileInput.multiple = true
@@ -275,34 +289,57 @@ export default function RequestPage() {
     fileInput.addEventListener('change', (e) => {
       const files = (e.target as HTMLInputElement).files
       if (files) {
-        console.log(files)
+        const newSelectedFiles = Array.from(files).map(
+          (file) => new File([file], file.name, { type: file.type })
+        )
 
-        setRequestClone({
-          ...requestClone,
-          body: {
-            ...requestClone.body,
-            selectedFiles: files
+        const newRowsFormData = formData.map((row) => {
+          if (row.id === id) {
+            const newFileList = new DataTransfer()
+            newSelectedFiles.forEach((file) => {
+              newFileList.items.add(new File([file], file.name, { type: file.type }))
+            })
+
+            return { ...row, _value: newFileList.files, _dataType: 'File' }
           }
+          return row
         })
+
+        setFormData(newRowsFormData)
+        setRequestClone((prevRequestClone) => ({
+          ...prevRequestClone,
+          body: { ...prevRequestClone.body, formData: [...newRowsFormData] }
+        }))
       }
     })
+
     fileInput.click()
   }
 
-  const handleDelete = (index: number) => {
-    console.log(index)
-    // setRequestClone((requestClone) => {
-    //   const updatedSelectedFiles = [...requestClone.body.selectedFiles]
-    //   updatedSelectedFiles.splice(index, 1)
-    //   return {
-    //     ...requestClone,
-    //     body: {
-    //       ...requestClone.body,
-    //       selectedFiles: updatedSelectedFiles.length > 0 ? updatedSelectedFiles : null
-    //     }
-    //   }
-    // })
-  }
+  // const handleDelete = (index: number) => {
+  //   setRequestClone((prevRequestClone) => {
+  //     return {
+  //       ...prevRequestClone,
+  //       body: {
+  //         ...prevRequestClone.body,
+  //         formData: prevRequestClone.body.formData.map((formItem) => {
+  //           if (formItem._dataType === 'File') {
+  //             return {
+  //               ...formItem,
+  //               _value: Array.from(prevRequestClone.body.selectedFiles || []).filter(
+  //                 (_, i) => i !== index
+  //               )
+  //             }
+  //           }
+  //           return formItem
+  //         }),
+  //         selectedFiles: Array.from(prevRequestClone.body.selectedFiles || []).filter(
+  //           (_, i) => i !== index
+  //         )
+  //       }
+  //     }
+  //   })
+  // }
 
   const createEditableColumns = (isFile: boolean) => [
     {
@@ -318,12 +355,12 @@ export default function RequestPage() {
       width: 100,
       editable: false,
       sortable: false,
-      renderCell: (params) => (
+      renderCell: (params: GridRenderCellParams) => (
         <Box>
           <FormControl sx={{ py: 0.5, minWidth: '8rem' }} size="small">
             <Select
               sx={{ height: '1.5rem', width: `5rem`, fontSize: '0.9rem' }}
-              value={params.row._dataType || 'Text'}
+              value={params.row._dataType}
               onChange={(event) => handleChangeFormType(event, params.id)}
             >
               <MenuItem value="Text">Text</MenuItem>
@@ -339,12 +376,12 @@ export default function RequestPage() {
       flex: 1,
       editable: !isFile,
       sortable: false,
-      renderCell: (params) => {
+      renderCell: (params: GridRenderCellParams) => {
         const handleClick = () => {
           if (params.row._dataType === 'File') {
-            handleClickFile()
+            handleClickFile(params.id)
           } else {
-            params.api.setCellMode(params.id, params.field, 'edit')
+            params.api.getCellMode(params.id, params.field)
           }
         }
 
@@ -359,15 +396,10 @@ export default function RequestPage() {
             }}
           >
             {params.row._dataType === 'File' ? (
-              requestClone.body.selectedFiles && requestClone.body.selectedFiles.length > 0 ? (
+              params.value ? (
                 <div>
-                  {Array.from(requestClone.body.selectedFiles).map((file, index) => (
-                    <Chip
-                      key={index}
-                      label={file.name}
-                      onDelete={() => handleDelete(index)}
-                      size="small"
-                    />
+                  {Array.from(params.value as FileList).map((file, index) => (
+                    <Chip key={index} label={file.name} size="small" />
                   ))}
                 </div>
               ) : (
@@ -393,7 +425,7 @@ export default function RequestPage() {
       width: 50,
       editable: false,
       sortable: false,
-      renderCell: (params) =>
+      renderCell: (params: GridRenderCellParams) =>
         rowIdHover === params.id && !isLastRow(params.id) ? (
           <IconButton
             onClick={() => {
