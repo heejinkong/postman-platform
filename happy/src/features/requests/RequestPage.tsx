@@ -170,7 +170,7 @@ export default function RequestPage() {
     id: string
     _key: string
     _dataType: string
-    _value: string | FileList | null
+    _value: string[] | FileList | null
     _desc: string
   }
 
@@ -179,9 +179,14 @@ export default function RequestPage() {
     const index = newRowsFormData.findIndex((row) => row.id === newRowFormData.id)
     newRowsFormData[index] = newRowFormData
     const lastRow = newRowsFormData[newRowsFormData.length - 1]
-    if (lastRow._key !== '' || lastRow._value !== '' || lastRow._desc !== '') {
-      newRowsFormData.push({ id: uuidv4(), _key: '', _dataType: '', _value: '', _desc: '' })
+    if (
+      lastRow._key !== '' ||
+      (lastRow._value && lastRow._value.length !== 0) ||
+      lastRow._desc !== ''
+    ) {
+      newRowsFormData.push({ id: uuidv4(), _key: '', _dataType: '', _value: null, _desc: '' })
     }
+
     return newRowsFormData
   }
 
@@ -289,26 +294,22 @@ export default function RequestPage() {
       if (files) {
         const newSelectedFiles = Array.from(files)
 
-        // 선택한 파일들을 base64로 인코딩
-        // const fileReader = new FileReader()
-        // fileReader.readAsDataURL(files[0])
-        // fileReader.onload = () => {
-        //   console.log(fileReader.result)
-        // }
-
         const newRowsFormData = formData.map((row) => {
           if (row.id === id) {
             const existingFiles = row._value ? Array.from(row._value as FileList) : []
             const updatedFiles = [...existingFiles, ...newSelectedFiles]
 
             const newFileList = new DataTransfer()
+
             updatedFiles.forEach((file) => {
               if (file instanceof File) {
                 newFileList.items.add(new File([file], file.name, { type: file.type }))
               }
             })
 
-            return { ...row, _value: newFileList.files, _dataType: 'File' }
+            const fileNames = Array.from(newFileList.files).map((file) => file.name)
+
+            return { ...row, _value: fileNames, _dataType: 'File' }
           }
           return row
         })
@@ -316,7 +317,7 @@ export default function RequestPage() {
         setFormData(newRowsFormData)
         setRequestClone((prevRequestClone) => ({
           ...prevRequestClone,
-          body: { ...prevRequestClone.body, formData: [...newRowsFormData] }
+          body: { ...prevRequestClone.body, formData: newRowsFormData }
         }))
       }
     })

@@ -71,11 +71,13 @@ class requestService implements requestCommands {
           headers[item._key] = item._value
         }
       })
+      
+      
       const response = await axios({
         method: request.method,
         url: request.url,
         headers: headers,
-        params: params
+        params: params,
       })
       const end = Date.now()
       const elapsed = end - start
