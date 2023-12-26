@@ -91,6 +91,7 @@ export default function RequestPage() {
   }
 
   const handleSave = () => {
+    console.log(requestClone.body.formData)
     dispatch(requestService.update(requestClone))
   }
 
@@ -287,6 +288,13 @@ export default function RequestPage() {
       const files = (e.target as HTMLInputElement).files
       if (files) {
         const newSelectedFiles = Array.from(files)
+
+        // 선택한 파일들을 base64로 인코딩
+        // const fileReader = new FileReader()
+        // fileReader.readAsDataURL(files[0])
+        // fileReader.onload = () => {
+        //   console.log(fileReader.result)
+        // }
 
         const newRowsFormData = formData.map((row) => {
           if (row.id === id) {
