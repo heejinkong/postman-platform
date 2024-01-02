@@ -325,30 +325,29 @@ export default function RequestPage() {
     fileInput.click()
   }
 
-  // const handleDelete = (index: number) => {
-  //   setRequestClone((prevRequestClone) => {
-  //     return {
-  //       ...prevRequestClone,
-  //       body: {
-  //         ...prevRequestClone.body,
-  //         formData: prevRequestClone.body.formData.map((formItem) => {
-  //           if (formItem._dataType === 'File') {
-  //             return {
-  //               ...formItem,
-  //               _value: Array.from(prevRequestClone.body.selectedFiles || []).filter(
-  //                 (_, i) => i !== index
-  //               )
-  //             }
-  //           }
-  //           return formItem
-  //         }),
-  //         selectedFiles: Array.from(prevRequestClone.body.selectedFiles || []).filter(
-  //           (_, i) => i !== index
-  //         )
-  //       }
-  //     }
-  //   })
-  // }
+  const handleDelete = (id: GridRowId, index: number) => {
+    setRequestClone((prevRequestClone) => {
+      return {
+        ...prevRequestClone,
+        body: {
+          ...prevRequestClone.body,
+          formData: prevRequestClone.body.formData.map((formItem) => {
+            if (formItem.id === id && formItem._dataType === 'File') {
+              const updatedFiles = (formItem._value as string[]).filter(
+                (_: string, i: number) => i !== index
+              )
+
+              return {
+                ...formItem,
+                _value: updatedFiles
+              }
+            }
+            return formItem
+          })
+        }
+      }
+    })
+  }
 
   const createEditableColumns = (isFile: boolean) => [
     {
@@ -412,7 +411,7 @@ export default function RequestPage() {
                       key={index}
                       label={fileName}
                       size="small"
-                      // onDelete={() => handleDelete(index)}
+                      onDelete={() => handleDelete(params.id, index)}
                     />
                   ))}
                 </div>
