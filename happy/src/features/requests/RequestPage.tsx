@@ -236,6 +236,7 @@ export default function RequestPage() {
       editable: true,
       sortable: false
     },
+
     {
       field: '_desc',
       headerName: 'Description',
@@ -296,18 +297,17 @@ export default function RequestPage() {
 
         const newRowsFormData = formData.map((row) => {
           if (row.id === id) {
-            const existingFiles = row._value ? Array.from(row._value as FileList) : []
+            const existingFiles = row._value ? Array.from(row._value as string[]) : []
             const updatedFiles = [...existingFiles, ...newSelectedFiles]
 
-            const newFileList = new DataTransfer()
+            const newFileList = updatedFiles.map((file) =>
+              typeof file === 'string' ? file : new File([file], file.name, { type: file.type })
+            )
 
-            updatedFiles.forEach((file) => {
-              if (file instanceof File) {
-                newFileList.items.add(new File([file], file.name, { type: file.type }))
-              }
-            })
-
-            const fileNames = Array.from(newFileList.files).map((file) => file.name)
+            const fileNames = updatedFiles.map((file) =>
+              typeof file === 'string' ? file : file.name
+            )
+            console.log(newFileList)
 
             return { ...row, _value: fileNames, _dataType: 'File' }
           }
@@ -408,7 +408,12 @@ export default function RequestPage() {
               params.value && (params.value as string[]).length > 0 ? (
                 <div>
                   {Array.from(params.value as string[]).map((fileName, index) => (
-                    <Chip key={index} label={fileName} size="small" />
+                    <Chip
+                      key={index}
+                      label={fileName}
+                      size="small"
+                      // onDelete={() => handleDelete(index)}
+                    />
                   ))}
                 </div>
               ) : (

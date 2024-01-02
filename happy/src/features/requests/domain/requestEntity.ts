@@ -27,7 +27,7 @@ export class requestItem implements Item {
     selectedFiles: FileList | null; 
   } = {
     formDataSelection: [],
-    formData: [{ id: uuidv4(), _key: '', _dataType: 'Text', _value: [], _desc: '' }], // Fix here: set _value as an empty array
+    formData: [{ id: uuidv4(), _key: '', _dataType: 'Text', _value: [], _desc: '' }], 
     rawType: 'Text',
     rawData: '',
     selectedFiles: null,  

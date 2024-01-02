@@ -72,15 +72,38 @@ class requestService implements requestCommands {
         }
       })
       
+      const body = new FormData();
+
+      request.body.formDataSelection.forEach((id) => {
+          const item = request.body.formData.find((item) => item.id === id);
+      
+          if (item) {
+              const key = item._key;
+              const value = item._value;
+      
+              if (Array.isArray(value)) {
+                  value.forEach((v, index) => {
+                      body.append(`${key}[${index}]`, v);
+                  });
+              } else if (value instanceof FileList) {
+                  for (let i = 0; i < value.length; i++) {
+                      body.append(key, value[i]);
+                  }
+              } 
+          }
+      });
       
       const response = await axios({
-        method: request.method,
-        url: request.url,
-        headers: headers,
-        params: params,
-      })
+          method: request.method,
+          url: request.url,
+          headers: headers,
+          params: params,
+          data: body,
+      });
       const end = Date.now()
       const elapsed = end - start
+
+      console.log(response)
 
       const newRequest = JSON.parse(JSON.stringify(request)) as requestItem
       newRequest.response.status = response.status
