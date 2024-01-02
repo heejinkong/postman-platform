@@ -401,14 +401,14 @@ export default function RequestPage() {
               width: '100%',
               cursor: params.row._dataType === 'File' ? 'pointer' : 'text',
               maxWidth: 440,
-              overflowX: `auto`
+              overflowX: 'auto'
             }}
           >
             {params.row._dataType === 'File' ? (
-              params.value && (params.value as FileList).length > 0 ? (
+              params.value && (params.value as string[]).length > 0 ? (
                 <div>
-                  {Array.from(params.value as FileList).map((file, index) => (
-                    <Chip key={index} label={file.name} size="small" />
+                  {Array.from(params.value as string[]).map((fileName, index) => (
+                    <Chip key={index} label={fileName} size="small" />
                   ))}
                 </div>
               ) : (
@@ -421,6 +421,7 @@ export default function RequestPage() {
         )
       }
     },
+
     {
       field: '_desc',
       headerName: 'Description',
