@@ -56,50 +56,58 @@ class requestService implements requestCommands {
   send = createAsyncThunk('requestService/send', async (request: requestItem, thunkAPI) => {
     const start = Date.now()
     try {
-      const params: { [key: string]: string } = {}
-      request.paramsSelection.map((id) => {
-        const item = request.params.find((item) => item.id === id)
-        if (item) {
-          params[item._key] = item._value
-        }
-      })
+      const params: { [key: string]: string } = {};
+request.paramsSelection.map((id) => {
+  const item = request.params.find((item) => item.id === id);
+  if (item) {
+    params[item._key] = item._value;
+  }
+});
 
-      const headers: { [key: string]: string } = {}
-      request.headersSelection.map((id) => {
-        const item = request.headers.find((item) => item.id === id)
-        if (item) {
-          headers[item._key] = item._value
-        }
-      })
-      
-      const body = new FormData();
+const headers: { [key: string]: string } = {};
+request.headersSelection.map((id) => {
+  const item = request.headers.find((item) => item.id === id);
+  if (item) {
+    headers[item._key] = item._value;
+  }
+});
 
-      request.body.formDataSelection.forEach((id) => {
-          const item = request.body.formData.find((item) => item.id === id);
-      
-          if (item) {
-              const key = item._key;
-              const value = item._value;
-      
-              if (Array.isArray(value)) {
-                  value.forEach((v, index) => {
-                      body.append(`${key}[${index}]`, v);
-                  });
-              } else if (value instanceof FileList) {
-                  for (let i = 0; i < value.length; i++) {
-                      body.append(key, value[i]);
-                  }
-              } 
-          }
+const body = new FormData();
+
+request.body.formDataSelection.forEach((id) => {
+  const item = request.body.formData.find((item) => item.id === id);
+
+  if (item) {
+    if (item._dataType === 'File') {
+      item._fileList.forEach((fileUrl, index) => {
+        body.append(`file_${index}`, fileUrl);
       });
+    } else {
+      body.append(item._key, JSON.stringify(item._value));
+    }
+  }
+});
+
+
+const axiosConfig = {
+  method: request.method,
+  url: request.url,
+  headers: headers,
+  params: params,
+  data: body,
+};
+
+if (request.method.toLowerCase() === 'post') {
+  axiosConfig.headers['Content-Type'] = 'multipart/form-data';
+}
+
+const response = await axios(axiosConfig);
+
       
-      const response = await axios({
-          method: request.method,
-          url: request.url,
-          headers: headers,
-          params: params,
-          data: body,
-      });
+  console.log(response)
+
+      
+      
       const end = Date.now()
       const elapsed = end - start
 

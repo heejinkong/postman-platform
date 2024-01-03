@@ -172,6 +172,7 @@ export default function RequestPage() {
     _dataType: string
     _value: string[] | FileList | null
     _desc: string
+    _fileList: string[]
   }
 
   const handleProcessNewRowsFormData = (newRowFormData: RowFormData, targetRows: RowFormData[]) => {
@@ -184,7 +185,14 @@ export default function RequestPage() {
       (lastRow._value && lastRow._value.length !== 0) ||
       lastRow._desc !== ''
     ) {
-      newRowsFormData.push({ id: uuidv4(), _key: '', _dataType: '', _value: null, _desc: '' })
+      newRowsFormData.push({
+        id: uuidv4(),
+        _key: '',
+        _dataType: '',
+        _value: null,
+        _desc: '',
+        _fileList: []
+      })
     }
 
     return newRowsFormData
@@ -290,26 +298,36 @@ export default function RequestPage() {
     fileInput.type = 'file'
     fileInput.multiple = true
 
+    // const blob = new Blob([file], { type: file.type })
+    // const blobUrl = URL.createObjectURL(blob)
+    // const blobFile = new File([blob], file.name, { type: file.type })
+
     fileInput.addEventListener('change', (e) => {
       const files = (e.target as HTMLInputElement).files
       if (files) {
         const newSelectedFiles = Array.from(files)
-
         const newRowsFormData = formData.map((row) => {
           if (row.id === id) {
             const existingFiles = row._value ? Array.from(row._value as string[]) : []
             const updatedFiles = [...existingFiles, ...newSelectedFiles]
 
-            const newFileList = updatedFiles.map((file) =>
-              typeof file === 'string' ? file : new File([file], file.name, { type: file.type })
-            )
+            const newFileList = updatedFiles.map((file) => {
+              if (typeof file === 'string') {
+                return file
+              } else {
+                const blob = new Blob([file], { type: file.type })
+                const blobUrl = URL.createObjectURL(blob)
+                return blobUrl
+              }
+            })
 
             const fileNames = updatedFiles.map((file) =>
               typeof file === 'string' ? file : file.name
             )
+
             console.log(newFileList)
 
-            return { ...row, _value: fileNames, _dataType: 'File' }
+            return { ...row, _value: fileNames, _dataType: 'File', _fileList: newFileList }
           }
           return row
         })
