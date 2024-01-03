@@ -170,7 +170,7 @@ export default function RequestPage() {
     id: string
     _key: string
     _dataType: string
-    _value: string[] | FileList | null
+    _value: string[]
     _desc: string
     _fileList: string[]
   }
@@ -188,8 +188,8 @@ export default function RequestPage() {
       newRowsFormData.push({
         id: uuidv4(),
         _key: '',
-        _dataType: '',
-        _value: null,
+        _dataType: 'Text',
+        _value: [],
         _desc: '',
         _fileList: []
       })
@@ -281,7 +281,8 @@ export default function RequestPage() {
   const handleChangeFormType = (event: SelectChangeEvent<string>, id: GridRowId) => {
     const newRowsFormData = formData.map((row) => {
       if (row.id === id) {
-        return { ...row, _dataType: event.target.value as string }
+        const newValue = event.target.value === 'Text' ? '' : []
+        return { ...row, _dataType: event.target.value as string, _value: newValue }
       }
       return row
     })
@@ -297,10 +298,6 @@ export default function RequestPage() {
     const fileInput = document.createElement('input')
     fileInput.type = 'file'
     fileInput.multiple = true
-
-    // const blob = new Blob([file], { type: file.type })
-    // const blobUrl = URL.createObjectURL(blob)
-    // const blobFile = new File([blob], file.name, { type: file.type })
 
     fileInput.addEventListener('change', (e) => {
       const files = (e.target as HTMLInputElement).files
