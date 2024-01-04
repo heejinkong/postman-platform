@@ -21,13 +21,13 @@ export class requestItem implements Item {
   ]
   body: { 
     formDataSelection: string[];
-    formData: { id: string; _key: string; _dataType: string; _value: string[] ; _desc: string;  _fileList: string[]; }[];
+    formData: { id: string; _key: string; _dataType: string; _value: string[] ; _desc: string;}[];
     rawType: string;
     rawData: string;
    
   } = {
     formDataSelection: [],
-    formData: [{ id: uuidv4(), _key: '', _dataType: 'Text', _value: [], _desc: '', _fileList: [] }], 
+    formData: [{ id: uuidv4(), _key: '', _dataType: 'Text', _value: [], _desc: '' }], 
     rawType: 'Text',
     rawData: '',
 

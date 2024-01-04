@@ -34,14 +34,14 @@ class requestService implements requestCommands {
     const parentCollection = selectCollectionById(state, request.parentId)
     if (parentCollection) {
       const cloned = JSON.parse(JSON.stringify(parentCollection))
-      cloned.folders = cloned.folders.filter((id: string) => id !== request.id)
+      cloned.requests = cloned.requests.filter((id: string) => id !== request.id)
       thunkAPI.dispatch({ type: 'collections/updateCollection', payload: cloned })
     }
 
     const parentFolder = selectFolderById(state, request.parentId)
     if (parentFolder) {
       const cloned = JSON.parse(JSON.stringify(parentFolder))
-      cloned.folders = cloned.folders.filter((id: string) => id !== request.id)
+      cloned.requests = cloned.requests.filter((id: string) => id !== request.id)
       thunkAPI.dispatch({ type: 'folders/updateFolder', payload: cloned })
     }
 
@@ -79,15 +79,15 @@ request.body.formDataSelection.forEach((id) => {
 
   if (item) {
     if (item._dataType === 'File') {
-      item._fileList.forEach((fileUrl, index) => {
-        body.append(`file_${index}`, fileUrl);
-      });
+    const formData = new FormData();
+    for (let i = 0; i < item._value.length; i++) {
+      formData.append(item._key, item._value[i]);
+    }
     } else {
-      body.append(item._key, JSON.stringify(item._value));
+      body.append(item._key, item._value.join(','));
     }
   }
 });
-
 
 const axiosConfig = {
   method: request.method,
@@ -102,17 +102,14 @@ if (request.method.toLowerCase() === 'post') {
 }
 
 const response = await axios(axiosConfig);
-
-      
-  console.log(response)
-
-      
+    
+  console.log(response.config)
       
       const end = Date.now()
       const elapsed = end - start
 
       console.log(response)
-
+      
       const newRequest = JSON.parse(JSON.stringify(request)) as requestItem
       newRequest.response.status = response.status
       newRequest.response.statusText = response.statusText

@@ -172,7 +172,6 @@ export default function RequestPage() {
     _dataType: string
     _value: string[]
     _desc: string
-    _fileList: string[]
   }
 
   const handleProcessNewRowsFormData = (newRowFormData: RowFormData, targetRows: RowFormData[]) => {
@@ -190,8 +189,7 @@ export default function RequestPage() {
         _key: '',
         _dataType: 'Text',
         _value: [],
-        _desc: '',
-        _fileList: []
+        _desc: ''
       })
     }
 
@@ -308,15 +306,9 @@ export default function RequestPage() {
             const existingFiles = row._value ? Array.from(row._value as string[]) : []
             const updatedFiles = [...existingFiles, ...newSelectedFiles]
 
-            const newFileList = updatedFiles.map((file) => {
-              if (typeof file === 'string') {
-                return file
-              } else {
-                const blob = new Blob([file], { type: file.type })
-                const blobUrl = URL.createObjectURL(blob)
-                return blobUrl
-              }
-            })
+            const newFileList = updatedFiles.map((file) =>
+              typeof file === 'string' ? file : new File([file], file.name, { type: file.type })
+            )
 
             const fileNames = updatedFiles.map((file) =>
               typeof file === 'string' ? file : file.name
@@ -324,7 +316,7 @@ export default function RequestPage() {
 
             console.log(newFileList)
 
-            return { ...row, _value: fileNames, _dataType: 'File', _fileList: newFileList }
+            return { ...row, _value: fileNames, _dataType: 'File' }
           }
           return row
         })
