@@ -21,7 +21,7 @@ export class requestItem implements Item {
   ]
   body: { 
     formDataSelection: string[];
-    formData: { id: string; _key: string; _dataType: string; _value: string[] ; _desc: string;}[];
+    formData: { id: string; _key: string; _dataType: string; _value:  (string | File)[] ; _desc: string;}[];
     rawType: string;
     rawData: string;
    
@@ -32,9 +32,6 @@ export class requestItem implements Item {
     rawData: '',
 
   };
-  
-  
-  
 
   response: {
     status: number

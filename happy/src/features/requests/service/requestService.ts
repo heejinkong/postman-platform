@@ -79,10 +79,11 @@ request.body.formDataSelection.forEach((id) => {
 
   if (item) {
     if (item._dataType === 'File') {
-    const formData = new FormData();
-    for (let i = 0; i < item._value.length; i++) {
-      formData.append(item._key, item._value[i]);
-    }
+      for (let i = 0; i < item._value.length; i++) {
+        console.log(item._key); 
+        const file = item._value[i] as File;
+        body.append(`${item._key}[${i}]`, file, file.name);
+      }
     } else {
       body.append(item._key, item._value.join(','));
     }
@@ -102,14 +103,13 @@ if (request.method.toLowerCase() === 'post') {
 }
 
 const response = await axios(axiosConfig);
+
     
-  console.log(response.config)
+
       
       const end = Date.now()
       const elapsed = end - start
 
-      console.log(response)
-      
       const newRequest = JSON.parse(JSON.stringify(request)) as requestItem
       newRequest.response.status = response.status
       newRequest.response.statusText = response.statusText
