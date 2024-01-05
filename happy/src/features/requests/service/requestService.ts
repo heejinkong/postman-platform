@@ -6,6 +6,10 @@ import { selectFolderById } from '../../folders/service/folderSlice'
 import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
 
+type FormFileType = {
+  id: string
+  file: File
+}
 
 class requestService implements requestCommands {
   new = createAsyncThunk('requestService/new', async (request: requestItem, thunkAPI) => {
@@ -53,125 +57,128 @@ class requestService implements requestCommands {
     thunkAPI.dispatch({ type: 'requests/updateRequest', payload: request })
   })
 
-  send = createAsyncThunk('requestService/send', async (request: requestItem, thunkAPI) => {
-    const start = Date.now()
-    try {
-      const params: { [key: string]: string } = {};
-request.paramsSelection.map((id) => {
-  const item = request.params.find((item) => item.id === id);
-  if (item) {
-    params[item._key] = item._value;
-  }
-});
+  send = createAsyncThunk(
+    'requestService/send',
+    async (
+      requestData: {
+        request: requestItem
+        formFiles: FormFileType[]
+      },
+      thunkAPI
+    ) => {
+      const request = requestData.request
 
-const headers: { [key: string]: string } = {};
-request.headersSelection.map((id) => {
-  const item = request.headers.find((item) => item.id === id);
-  if (item) {
-    headers[item._key] = item._value;
-  }
-});
-
-const body = new FormData();
-
-request.body.formDataSelection.forEach((id) => {
-  const item = request.body.formData.find((item) => item.id === id);
-
-  if (item) {
-    if (item._dataType === 'File') {
-      for (let i = 0; i < item._value.length; i++) {
-        console.log(item._key); 
-        const file = item._value[i] as File;
-        body.append(`${item._key}[${i}]`, file, file.name);
-      }
-    } else {
-      body.append(item._key, item._value.join(','));
-    }
-  }
-});
-
-const axiosConfig = {
-  method: request.method,
-  url: request.url,
-  headers: headers,
-  params: params,
-  data: body,
-};
-
-if (request.method.toLowerCase() === 'post') {
-  axiosConfig.headers['Content-Type'] = 'multipart/form-data';
-}
-
-const response = await axios(axiosConfig);
-
-    
-
-      
-      const end = Date.now()
-      const elapsed = end - start
-
-      const newRequest = JSON.parse(JSON.stringify(request)) as requestItem
-      newRequest.response.status = response.status
-      newRequest.response.statusText = response.statusText
-      newRequest.response.body = JSON.stringify(response.data, null, 2)
-      newRequest.response.headers = []
-      newRequest.response.elapsed = elapsed
-      Object.keys(response.headers).map((key) => {
-        newRequest.response.headers.push({
-          id: uuidv4(),
-          _key: key,
-          _value: response.headers[key],
-          _desc: ''
+      const start = Date.now()
+      try {
+        const params: { [key: string]: string } = {}
+        request.paramsSelection.map((id) => {
+          const item = request.params.find((item) => item.id === id)
+          if (item) {
+            params[item._key] = item._value
+          }
         })
-      })
-      thunkAPI.dispatch({ type: 'requests/updateRequest', payload: newRequest })
-      // const resUrl = response.config.url
-      // const resMethod = response.config.method
-      // const resDuration =  elapsed
-      // const resBody = JSON.stringify(response.data, null, 2)
-      // const resStatus = response.status
-      // const resExpectedResult = request.expectedResult
-  
-      // const newRunResult = new runResultItem()
-      // newRunResult.workspaceId =  request.workspaceId
-      // newRunResult.parentId = request.parentId
-      // newRunResult.method = resMethod || ''
-      // newRunResult.url = resUrl || ''
-      // newRunResult.created = Date.now()
-      // newRunResult.Duration = resDuration ?? 0
-     
-     
-      // const newRunTest = new runTestItem()
-      // newRunTest.title = request.title || ''
-      // newRunTest.parentId = request.parentId
-      // newRunTest.requestId = request.id
-      // newRunTest.created = Date.now()
-      // newRunTest.status = resStatus || 0
-      // newRunTest.responseResult = resBody || ''
-      // newRunTest.expectedResult = resExpectedResult || ''
-  
-      // thunkAPI.dispatch({type: 'runTest/createRunTest', payload: newRunTest})
-  
-      // newRunResult.runTestList?.push(newRunTest.id)
-      // thunkAPI.dispatch({ type: 'runResult/createRunResult', payload: newRunResult })
-  
-      return newRequest
 
-    } catch (error) {
-      const end = Date.now()
-      const elapsed = end - start
+        const headers: { [key: string]: string } = {}
+        request.headersSelection.map((id) => {
+          const item = request.headers.find((item) => item.id === id)
+          if (item) {
+            headers[item._key] = item._value
+          }
+        })
 
-      const newRequest = JSON.parse(JSON.stringify(request)) as requestItem
-      newRequest.response.status = 0
-      newRequest.response.statusText = ''
-      newRequest.response.body = error?.toString() ?? ''
-      newRequest.response.headers = []
-      newRequest.response.elapsed = elapsed
-      thunkAPI.dispatch({ type: 'requests/updateRequest', payload: newRequest })
+        const body = new FormData()
 
-      return thunkAPI.rejectWithValue(error)
+        request.body.formDataSelection.forEach((id) => {
+          const item = request.body.formData.find((i) => i.id === id)
+
+          if (item) {
+            if (item._dataType === 'File') {
+              const file = requestData.formFiles.find((i) => i.id === id)
+              body.append(item._key, file?.file ?? '')
+            } else {
+              body.append(item._key, item._value.join(','))
+            }
+          }
+        })
+
+        const axiosConfig = {
+          method: request.method,
+          url: request.url,
+          headers: headers,
+          params: params,
+          data: body
+        }
+
+        if (request.method.toLowerCase() === 'post') {
+          axiosConfig.headers['Content-Type'] = 'multipart/form-data'
+        }
+
+        const response = await axios(axiosConfig)
+
+        const end = Date.now()
+        const elapsed = end - start
+
+        const newRequest = JSON.parse(JSON.stringify(request)) as requestItem
+        newRequest.response.status = response.status
+        newRequest.response.statusText = response.statusText
+        newRequest.response.body = JSON.stringify(response.data, null, 2)
+        newRequest.response.headers = []
+        newRequest.response.elapsed = elapsed
+        Object.keys(response.headers).map((key) => {
+          newRequest.response.headers.push({
+            id: uuidv4(),
+            _key: key,
+            _value: response.headers[key],
+            _desc: ''
+          })
+        })
+        thunkAPI.dispatch({ type: 'requests/updateRequest', payload: newRequest })
+        // const resUrl = response.config.url
+        // const resMethod = response.config.method
+        // const resDuration =  elapsed
+        // const resBody = JSON.stringify(response.data, null, 2)
+        // const resStatus = response.status
+        // const resExpectedResult = request.expectedResult
+
+        // const newRunResult = new runResultItem()
+        // newRunResult.workspaceId =  request.workspaceId
+        // newRunResult.parentId = request.parentId
+        // newRunResult.method = resMethod || ''
+        // newRunResult.url = resUrl || ''
+        // newRunResult.created = Date.now()
+        // newRunResult.Duration = resDuration ?? 0
+
+        // const newRunTest = new runTestItem()
+        // newRunTest.title = request.title || ''
+        // newRunTest.parentId = request.parentId
+        // newRunTest.requestId = request.id
+        // newRunTest.created = Date.now()
+        // newRunTest.status = resStatus || 0
+        // newRunTest.responseResult = resBody || ''
+        // newRunTest.expectedResult = resExpectedResult || ''
+
+        // thunkAPI.dispatch({type: 'runTest/createRunTest', payload: newRunTest})
+
+        // newRunResult.runTestList?.push(newRunTest.id)
+        // thunkAPI.dispatch({ type: 'runResult/createRunResult', payload: newRunResult })
+
+        return newRequest
+      } catch (error) {
+        const end = Date.now()
+        const elapsed = end - start
+
+        const newRequest = JSON.parse(JSON.stringify(request)) as requestItem
+        newRequest.response.status = 0
+        newRequest.response.statusText = ''
+        newRequest.response.body = error?.toString() ?? ''
+        newRequest.response.headers = []
+        newRequest.response.elapsed = elapsed
+        thunkAPI.dispatch({ type: 'requests/updateRequest', payload: newRequest })
+
+        return thunkAPI.rejectWithValue(error)
+      }
     }
-  })
+  )
 }
 
 export default new requestService()

@@ -19,19 +19,17 @@ export class requestItem implements Item {
   headers: { id: string; _key: string; _value: string; _desc: string }[] = [
     { id: uuidv4(), _key: '', _value: '', _desc: '' }
   ]
-  body: { 
-    formDataSelection: string[];
-    formData: { id: string; _key: string; _dataType: string; _value:  (string | File)[] ; _desc: string;}[];
-    rawType: string;
-    rawData: string;
-   
+  body: {
+    formDataSelection: string[]
+    formData: { id: string; _key: string; _dataType: string; _value: string[]; _desc: string }[]
+    rawType: string
+    rawData: string
   } = {
     formDataSelection: [],
-    formData: [{ id: uuidv4(), _key: '', _dataType: 'Text', _value: [], _desc: '' }], 
+    formData: [{ id: uuidv4(), _key: '', _dataType: 'Text', _value: [], _desc: '' }],
     rawType: 'Text',
-    rawData: '',
-
-  };
+    rawData: ''
+  }
 
   response: {
     status: number

@@ -60,12 +60,18 @@ interface PayloadType {
   title?: string
   expectedResult?: string
 }
+type FormFileType = {
+  id: string
+  file: File
+}
 
 export default function RequestPage() {
   const { requestId } = useParams()
   const codeBoxRef = useRef<HTMLDivElement>(null)
 
   const [rowIdHover, setRowIdHover] = useState<GridRowId>(-1)
+  const [formFiles, setFormFile] = useState<FormFileType[]>([])
+
   const paramsRef = useGridApiRef()
   const headersRef = useGridApiRef()
   const bodyRef = useGridApiRef()
@@ -97,7 +103,9 @@ export default function RequestPage() {
 
   const handleSend = async () => {
     // dispatch(requestService.send(requestClone))
-    const response = await dispatch(requestService.send(requestClone))
+    const response = await dispatch(
+      requestService.send({ request: requestClone, formFiles: formFiles })
+    )
     const resUrl = (response.payload as PayloadType)?.url
     const resMethod = (response.payload as PayloadType)?.method
     const resDuration = (response.payload as PayloadType)?.response?.elapsed
@@ -170,7 +178,7 @@ export default function RequestPage() {
     id: string
     _key: string
     _dataType: string
-    _value: (string | File)[]
+    _value: string[]
     _desc: string
   }
 
@@ -290,66 +298,31 @@ export default function RequestPage() {
     })
   }
 
-  const handleClickFile = async (id: GridRowId) => {
+  const handleClickFile = (id: GridRowId) => {
     const fileInput = document.createElement('input')
     fileInput.type = 'file'
-    fileInput.multiple = true
-
-    fileInput.addEventListener('change', async (e) => {
+    fileInput.multiple = false
+    fileInput.addEventListener('change', (e) => {
       const files = (e.target as HTMLInputElement).files
       if (files) {
-        const newSelectedFiles = Array.from(files)
-        const newRowsFormData = await Promise.all(
-          formData.map(async (row) => {
-            if (row.id === id) {
-              const existingFiles = row._value ? Array.from(row._value as string[]) : []
-              const updatedFiles = [...existingFiles, ...newSelectedFiles]
+        const formFile: FormFileType = {
+          id: id as string,
+          file: files[0]
+        }
 
-              const newFileList = await Promise.all(
-                updatedFiles.map(async (file) => {
-                  if (typeof file === 'string') {
-                    return file
-                  } else {
-                    const dataUrl = await readFileAsDataURL(file)
-                    return dataUrl
-                  }
-                })
-              )
+        const cloneFormFiles = [...formFiles]
+        const item = cloneFormFiles.find((i) => i.id === id)
+        if (item) {
+          item.file = files[0]
+        } else {
+          cloneFormFiles.push(formFile)
+        }
 
-              console.log(newFileList)
-
-              return { ...row, _value: newFileList, _dataType: 'File' }
-            }
-            return row
-          })
-        )
-
-        setFormData(newRowsFormData)
-        setRequestClone((prevRequestClone) => ({
-          ...prevRequestClone,
-          body: { ...prevRequestClone.body, formData: newRowsFormData }
-        }))
+        setFormFile(cloneFormFiles)
       }
     })
 
     fileInput.click()
-  }
-
-  // Function to read a file as a data URL
-  const readFileAsDataURL = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-
-      reader.onload = (event) => {
-        if (event.target && event.target.result) {
-          resolve(event.target.result as string)
-        } else {
-          reject(new Error('Failed to read file.'))
-        }
-      }
-
-      reader.readAsDataURL(file)
-    })
   }
 
   const handleDelete = (id: GridRowId, index: number) => {
@@ -431,16 +404,21 @@ export default function RequestPage() {
             }}
           >
             {params.row._dataType === 'File' ? (
-              params.value && (params.value as (string | File)[]).length > 0 ? (
+              params.value && (params.value as string[]).length > 0 ? (
                 <div>
-                  {Array.from(params.value as (string | File)[]).map((file, index) => (
-                    <Chip
-                      key={index}
-                      label={typeof file === 'string' ? file : file.name}
-                      size="small"
-                      onDelete={() => handleDelete(params.id, index)}
-                    />
-                  ))}
+                  {Array.from(params.value as string[]).map((fileId, index) => {
+                    const file = formFiles.find((item) => item.id === fileId)
+                    return (
+                      file && (
+                        <Chip
+                          key={index}
+                          label={file.file.name}
+                          size="small"
+                          onDelete={() => handleDelete(params.id, index)}
+                        />
+                      )
+                    )
+                  })}
                 </div>
               ) : (
                 <div>Select files</div>
