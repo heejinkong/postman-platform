@@ -8,8 +8,8 @@ export default defineConfig({
     proxy: {
       '/rest': {
         target: 'http://10.10.240.162:8101',
-        changeOrigin: true,
-      },
-    },
+        changeOrigin: true
+      }
+    }
   }
 })

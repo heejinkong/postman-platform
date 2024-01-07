@@ -8,6 +8,7 @@ import { selectWorkspaceById } from '../service/workspaceSlice'
 import { selectCollectionById } from '../../collections/service/collectionSlice'
 import { selectFolderById } from '../../folders/service/folderSlice'
 import { selectRequestById } from '../../requests/service/requestSlice'
+import { useEffect } from 'react'
 
 type WorkspaceNavBarProps = {
   _id: string
@@ -19,20 +20,21 @@ export default function WorkspaceNavBar(props: WorkspaceNavBarProps) {
   const collection = useAppSelector((state) => selectCollectionById(state, props._id))
   const folder = useAppSelector((state) => selectFolderById(state, props._id))
   const request = useAppSelector((state) => selectRequestById(state, props._id))
-
   const targetItem = workspace || collection || folder || request
-  dispatch(configService.navBarCreated(targetItem))
-
   const navBarItem = useAppSelector((state) => selectNavBarItemById(state, targetItem?.id ?? ''))
+
+  useEffect(() => {
+    dispatch(configService.navBarCreated(targetItem))
+  }, [dispatch, targetItem])
+
   if (!navBarItem) {
     return null
   }
-  const itemIdList = [...navBarItem.itemIdList].reverse()
 
   return (
     <Box>
       <Breadcrumbs separator="/" aria-label="breadcrumb">
-        {itemIdList.map((_id) => (
+        {[...navBarItem.itemIdList].reverse().map((_id) => (
           <WorkspaceNavBarItem key={_id} _id={_id} />
         ))}
       </Breadcrumbs>
