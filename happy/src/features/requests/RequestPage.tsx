@@ -63,6 +63,7 @@ interface PayloadType {
 type FormFileType = {
   id: string
   file: File
+  name: string
 }
 
 export default function RequestPage() {
@@ -70,7 +71,7 @@ export default function RequestPage() {
   const codeBoxRef = useRef<HTMLDivElement>(null)
 
   const [rowIdHover, setRowIdHover] = useState<GridRowId>(-1)
-  const [formFiles, setFormFile] = useState<FormFileType[]>([])
+  // const [formFiles, setFormFile] = useState<FormFileType[]>([])
 
   const paramsRef = useGridApiRef()
   const headersRef = useGridApiRef()
@@ -279,6 +280,8 @@ export default function RequestPage() {
   ]
 
   const [formData, setFormData] = useState<RowFormData[]>(requestClone.body.formData)
+  const [formFiles, setFormFile] = useState<FormFileType[]>([])
+
   useEffect(() => {
     setFormData(requestClone.body.formData)
   }, [requestClone.body.formData])
@@ -307,21 +310,28 @@ export default function RequestPage() {
       if (files) {
         const formFile: FormFileType = {
           id: id as string,
-          file: files[0]
+          file: files[0],
+          name: files[0].name
         }
+        console.log(formFile.name)
 
         const cloneFormFiles = [...formFiles]
         const item = cloneFormFiles.find((i) => i.id === id)
         if (item) {
           item.file = files[0]
+          item.name = files[0].name
         } else {
           cloneFormFiles.push(formFile)
         }
 
         setFormFile(cloneFormFiles)
+
+        const cloneFormData = [...formData]
+        const index = cloneFormData.findIndex((row) => row.id === id)
+        cloneFormData[index]._value = [files[0].name] as string[]
+        setFormData(cloneFormData)
       }
     })
-
     fileInput.click()
   }
 
@@ -406,25 +416,20 @@ export default function RequestPage() {
             {params.row._dataType === 'File' ? (
               params.value && (params.value as string[]).length > 0 ? (
                 <div>
-                  {Array.from(params.value as string[]).map((fileId, index) => {
-                    const file = formFiles.find((item) => item.id === fileId)
-                    return (
-                      file && (
-                        <Chip
-                          key={index}
-                          label={file.file.name}
-                          size="small"
-                          onDelete={() => handleDelete(params.id, index)}
-                        />
-                      )
-                    )
-                  })}
+                  {Array.from(params.value as string[]).map((fileName, index) => (
+                    <Chip
+                      key={index}
+                      label={fileName}
+                      size="small"
+                      onDelete={() => handleDelete(params.id, index)}
+                    />
+                  ))}
                 </div>
               ) : (
                 <div>Select files</div>
               )
             ) : (
-              <div>{params.value}</div>
+              <div>{params.row._dataType === 'File' ? 'Select files' : params.value}</div>
             )}
           </Box>
         )
