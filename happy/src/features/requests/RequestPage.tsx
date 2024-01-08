@@ -289,7 +289,7 @@ export default function RequestPage() {
   const handleChangeFormType = (event: SelectChangeEvent<string>, id: GridRowId) => {
     const newRowsFormData = formData.map((row) => {
       if (row.id === id) {
-        return { ...row, _dataType: event.target.value as string }
+        return { ...row, _dataType: event.target.value as string, _value: [] as string[] }
       }
       return row
     })
@@ -429,7 +429,7 @@ export default function RequestPage() {
                 <div>Select files</div>
               )
             ) : (
-              <div>{params.row._dataType === 'File' ? 'Select files' : params.value}</div>
+              <div>{params.value}</div>
             )}
           </Box>
         )
