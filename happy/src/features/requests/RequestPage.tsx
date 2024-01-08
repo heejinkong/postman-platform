@@ -450,7 +450,7 @@ export default function RequestPage() {
       editable: false,
       sortable: false,
       renderCell: (params: GridRenderCellParams) =>
-        rowIdHover === params.id && !isLastRow(params.id) ? (
+        !isLastRow(params.id) ? (
           <IconButton
             onClick={() => {
               deleteRow(params.id)

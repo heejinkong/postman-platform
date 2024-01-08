@@ -12,6 +12,7 @@ import { useAppSelector } from '../../../app/hook'
 import { selectCollectionById } from '../service/collectionSlice'
 import { collectionItem } from '../domain/collectionEntity'
 import RunCollectionMenuItem from './RuncollectionMenuItem'
+import ExportCollectionItem from './ExportCollectionItem'
 
 type TreeItemProps = {
   _id: string
@@ -95,6 +96,10 @@ export default function CollectionTreeItem(props: TreeItemProps) {
                 handleClose={(e) => handleCloseUserMenu(e)}
               />
               <DeleteCollectionMenuItem
+                collectionId={collection.id}
+                handleClose={(e) => handleCloseUserMenu(e)}
+              />
+              <ExportCollectionItem
                 collectionId={collection.id}
                 handleClose={(e) => handleCloseUserMenu(e)}
               />
