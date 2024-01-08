@@ -62,7 +62,7 @@ class requestService implements requestCommands {
     async (
       requestData: {
         request: requestItem
-        formFiles: FormFileType[]
+        formFiles: FormFileType[] | null
       },
       thunkAPI
     ) => {
@@ -93,7 +93,7 @@ class requestService implements requestCommands {
 
           if (item) {
             if (item._dataType === 'File') {
-              const file = requestData.formFiles.find((i) => i.id === id)
+              const file = requestData.formFiles?.find((f) => f.id === item.id)
               body.append(item._key, file?.file ?? '')
             } else {
               body.append(item._key, item._value.join(','))
