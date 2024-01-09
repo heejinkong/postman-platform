@@ -24,11 +24,13 @@ export class requestItem implements Item {
     formData: { id: string; _key: string; _dataType: string; _value: string[]; _desc: string }[]
     rawType: string
     rawData: string
+    mode: string
   } = {
     formDataSelection: [],
     formData: [{ id: uuidv4(), _key: '', _dataType: 'Text', _value: [], _desc: '' }],
     rawType: 'Text',
-    rawData: ''
+    rawData: '',
+    mode: 'formdata'
   }
 
   response: {

@@ -142,6 +142,10 @@ export default function RequestPage() {
 
   const handleChangeBodyType = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedBodyType(e.target.value)
+    setRequestClone({
+      ...requestClone,
+      body: { ...requestClone.body, mode: e.target.value }
+    })
   }
 
   const getExtension = (type: string) => {
