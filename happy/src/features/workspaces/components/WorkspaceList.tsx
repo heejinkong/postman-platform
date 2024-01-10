@@ -53,11 +53,13 @@ export default function WorkspaceList() {
 
   if (allWorkspaces.length === 0) {
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography variant="h4" textAlign="center" mb="0.5rem">
+      <Box
+        sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+      >
+        <Typography variant="h6" textAlign="center" mb="0.5rem" sx={{ fontWeight: 500 }}>
           Workspace does not exist
         </Typography>
-        <Typography variant="h6" textAlign="center" mb="2rem">
+        <Typography variant="body2" textAlign="center" mb="2rem">
           To start your work, try using the 'New Workspace' button at the top.
         </Typography>
         <Box sx={{ mx: 'auto' }}>

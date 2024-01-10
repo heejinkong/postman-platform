@@ -32,10 +32,10 @@ export default function HomePage() {
           {/* HomePage의 상단에는 'WorkspaceList'라는 문구와 'WorkspaceList'의 설명이 표시 */}
           <Box>
             <Typography
-              variant="h4"
+              variant="h5"
               display="block"
               gutterBottom
-              sx={{ justifyItems: 'center', fontWeight: 'bold' }}
+              sx={{ justifyItems: 'center', fontWeight: 700 }}
             >
               Workspace List
             </Typography>
