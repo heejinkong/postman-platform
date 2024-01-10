@@ -269,6 +269,7 @@ export default function RequestPage() {
       editable: false,
       sortable: false,
       renderCell: (params) => {
+        //마지막 row가 아니고, 마우스가 해당 row에 hover 되었을 때, 삭제 버튼 표시
         return rowIdHover === params.id && !isLastRow(params.id) ? (
           <IconButton
             onClick={() => {
@@ -377,6 +378,7 @@ export default function RequestPage() {
       editable: false,
       sortable: false,
       renderCell: (params: GridRenderCellParams) => (
+        /* Body탭의 form-data의 경우, dataType을 선택할 수 있는 select box 표시 */
         <Box>
           <FormControl sx={{ py: 0.5, minWidth: '8rem' }} size="small">
             <Select
@@ -417,7 +419,9 @@ export default function RequestPage() {
             }}
           >
             {params.row._dataType === 'File' ? (
+              // Body탭의 form-data의 dataType이 File일 경우
               params.value && (params.value as string[]).length > 0 ? (
+                // 파일이 선택되었을 경우, 파일 이름 표시
                 <div>
                   {Array.from(params.value as string[]).map((fileName, index) => (
                     <Chip
@@ -429,9 +433,11 @@ export default function RequestPage() {
                   ))}
                 </div>
               ) : (
+                // 파일이 선택되지 않았을 경우, 파일 선택 버튼 표시
                 <div>Select files</div>
               )
             ) : (
+              // Body탭의 form-data의 dataType이 Text일 경우, value 표시
               <div>{params.value}</div>
             )}
           </Box>
@@ -453,6 +459,7 @@ export default function RequestPage() {
       editable: false,
       sortable: false,
       renderCell: (params: GridRenderCellParams) =>
+        //마지막 row가 아니고, 마우스가 해당 row에 hover 되었을 때, 삭제 버튼 표시
         !isLastRow(params.id) ? (
           <IconButton
             onClick={() => {
@@ -531,14 +538,18 @@ export default function RequestPage() {
   }, [headersRef, reqTabIndex])
 
   return (
+    //RequestPage에서는 해당 request의 정보를 생성, 수정하는 페이지
     <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* RequestPage의 상단에는 WorkspaceNavBar를 통해 현재 path 표시 */}
       <Box>
         <WorkspaceNavBar _id={requestId ?? ''} />
         <Box sx={{ pt: 1 }}>
           <Divider />
         </Box>
       </Box>
+
       <Box sx={{ pt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        {/* RequestPage의 title */}
         <Box>
           <TextField
             id="outlined-basic"
@@ -551,6 +562,7 @@ export default function RequestPage() {
             }}
           />
         </Box>
+        {/* RequestPage의 저장 버튼 */}
         <Box>
           <Button variant="outlined" startIcon={<SaveIcon />} onClick={handleSave}>
             Save
@@ -558,6 +570,7 @@ export default function RequestPage() {
         </Box>
       </Box>
       <Box sx={{ pt: 3, display: 'flex', alignItems: 'center' }}>
+        {/* FormControl을 통해 method 선택 */}
         <Box>
           <FormControl sx={{ minWidth: 120, mr: 1 }} size="small">
             <InputLabel id="label-method">Method</InputLabel>
@@ -570,6 +583,7 @@ export default function RequestPage() {
                 setRequestClone({ ...requestClone, method: e.target.value as string })
               }}
             >
+              {/* method 종류 */}
               <MenuItem value={'GET'}>GET</MenuItem>
               <MenuItem value={'POST'}>POST</MenuItem>
               <MenuItem value={'PUT'}>PUT</MenuItem>
@@ -577,6 +591,7 @@ export default function RequestPage() {
             </Select>
           </FormControl>
         </Box>
+        {/* TextField를 통해 url 입력 */}
         <Box sx={{ flexGrow: 1, mr: 1 }}>
           <TextField
             id="outlined-basic"
@@ -590,6 +605,7 @@ export default function RequestPage() {
             }}
           />
         </Box>
+        {/* Send 버튼을 통해 request 전송 */}
         <Box>
           <Button
             variant="contained"
@@ -603,6 +619,7 @@ export default function RequestPage() {
           </Button>
         </Box>
       </Box>
+      {/*Tab을 통해 Params, Headers, Body, Expected Result 선택*/}
       <Box sx={{ pt: 1 }}>
         <Tabs value={reqTabIndex} onChange={handleChangeReqTab}>
           <Tab label="Params" />
@@ -611,9 +628,12 @@ export default function RequestPage() {
           <Tab label="Expected Result" />
         </Tabs>
       </Box>
+      {/* 선택한 Tab에 따라 다른 DataGrid 표시 */}
       <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+        {/*Params Tab일 경우*/}
         {reqTabIndex === 0 && (
           <Box sx={{ height: '40%', overflow: 'auto' }}>
+            {/* DataGrid를 통해 params 표시 */}
             <DataGrid
               apiRef={paramsRef}
               rows={requestClone.params}
@@ -623,14 +643,16 @@ export default function RequestPage() {
               disableRowSelectionOnClick
               hideFooter
               disableColumnMenu
-              rowSelectionModel={requestClone.paramsSelection}
+              rowSelectionModel={requestClone.paramsSelection} // check 선택한 row 표시
               onRowSelectionModelChange={(newRowSelectionModel) => {
+                // check 선택한 row 변경 시, requestClone에 반영
                 setRequestClone({
                   ...requestClone,
                   paramsSelection: newRowSelectionModel as string[]
                 })
               }}
               processRowUpdate={(newRow) => {
+                // row 수정 시, requestClone에 반영
                 const newRows = handleProcessNewRows(newRow, requestClone.params)
                 setRequestClone({ ...requestClone, params: newRows })
                 return newRow
@@ -639,8 +661,10 @@ export default function RequestPage() {
             />
           </Box>
         )}
+        {/*Headers Tab일 경우*/}
         {reqTabIndex === 1 && (
           <Box sx={{ height: '40%', overflow: 'auto' }}>
+            {/* DataGrid를 통해 headers 표시 */}
             <DataGrid
               apiRef={headersRef}
               rows={requestClone.headers}
@@ -650,14 +674,16 @@ export default function RequestPage() {
               disableRowSelectionOnClick
               hideFooter
               disableColumnMenu
-              rowSelectionModel={requestClone.headersSelection}
+              rowSelectionModel={requestClone.headersSelection} // check 선택한 row 표시
               onRowSelectionModelChange={(newRowSelectionModel) => {
+                // check 선택한 row 변경 시, requestClone에 반영
                 setRequestClone({
                   ...requestClone,
                   headersSelection: newRowSelectionModel as string[]
                 })
               }}
               processRowUpdate={(newRow) => {
+                // row 수정 시, requestClone에 반영
                 const newRows = handleProcessNewRows(newRow, requestClone.headers)
                 setRequestClone({ ...requestClone, headers: newRows })
                 return newRow
@@ -666,9 +692,11 @@ export default function RequestPage() {
             />
           </Box>
         )}
+        {/*Body Tab일 경우*/}
         {reqTabIndex === 2 && (
           <Box sx={{ height: '40%', width: `100%` }}>
             <Box>
+              {/* RadioGroup을 통해 Body 타입 선택 (form-data or raw)*/}
               <FormControl sx={{ height: `10%`, pl: 1.5 }}>
                 <RadioGroup
                   row
@@ -682,6 +710,7 @@ export default function RequestPage() {
                 </RadioGroup>
               </FormControl>
               {selectedBodyType === 'raw' && (
+                // Body 타입이 raw일 경우, Select를 통해 raw 타입 선택
                 <FormControl sx={{ py: 0.5, minWidth: '8rem' }} size="small">
                   <Select
                     sx={{ height: '2rem' }}
@@ -693,6 +722,8 @@ export default function RequestPage() {
                       })
                     }
                   >
+                    {' '}
+                    {/* MenuItem을 통해 raw 타입 종류 선택 */}
                     <MenuItem value={'Text'}>Text</MenuItem>
                     <MenuItem value={'JavaScript'}>JavaScript</MenuItem>
                     <MenuItem value={'JSON'}>JSON</MenuItem>
@@ -704,6 +735,7 @@ export default function RequestPage() {
             </Box>
 
             {selectedBodyType === 'form-data' ? (
+              // Body 타입이 form-data일 경우, DataGrid를 통해 form-data 표시
               <Box sx={{ height: '85%', overflow: 'auto' }}>
                 <DataGrid
                   apiRef={bodyRef}
@@ -714,8 +746,9 @@ export default function RequestPage() {
                   disableRowSelectionOnClick
                   hideFooter
                   disableColumnMenu
-                  rowSelectionModel={requestClone.body.formDataSelection}
+                  rowSelectionModel={requestClone.body.formDataSelection} // check 선택한 row 표시
                   onRowSelectionModelChange={(newRowSelectionModel) => {
+                    // check 선택한 row 변경 시, requestClone에 반영
                     setRequestClone({
                       ...requestClone,
                       body: {
@@ -736,8 +769,10 @@ export default function RequestPage() {
                 />
               </Box>
             ) : (
+              // Body 타입이 raw일 경우, CodeMirror를 통해 raw 표시
               <Box sx={{ height: `85%`, overflow: `auto` }}>
                 <Box ref={codeBoxRef} sx={{ flexGrow: 1 }}>
+                  {/* 선택한 raw 타입에 따라 CodeMirror의 확장자 설정 */}
                   <CodeMirror
                     extensions={getExtension(requestClone.body.rawType)}
                     value={requestClone.body.rawData}
@@ -753,10 +788,12 @@ export default function RequestPage() {
             )}
           </Box>
         )}
+        {/*Expected Result Tab일 경우*/}
         {reqTabIndex === 3 && (
           <Box sx={{ height: '40%', overflow: 'auto' }}>
             <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <Box ref={codeBoxRef} sx={{ flexGrow: 1 }}>
+                {/* CodeMirror를 통해 expected result 표시 */}
                 <CodeMirror
                   extensions={[json()]}
                   value={requestClone.expectedResult}
@@ -775,8 +812,12 @@ export default function RequestPage() {
           <Box sx={{ pb: 2 }}>
             <Divider />
           </Box>
+
+          {/* 하단 Response 영역 */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            {/* Response 문구 표시 */}
             <Box>Response</Box>
+            {/* Response의 status와 elapsed time 표시 */}
             <Stack direction="row" spacing={1}>
               <Chip
                 label={`${request.response.status} status`}
@@ -786,21 +827,29 @@ export default function RequestPage() {
               <Chip label={`${request.response.elapsed} ms`} variant="outlined" color="primary" />
             </Stack>
           </Box>
+          {/* Response의 Body, Headers, Result Diff Tab 선택 */}
           <Box sx={{ pt: 2 }}>
             <Tabs value={resTabIndex} onChange={handleChangeResTab}>
               <Tab label="Body" />
               <Tab label="Headers" />
+              {/* expected result에 값을 입력 했을 경우에만 Result Diff Tab 노출 */}
               {requestClone.expectedResult.length !== 0 ? <Tab label="Result Diff" /> : null}
             </Tabs>
           </Box>
+          {/* 선택한 Tab에 따라 다른 DataGrid 표시 */}
           <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+            {/* Body Tab일 경우 */}
             {resTabIndex === 0 && (
               <Box sx={{ height: '100%', overflow: 'auto' }}>
+                {/* CodeMirror을 통해 response body 표시 */}
                 <CodeMirror extensions={[json()]} value={request.response.body} editable={false} />
               </Box>
             )}
+
+            {/* Headers Tab일 경우 */}
             {resTabIndex === 1 && (
               <Box sx={{ height: '100%', overflow: 'auto' }}>
+                {/* DataGrid를 통해 response headers 표시 */}
                 <DataGrid
                   rows={request.response.headers}
                   columns={readonlyColumns}
@@ -811,8 +860,10 @@ export default function RequestPage() {
                 />
               </Box>
             )}
+            {/* Result Diff Tab일 경우 */}
             {resTabIndex === 2 && (
               <Box sx={{ height: '100%', overflow: 'auto' }}>
+                {/* CodeMirrorMerge를 통해 response body와 expected result를 비교하여 표시 */}
                 <CodeMirrorMerge>
                   <CodeMirrorMerge.Original
                     value={requestClone.expectedResult}

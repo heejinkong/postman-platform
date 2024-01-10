@@ -23,8 +23,10 @@ export default function RunTestPage(props: runResultPageProps) {
   }
 
   return (
+    //RunResultPage에 뿌려줄 데이터들을 RunResultPage에 렌더링
     <Container sx={{ pb: 5 }}>
       <Box sx={{ pl: 9 }}>
+        {/* 해당 runTest들을 list로 뿌려줌 */}
         <List sx={{ width: '100%', maxWidth: 900 }}>
           <Box sx={{ maxHeight: 620, overflowY: 'auto' }}>
             {allRunTests.map((runTest) => (
@@ -33,15 +35,18 @@ export default function RunTestPage(props: runResultPageProps) {
                 <Box sx={{ pt: 0.75, pb: 0.5, display: 'flex', maxHeight: 600, overflowY: 'auto' }}>
                   <Box sx={{ flex: 1, pb: 0.5, mr: 1.5 }}>
                     <Grid item xs={9}>
+                      {/* runTest의 title과 status를 보여줌 */}
                       {(runTest.status === 200 || runTest.status === 201) &&
                       (runTest.expectedResult === '' ||
                         runTest.expectedResult === runTest.responseResult) ? (
+                        // runTest의 status가 200이거나 201이고, expected와 response가 같으면 success
                         <Box>
                           <Typography variant="h5" gutterBottom sx={{ color: `#2E7D32` }}>
                             Success
                           </Typography>
                         </Box>
                       ) : (
+                        // 그렇지 않으면 fail
                         <Box>
                           {' '}
                           <Typography variant="h5" gutterBottom sx={{ color: `#C62828` }}>
@@ -49,11 +54,14 @@ export default function RunTestPage(props: runResultPageProps) {
                           </Typography>
                         </Box>
                       )}
+
+                      {/* 실행된 request의 path 표시 */}
                       <div role="presentation">
                         <WorkspaceNavBar _id={runTest.requestId ?? ''} />
                       </div>
                     </Grid>
                   </Box>
+                  {/* ViewResult 컴포넌트를 통해 응답값 표시 */}
                   <Box sx={{ mt: 2.5, pb: 1, mr: 1 }}>
                     <Grid item xs={3}>
                       <ViewResult

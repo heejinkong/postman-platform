@@ -53,12 +53,15 @@ export default function RunHistoryPage() {
   }
 
   return (
+    /* Workspace option에서 run history 클릭 시, 해당 workspace의 run history를 보여줌 */
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* RunHistoryPage의 상단에는 WorkspaceNavBar를 통해 현재 path 표시 */}
       <Box sx={{ px: 1, py: 0.75 }}>
         <WorkspaceNavBar _id={workspaceId ?? ''} />
       </Box>
       <Divider />
       <Container sx={{ pt: 3, flexGrow: 1 }}>
+        {/* RunHistoryPage의 문구 */}
         <Box sx={{ pb: 3.75 }}>
           <Typography variant="h4" sx={{ pb: 0.75 }}>
             Run History
@@ -67,14 +70,18 @@ export default function RunHistoryPage() {
             Please click on one item to check its run details.
           </Typography>
         </Box>
+        {/* RunHistoryPage에서  run을 실행한 결과를 리스트 형태로 표시 */}
         <Box sx={{ pb: 5 }}>
           {allRunResults.length > 0 && (
+            //실행결과가 있을 경우, 실행결과를 리스트 형태로 표시
             <List
               subheader={
                 <ListItem alignItems="flex-start" sx={{ backgroundColor: 'action.hover' }}>
+                  {/* 실행결과의 날짜와 시간을 표시 */}
                   <ListItemDecorator sx={{ width: '10.5rem', mr: 1.5 }}>
                     <ListItemText secondary="Date/Time" />
                   </ListItemDecorator>
+                  {/* 실행결과의 title 표시 */}
                   <ListItemText secondary="Run Target" />
                 </ListItem>
               }
@@ -85,6 +92,7 @@ export default function RunHistoryPage() {
                   alignItems="flex-start"
                   disablePadding
                   secondaryAction={
+                    // 실행결과의 삭제 버튼 표시
                     <IconButton
                       edge="end"
                       aria-label="delete"
@@ -94,6 +102,7 @@ export default function RunHistoryPage() {
                     </IconButton>
                   }
                 >
+                  {/* 리스트 클릭 시, 해당 실행결과의 상세 내용 페이지(RunResultPage)로 이동 */}
                   <ListItemButton key={runResult.id} onClick={() => handleRunResult(runResult.id)}>
                     <ListItemDecorator sx={{ width: '10.5rem', mr: 1.5 }}>
                       <ListItemText secondary={new Date(runResult.created).toLocaleString()} />
@@ -105,6 +114,7 @@ export default function RunHistoryPage() {
             </List>
           )}
           {allRunResults.length === 0 && (
+            //실행결과가 없을 경우, 문구 표시
             <Box
               sx={{
                 height: '100%',
@@ -123,6 +133,7 @@ export default function RunHistoryPage() {
           )}
         </Box>
       </Container>
+      {/* RunHistoryPage 하단에 Pagination 표시 (리스트 10개로 정렬) */}
       <Box>
         <Pagination
           count={totalPages}

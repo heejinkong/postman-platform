@@ -10,10 +10,13 @@ export default function RunResultPage() {
   const runResult = useAppSelector((state) => selectRunResultById(state, runResultId ?? ''))
 
   return (
+    // run을 실행한 결과를 상세히 보여주는 페이지
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/*RunResultPage의 상단 영역*/}
       <Box sx={{ px: 1, py: 0.75 }}>Run Result</Box>
       <Divider />
       <Container sx={{ pt: 3, flexGrow: 1 }}>
+        {/*RunResultPage의 문구*/}
         <Box sx={{ pb: 3.75 }}>
           <Typography variant="h4" sx={{ pb: 0.75 }}>
             Run Results
@@ -24,6 +27,7 @@ export default function RunResultPage() {
         </Box>
         {/* <Divider sx={{ my: 7 }} /> */}
         <Box sx={{ pb: 5 }}>
+          {/*// runResultId에 해당하는 runResult를 가져와서 RunTestPage 컴포넌트에 전달*/}
           <RunTestPage parent={runResult} />
         </Box>
       </Container>
