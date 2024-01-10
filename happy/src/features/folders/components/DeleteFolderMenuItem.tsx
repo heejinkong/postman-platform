@@ -26,6 +26,7 @@ export default function DeleteFolderMenuItem(props: deleteFolderMenuItemProps) {
 
   return (
     <MenuItem onClick={handleDeleteFolder}>
+      {/* Delete 버튼 클릭 시, 해당 folder 삭제 */}
       <Typography textAlign="center" sx={{ color: `#d32e2e` }}>
         Delete
       </Typography>

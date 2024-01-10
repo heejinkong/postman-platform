@@ -37,7 +37,9 @@ export default function AddFolderMenuItem(props: addFolderMenuItemProps) {
   }
 
   return (
+    /* CollectionTreeItem의 메뉴 버튼 클릭 시, AddFolderMenuItem 렌더링 */
     <MenuItem onClick={(e) => handleClick(e)}>
+      {/* Add Folder 버튼 클릭 시, 새로운 folder 생성 */}
       <Typography textAlign="center">Add Folder</Typography>
     </MenuItem>
   )

@@ -101,6 +101,7 @@ export default function HomeLayout() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null)
   }
+
   return (
     <Box>
       <Box ref={headerRef}>

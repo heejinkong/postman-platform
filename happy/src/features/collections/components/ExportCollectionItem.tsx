@@ -131,6 +131,7 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
 
   return (
     <MenuItem onClick={(e) => handleExport(e)}>
+      {/* Export 버튼 클릭 시, 해당 collection을 json 파일로 export */}
       <Typography textAlign="center">Export</Typography>
     </MenuItem>
   )

@@ -34,7 +34,9 @@ export default function CollectionPage() {
   }, [collection, dispatch])
 
   return (
+    /* CollectionPage에서는 해당 collection의 title과 description을 수정하는 페이지 */
     <Box sx={{ p: 2 }}>
+      {/* CollectionPage의 상단에는 WorkspaceNavBar를 통해 현재 path 표시 */}
       <Box>
         <WorkspaceNavBar _id={collectionId ?? ''} />
         <Box sx={{ pt: 1 }}>
@@ -42,11 +44,14 @@ export default function CollectionPage() {
         </Box>
       </Box>
       <Container>
+        {/* CollectionPage의 title */}
         <Box sx={{ mt: 5 }}>
           <Typography variant="h3" gutterBottom>
             Collection
           </Typography>
         </Box>
+
+        {/* CollectionPage의 title을 수정할 수 있는 TextField */}
         <Box sx={{ mt: 3 }}>
           <TextField
             required
@@ -59,6 +64,8 @@ export default function CollectionPage() {
             value={title}
           />
         </Box>
+
+        {/* CollectionPage의 description을 수정할 수 있는 TextField */}
         <Box sx={{ mt: 3 }}>
           <TextField
             fullWidth
@@ -70,6 +77,8 @@ export default function CollectionPage() {
             onChange={(e) => setDesc(e.target.value)}
           />
         </Box>
+
+        {/* 수정한 title과 description을 update하는 버튼 */}
         <Button sx={{ mt: 2 }} variant="contained" size="large" onClick={handleUpdateClick}>
           Update
         </Button>

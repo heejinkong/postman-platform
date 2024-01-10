@@ -37,7 +37,9 @@ export default function AddRequestMenuItem(props: addRequestMenuItemProps) {
   }
 
   return (
+    /* CollectionTreeItem의 메뉴 버튼 클릭 시, AddRequestMenuItem 렌더링 */
     <MenuItem onClick={(e) => handleClick(e)}>
+      {/* Add Request 버튼 클릭 시, 새로운 request 생성 */}
       <Typography textAlign="center">Add Request</Typography>
     </MenuItem>
   )

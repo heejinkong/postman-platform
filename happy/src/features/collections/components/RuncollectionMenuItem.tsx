@@ -98,6 +98,7 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
 
   return (
     <MenuItem>
+      {/* Run 버튼 클릭 시, 해당 collection 실행 */}
       <Typography textAlign="center" sx={{ color: `#4caf50` }} onClick={handleRunClick}>
         Run Collection
       </Typography>

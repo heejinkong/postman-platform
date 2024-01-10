@@ -35,7 +35,9 @@ export default function FolderPage() {
   }
 
   return (
+    /* FolderPage에서는 해당 folder의 title과 description을 수정하는 페이지 */
     <Box sx={{ p: 2 }}>
+      {/* FolderPage의 상단에는 WorkspaceNavBar를 통해 현재 path 표시 */}
       <Box>
         <WorkspaceNavBar _id={folderId ?? ''} />
         <Box sx={{ pt: 1 }}>
@@ -43,11 +45,14 @@ export default function FolderPage() {
         </Box>
       </Box>
       <Container>
+        {/* FolderPage의 title */}
         <Box sx={{ mt: 5 }}>
           <Typography variant="h3" gutterBottom>
             Folder
           </Typography>
         </Box>
+
+        {/* FolderPage의 title을 수정할 수 있는 TextField */}
         <Box sx={{ mt: 3 }}>
           <TextField
             required
@@ -60,6 +65,8 @@ export default function FolderPage() {
             value={title}
           />
         </Box>
+
+        {/* FolderPage의 description을 수정할 수 있는 TextField */}
         <Box sx={{ mt: 3 }}>
           <TextField
             fullWidth
@@ -71,6 +78,8 @@ export default function FolderPage() {
             onChange={(e) => setDesc(e.target.value)}
           />
         </Box>
+
+        {/* FolderPage의 수정 버튼 */}
         <Button sx={{ mt: 2 }} variant="contained" size="large" onClick={handleUpdateClick}>
           Update
         </Button>

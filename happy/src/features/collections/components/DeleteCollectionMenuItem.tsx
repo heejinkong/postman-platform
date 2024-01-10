@@ -25,6 +25,7 @@ export default function DeleteCollectionMenuItem(props: deleteCollectionMenuItem
 
   return (
     <MenuItem onClick={(e) => handleDelete(e)}>
+      {/* Delete collection */}
       <Typography textAlign="center" sx={{ color: `#d32e2e` }}>
         Delete
       </Typography>

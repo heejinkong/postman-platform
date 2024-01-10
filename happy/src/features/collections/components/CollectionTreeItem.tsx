@@ -53,10 +53,12 @@ export default function CollectionTreeItem(props: TreeItemProps) {
 
   return (
     <Box>
+      {/* Sidebar에 TreeItem 기능을 사용하여 collection 표시 */}
       <TreeItem
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         nodeId={collection.id}
+        /* label에 collection title을 표시하고, label 클릭시 해당 collection으로 이동 */
         label={
           <Box sx={{ display: 'flex', alignItems: 'center' }} onClick={(e) => handleNav(e)}>
             <Box sx={{ flexGrow: 1 }}>{collection.title}</Box>
@@ -67,6 +69,7 @@ export default function CollectionTreeItem(props: TreeItemProps) {
             >
               <MoreVertIcon fontSize="inherit" />
             </IconButton>
+            {/* collection label에 마우스 호버 시, 메뉴가 나타나도록 설정 */}
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
@@ -83,6 +86,7 @@ export default function CollectionTreeItem(props: TreeItemProps) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
+              {/* 메뉴 오픈시, collection에 대한 기능을 수행할 수 있는 menuitem 설정 */}
               <RunCollectionMenuItem
                 collectionId={collection.id}
                 handleClose={(e) => handleCloseUserMenu(e)}
@@ -107,6 +111,7 @@ export default function CollectionTreeItem(props: TreeItemProps) {
           </Box>
         }
       >
+        {/* collection의 하위 요소(folder, request)들을 표시 */}
         {renderChildTree(collection)}
       </TreeItem>
     </Box>

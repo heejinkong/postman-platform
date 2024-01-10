@@ -63,7 +63,7 @@ export default function RunFolderMenuItem(props: runFolderMenuItemProps) {
     dfs(folder?.id ?? '')
 
     requestList.forEach(async (request) => {
-      const response = await dispatch(requestService.send(request))
+      const response = await dispatch(requestService.send({ request, formFiles: null }))
       const resBody = (response.payload as PayloadType)?.response?.body
       const resTitle = (response.payload as PayloadType)?.title
       const resStatus = (response.payload as PayloadType)?.response?.status
@@ -88,6 +88,7 @@ export default function RunFolderMenuItem(props: runFolderMenuItemProps) {
 
   return (
     <MenuItem onClick={(e) => handleRunClick(e)}>
+      {/* Run Folder 버튼 클릭 시, 해당 folder 내의 모든 request를 실행 */}
       <Typography textAlign="center" sx={{ color: `#4CAF50` }}>
         Run Folder
       </Typography>

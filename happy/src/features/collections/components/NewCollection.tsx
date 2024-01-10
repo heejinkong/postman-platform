@@ -26,6 +26,7 @@ export default function NewCollection() {
   }
 
   return (
+    /* NewCollection 버튼 ('+' 버튼) 클릭 시, 새로운 collection 생성 */
     <IconButton size="small" aria-label="newcollection" onClick={handleNewCollectionClick}>
       <AddIcon />
     </IconButton>
