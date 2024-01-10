@@ -113,7 +113,7 @@ export default function WorkspaceList() {
           </TableContainer>
         </Box>
 
-        {/* Workspace 목록 페이지네이션 표시 (리스트 10개로 정렬)*/}
+        {/* Workspace 목록 Pagination 표시 (리스트 10개로 정렬)*/}
         <Box sx={{ ml: 12, mt: 1.5 }}>
           <Pagination
             count={totalPages}

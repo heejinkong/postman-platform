@@ -95,6 +95,7 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
 
   return (
     <MenuItem>
+    {/* Run Workspace 버튼 클릭 시, 해당 workspace 내의 모든 request를 실행 */}
       <Typography textAlign="center" sx={{ ml: 4 }} onClick={handleRunClick}>
         Run Workspace
       </Typography>

@@ -104,14 +104,18 @@ export default function HomeLayout() {
 
   return (
     <Box>
+      {/* HomeLayout은 Header와 Body로 구성 */}
       <Box ref={headerRef}>
+        {/* Header는 AppBar로 구성 */}
         <AppBar
           position="fixed"
           ref={headerBarRef}
           sx={{ zIndex: (theme) => theme.zIndex.drawer + 2, backgroundColor: 'background.default' }}
         >
+          {/* AppBar는 Toolbar로 구성 */}
           <Box sx={{ mx: 2 }}>
             <Toolbar disableGutters>
+            {/* Top Menu */}
               <Avatar
                 alt="ToolBal Icon"
                 src="/iconTool.jpg"
@@ -132,7 +136,7 @@ export default function HomeLayout() {
               >
                 통합문서뷰어
               </Typography>
-
+              {/* AppBar의 WORKSPACE Button 표시 */}
               <Box sx={{ flexGrow: 1, display: 'flex' }}>
                 <Button
                   id="demo-customized-button"
@@ -147,6 +151,8 @@ export default function HomeLayout() {
                 >
                   Workpsace
                 </Button>
+
+                {/* AppBar의 WORKSPACE Button 클릭 시, 해당 workspace 목록 표시 */}
                 <StyledMenu
                   id="demo-customized-menu"
                   MenuListProps={{
@@ -167,6 +173,7 @@ export default function HomeLayout() {
                         }
                       }}
                     >
+                      {/* workspace가 없을 경우, 해당 문구 표시 */}
                       {allWorkspaces.length === 0 ? (
                         <Box>
                           <Typography
@@ -187,6 +194,8 @@ export default function HomeLayout() {
                           </Typography>
                         </Box>
                       ) : (
+
+                        // workspace가 있을 경우, 해당 workspace 목록 표시
                         <Box sx={{ maxHeight: 200, overflowY: 'auto' }}>
                           {allWorkspaces.map((ws) => (
                             <MenuItem
@@ -202,6 +211,8 @@ export default function HomeLayout() {
                       )}
                     </Box>
                     <Divider sx={{ my: 0.5 }} />
+
+                    {/* workspace를 import하거나, 새로운 workspace를 생성할 수 있는 버튼 */}
                     <Box sx={{ display: 'flex' }}>
                       <Box sx={{ ml: 1 }}>
                         <Button variant="outlined" size="small">
@@ -216,6 +227,7 @@ export default function HomeLayout() {
                 </StyledMenu>
               </Box>
 
+              {/* AppBar의 회원 정보 버튼 표시 (임시로 만들어 놓은 버튼) */}
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -249,6 +261,8 @@ export default function HomeLayout() {
           </Box>
         </AppBar>
       </Box>
+      
+      {/* HomePage 부분 */}
       <Box ref={bodyRef}>
         <Outlet />
       </Box>

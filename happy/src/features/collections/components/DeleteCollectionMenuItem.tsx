@@ -25,7 +25,7 @@ export default function DeleteCollectionMenuItem(props: deleteCollectionMenuItem
 
   return (
     <MenuItem onClick={(e) => handleDelete(e)}>
-      {/* Delete collection */}
+      {/* Delete 버튼 클릭 시, 해당 collection 삭제 */}
       <Typography textAlign="center" sx={{ color: `#d32e2e` }}>
         Delete
       </Typography>
