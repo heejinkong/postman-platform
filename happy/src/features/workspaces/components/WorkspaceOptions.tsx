@@ -66,6 +66,7 @@ export default function WorkspaceOptions() {
   }
 
   return (
+    /* Workspace Options 버튼 클릭 시, Workspace Options 메뉴가 나타나도록 설정 */
     <Box>
       <Button
         id="demo-customized-button"
@@ -80,6 +81,8 @@ export default function WorkspaceOptions() {
       >
         Workspace Options
       </Button>
+
+      {/* Workspace Options 메뉴 */}
       <StyledMenu
         id="demo-customized-menu"
         MenuListProps={{
@@ -90,19 +93,25 @@ export default function WorkspaceOptions() {
         onClose={handleClose}
         sx={{ mt: -5, ml: 23 }}
       >
+        {/* Workspace Options 메뉴의 Run History 클릭 시, 해당 workspace의 run history로 이동 */}
         <MenuItem onClick={handleHistoryClick} disableRipple sx={{ justifyContent: 'center' }}>
           Run History
         </MenuItem>
+        {/* Workspace Options 메뉴의 Run Workspace 클릭 시, 해당 workspace의 run workspace로 이동 */}
         <RunWorkspaceOptionItem workspaceId={workspace.id} handleClose={() => handleClose} />
         <Box>
           <Divider sx={{ my: 0.5 }} />
         </Box>
+        {/* Workspace Options 메뉴의 Import Collection 클릭 시, 해당 workspace의 collection import */}
         <MenuItem onClick={handleClose} disableRipple sx={{ justifyContent: 'center' }}>
           Import Collection
         </MenuItem>
+        {/* Workspace Options 메뉴의 Export Collection 클릭 시, 해당 workspace의 collection export */}
         <MenuItem onClick={handleClose} disableRipple sx={{ justifyContent: 'center' }}>
           Export Collection
         </MenuItem>
+
+        {/* 새로운 Workspace 생성 버튼 */}
         <Box sx={{ p: 1, ml: 2 }}>
           <NewWorkspace />
         </Box>

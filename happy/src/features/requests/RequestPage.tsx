@@ -71,7 +71,6 @@ export default function RequestPage() {
   const codeBoxRef = useRef<HTMLDivElement>(null)
 
   const [rowIdHover, setRowIdHover] = useState<GridRowId>(-1)
-  // const [formFiles, setFormFile] = useState<FormFileType[]>([])
 
   const paramsRef = useGridApiRef()
   const headersRef = useGridApiRef()

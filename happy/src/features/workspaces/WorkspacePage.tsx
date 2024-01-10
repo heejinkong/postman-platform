@@ -36,7 +36,9 @@ export default function WorkspacesPage() {
   }, [dispatch, navigate, workspace])
 
   return (
+    //WorkspacePage
     <Box sx={{ p: 2 }}>
+      {/* WorkspacePage의 상단에는 WorkspaceNavBar를 통해 현재 path 표시 */}
       <Box>
         <WorkspaceNavBar _id={workspaceId ?? ''} />
         <Box sx={{ pt: 1 }}>
@@ -45,10 +47,13 @@ export default function WorkspacesPage() {
       </Box>
       <Container>
         <Box sx={{ mt: 5 }}>
+          {/* WorkspacePage의 title */}
           <Typography variant="h3" gutterBottom>
             Workspace
           </Typography>
         </Box>
+
+        {/* WorkspacePage의 title을 수정할 수 있는 TextField */}
         <Box sx={{ mt: 3 }}>
           <TextField
             required
@@ -61,6 +66,8 @@ export default function WorkspacesPage() {
             value={title}
           />
         </Box>
+
+        {/* WorkspacePage의 description을 수정할 수 있는 TextField */}
         <Box sx={{ mt: 3 }}>
           <TextField
             fullWidth
@@ -74,6 +81,8 @@ export default function WorkspacesPage() {
             value={desc}
           />
         </Box>
+
+        {/* WorkspacePage의 수정 버튼 */}
         <Button sx={{ mt: 2 }} variant="contained" size="large" onClick={updateWs}>
           Update
         </Button>

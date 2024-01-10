@@ -44,7 +44,8 @@ export default function RequestTreeItem(props: TreeItemProps) {
           sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
           onClick={(e) => handleNav(e)}
         >
-          {/* request의 method에 따라 다른 아이콘 표시 */}
+          {/* request의 method에 따라 다른 아이콘 표시 
+          (기본값은 method가 GET이며, save버튼 혹은 send 버튼을 클릭해야만 확인 가능) */}
           {request.method === 'GET' ? (
             <SendIcon style={{ color: '#2E7D32' }} fontSize="inherit" />
           ) : request.method === 'POST' ? (

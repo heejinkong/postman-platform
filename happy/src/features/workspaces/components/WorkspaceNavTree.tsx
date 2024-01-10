@@ -36,7 +36,9 @@ export default function WorkspaceNavTree() {
     collections.map((id) => <CollectionTreeItem key={id} _id={id} />)
 
   return (
+    /* Sidebar에 TreeView 기능을 사용하여 현재 workspace에 해당하는 collection 표시 */
     <Box sx={{ minWidth: 280 }}>
+      {/* TreeView 컴포넌트는 트리 구조를 표시하는 컴포넌트 */}
       <TreeView
         aria-label="rich object"
         defaultCollapseIcon={<ExpandMoreIcon />}
@@ -46,6 +48,7 @@ export default function WorkspaceNavTree() {
         onNodeToggle={handleToggle}
         onNodeSelect={handleSelect}
       >
+        {/* workspace의 하위 요소인 collection들을 표시 */}
         {renderCollectionTree(workspace.collections)}
       </TreeView>
     </Box>

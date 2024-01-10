@@ -71,7 +71,7 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
     })
 
     requestList.forEach(async (request) => {
-      const response = await dispatch(requestService.send(request))
+      const response = await dispatch(requestService.send({ request, formFiles: null }))
       const resBody = (response.payload as PayloadType)?.response?.body
       const resTitle = (response.payload as PayloadType)?.title
       const resStatus = (response.payload as PayloadType)?.response?.status

@@ -9,6 +9,7 @@ import { useAppDispatch } from '../../../app/hook'
 import { workspaceItem } from '../domain/workspaceEntity'
 import workspaceService from '../service/workspaceService'
 import { useNavigate } from 'react-router-dom'
+import { Box } from '@mui/material'
 
 export default function NewWorkspace() {
   const [open, setOpen] = React.useState(false)
@@ -38,13 +39,17 @@ export default function NewWorkspace() {
   }
 
   return (
-    <div>
+    <Box>
+      {/* NewWorkspace 버튼 클릭 시, 새로운 workspace 생성 */}
       <Button variant="contained" size="large" onClick={handleClickOpen}>
         New Workspace
       </Button>
+      {/* NewWorkspace 버튼 클릭 시, Dialog 렌더링 */}
       <Dialog open={open} onClose={handleClose}>
+        {/* Dialog의 문구*/}
         <DialogTitle>Create Workspace</DialogTitle>
         <DialogContent>
+          {/* Dialog의 title을 입력할 수 있는 TextField */}
           <TextField
             autoFocus
             margin="dense"
@@ -55,6 +60,7 @@ export default function NewWorkspace() {
             variant="standard"
             onChange={(e) => setTitle(e.target.value)}
           />
+          {/* Dialog의 description을 입력할 수 있는 TextField */}
           <TextField
             autoFocus
             margin="dense"
@@ -68,11 +74,13 @@ export default function NewWorkspace() {
             onChange={(e) => setDesc(e.target.value)}
           />
         </DialogContent>
+
+        {/* Dialog의 버튼 */}
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={addWorkspace}>Create</Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   )
 }
