@@ -64,18 +64,13 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
   }
 
   const getSubFolderData = (folder: folderItem) => {
-    //subFolderList의 parentId와 folder의 id가 같은 것만 필터링 해서 subFolder[]에 넣어줌
     const subFolder = subFolderList.filter((subFolder) => subFolder.parentId === folder.id)
 
     if (subFolder.length > 0) {
-      return {
-        ...subFolder.map((folder) => {
-          return {
-            title: folder.title,
-            item: getSubFolderData(folder)
-          }
-        })
-      }
+      return subFolder.map((folder) => ({
+        name: folder.title,
+        item: getSubFolderData(folder).item
+      }))
     } else {
       return {
         name: folder.title,
@@ -85,13 +80,12 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
       }
     }
   }
-
   const getFolderData = (folder: folderItem) => {
     dfs(folder.id)
 
     return {
       name: folder.title,
-      item: [getSubFolderData(folder)]
+      item: getSubFolderData(folder)
     }
   }
 
@@ -115,11 +109,7 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
         schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
       },
       item: [
-        ...folderInCollection.map((folder) => {
-          return {
-            item: getFolderData(folder)
-          }
-        }),
+        ...folderInCollection.map((folder) => getFolderData(folder)),
         ...requestInCollection.map((request) => getRequestData(request))
       ]
     }
