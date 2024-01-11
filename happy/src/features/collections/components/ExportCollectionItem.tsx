@@ -90,14 +90,48 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
   }
 
   const getRequestData = (request: requestItem) => {
+    const requestData = {
+      method: request.method,
+      header: [
+        {
+          key: 'Content-Type',
+          value: 'application/json'
+        }
+      ],
+      body: {},
+      url: {
+        raw: request.url
+        // protocol: parsedUrl.protocol.split(':')[0] ?? '',
+        // host: parsedUrl.hostname.split('.') ?? [],
+        // port: parsedUrl.port ?? '',
+        // path: parsedUrl.pathname.split('/').filter((path) => path !== '') ?? []
+      },
+      response: []
+    }
+    if (request.body.mode === 'raw') {
+      requestData.body = {
+        mode: 'raw',
+        raw: { data: request.body.rawData },
+        options: {
+          raw: {
+            language: request.body.rawType
+          }
+        }
+      }
+    } else if (request.body.mode === 'formdata') {
+      requestData.body = {
+        mode: 'formdata',
+        formdata: request.body.formData.map((formData) => ({
+          key: formData._key,
+          type: formData._dataType,
+          [formData._dataType === 'file' ? 'src' : 'value']: formData._value
+        }))
+      }
+    }
+
     return {
       name: request.title,
-      request: {
-        // url: request.url,
-        // method: request.method,
-        // header: request.headers,
-        // body: request.body
-      }
+      request: requestData
     }
   }
 
