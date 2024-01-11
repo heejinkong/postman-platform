@@ -18,6 +18,7 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
   const requests = useAppSelector(selectAllRequests) ?? []
 
   const requestList: requestItem[] = []
+  const subFolderList: folderItem[] = []
 
   const folderInCollection = folders.filter((folder) => {
     return folder.parentId === props.collectionId
@@ -35,8 +36,11 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
     if (subFolder.length > 0) {
       subFolder.forEach((folder) => {
         dfs(folder.id)
+        subFolderList.push(folder)
       })
     }
+
+    return { requestList, subFolderList }
   }
 
   const handleExport = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -59,9 +63,46 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
     URL.revokeObjectURL(url)
   }
 
+  const getSubFolderData = (folder: folderItem) => {
+    const subFolder = subFolderList.filter((subFolder) => subFolder.parentId === folder.id)
+
+    if (subFolder.length > 0) {
+      return {
+        ...subFolder.map((folder) => {
+          return {
+            title: folder.title,
+            item: getSubFolderData(folder)
+          }
+        })
+      }
+    } else {
+      return {
+        name: folder.title,
+        item: requestList
+          .filter((request) => request.parentId === folder.id)
+          .map((request) => getRequestData(request))
+      }
+    }
+  }
+
   const getFolderData = (folder: folderItem) => {
+    dfs(folder.id)
+
     return {
-      name: folder.title
+      name: folder.title,
+      item: [getSubFolderData(folder)]
+    }
+  }
+
+  const getRequestData = (request: requestItem) => {
+    return {
+      name: request.title,
+      request: {
+        // url: request.url,
+        // method: request.method,
+        // header: request.headers,
+        // body: request.body
+      }
     }
   }
 
@@ -73,58 +114,12 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
         schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
       },
       item: [
-        {
-          item: folderInCollection.map((folder) => getFolderData(folder))
-        },
-        {
-          item: requestInCollection.map((request) => {
-            const parsedUrl = new URL(request.url)
-
-            const requestData = {
-              method: request.method,
-              header: [
-                {
-                  key: 'Content-Type',
-                  value: 'application/json'
-                }
-              ],
-              body: {},
-              url: {
-                raw: request.url,
-                protocol: parsedUrl.protocol.split(':')[0] ?? '',
-                host: parsedUrl.hostname.split('.') ?? [],
-                port: parsedUrl.port ?? '',
-                path: parsedUrl.pathname.split('/').filter((path) => path !== '') ?? []
-              },
-              response: []
-            }
-            if (request.body.mode === 'raw') {
-              requestData.body = {
-                mode: 'raw',
-                raw: { data: request.body.rawData },
-                options: {
-                  raw: {
-                    language: request.body.rawType
-                  }
-                }
-              }
-            } else if (request.body.mode === 'formdata') {
-              requestData.body = {
-                mode: 'formdata',
-                formdata: request.body.formData.map((formData) => ({
-                  key: formData._key,
-                  type: formData._dataType,
-                  [formData._dataType === 'file' ? 'src' : 'value']: formData._value
-                }))
-              }
-            }
-
-            return {
-              name: request.title,
-              request: requestData
-            }
-          })
-        }
+        ...folderInCollection.map((folder) => {
+          return {
+            item: getFolderData(folder)
+          }
+        }),
+        ...requestInCollection.map((request) => getRequestData(request))
       ]
     }
   }
