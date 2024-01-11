@@ -64,6 +64,7 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
   }
 
   const getSubFolderData = (folder: folderItem) => {
+    //subFolderList의 parentId와 folder의 id가 같은 것만 필터링 해서 subFolder[]에 넣어줌
     const subFolder = subFolderList.filter((subFolder) => subFolder.parentId === folder.id)
 
     if (subFolder.length > 0) {
