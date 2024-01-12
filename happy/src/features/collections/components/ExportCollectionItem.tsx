@@ -67,9 +67,9 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
     const subFolder = subFolderList.filter((subFolder) => subFolder.parentId === folder.id)
 
     if (subFolder.length > 0) {
-      return subFolder.map((folder) => ({
-        name: folder.title,
-        item: getSubFolderData(folder).item
+      return subFolder.map((subFolder) => ({
+        name: subFolder.title,
+        item: getSubFolderData(subFolder).item
       }))
     } else {
       return {
@@ -80,12 +80,20 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
       }
     }
   }
+
   const getFolderData = (folder: folderItem) => {
     dfs(folder.id)
 
     return {
       name: folder.title,
-      item: getSubFolderData(folder)
+      item: [
+        ...requestList
+          .filter((request) => request.parentId === folder.id)
+          .map((request) => getRequestData(request)),
+        ...subFolderList
+          .filter((subFolder) => subFolder.parentId === folder.id)
+          .map((subFolder) => getSubFolderData(subFolder))
+      ]
     }
   }
 
