@@ -2,6 +2,9 @@ import {
   Box,
   Button,
   Chip,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   FormControl,
   FormControlLabel,
   IconButton,
@@ -47,6 +50,7 @@ import { runResultItem } from '../runResults/domain/runResultEntity'
 import { runTestItem } from '../runTests/domain/runTestEntity'
 import runResultService from '../runResults/service/runResultService'
 import runTestService from '../runTests/service/runTestService'
+import BuildIcon from '@mui/icons-material/Build'
 
 interface ResponseType {
   elapsed?: number
@@ -69,6 +73,16 @@ type FormFileType = {
 export default function RequestPage() {
   const { requestId } = useParams()
   const codeBoxRef = useRef<HTMLDivElement>(null)
+
+  const [open, setOpen] = React.useState(false)
+
+  const handleClickOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
 
   const [rowIdHover, setRowIdHover] = useState<GridRowId>(-1)
 
@@ -199,7 +213,7 @@ export default function RequestPage() {
       newRowsFormData.push({
         id: uuidv4(),
         _key: '',
-        _dataType: 'Text',
+        _dataType: 'text',
         _value: [],
         _desc: ''
       })
@@ -346,7 +360,7 @@ export default function RequestPage() {
         body: {
           ...prevRequestClone.body,
           formData: prevRequestClone.body.formData.map((formItem) => {
-            if (formItem.id === id && formItem._dataType === 'File') {
+            if (formItem.id === id && formItem._dataType === 'file') {
               const updatedFiles = (formItem._value as string[]).filter(
                 (_: string, i: number) => i !== index
               )
@@ -386,8 +400,8 @@ export default function RequestPage() {
               value={params.row._dataType}
               onChange={(event) => handleChangeFormType(event, params.id)}
             >
-              <MenuItem value="Text">Text</MenuItem>
-              <MenuItem value="File">File</MenuItem>
+              <MenuItem value="Text">text</MenuItem>
+              <MenuItem value="File">file</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -401,7 +415,7 @@ export default function RequestPage() {
       sortable: false,
       renderCell: (params: GridRenderCellParams) => {
         const handleClick = () => {
-          if (params.row._dataType === 'File') {
+          if (params.row._dataType === 'file') {
             handleClickFile(params.id)
           } else {
             params.api.getCellMode(params.id, params.field)
@@ -413,12 +427,12 @@ export default function RequestPage() {
             onClick={handleClick}
             sx={{
               width: '100%',
-              cursor: params.row._dataType === 'File' ? 'pointer' : 'text',
+              cursor: params.row._dataType === 'file' ? 'pointer' : 'text',
               maxWidth: 440,
               overflowX: 'auto'
             }}
           >
-            {params.row._dataType === 'File' ? (
+            {params.row._dataType === 'file' ? (
               // Body탭의 form-data의 dataType이 File일 경우
               params.value && (params.value as string[]).length > 0 ? (
                 // 파일이 선택되었을 경우, 파일 이름 표시
@@ -542,7 +556,26 @@ export default function RequestPage() {
     <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* RequestPage의 상단에는 WorkspaceNavBar를 통해 현재 path 표시 */}
       <Box>
-        <WorkspaceNavBar _id={requestId ?? ''} />
+        <Box sx={{ display: 'flex' }}>
+          <WorkspaceNavBar _id={requestId ?? ''} />
+          <IconButton size="small" aria-label="settings" onClick={handleClickOpen}>
+            <BuildIcon />
+          </IconButton>
+          <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title">
+            <Box sx={{ width: 600, height: 500 }}>
+              {/* Dialog 창 상단에는 title 표시 */}
+              <DialogTitle sx={{ pt: 1, pb: 1 }} id="alert-dialog-title"></DialogTitle>
+              <Box sx={{ height: '90%', width: '100%' }}>
+                {/* Dialog 창 중앙에는 응답값 표시 */}
+                <Box sx={{ height: '85%' }}>
+                  <DialogContent>
+                    <Box sx={{ height: '100%', overflow: 'auto' }}></Box>
+                  </DialogContent>
+                </Box>
+              </Box>
+            </Box>
+          </Dialog>
+        </Box>
         <Box sx={{ pt: 1 }}>
           <Divider />
         </Box>

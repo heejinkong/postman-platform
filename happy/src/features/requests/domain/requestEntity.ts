@@ -27,7 +27,7 @@ export class requestItem implements Item {
     mode: string
   } = {
     formDataSelection: [],
-    formData: [{ id: uuidv4(), _key: '', _dataType: 'Text', _value: [], _desc: '' }],
+    formData: [{ id: uuidv4(), _key: '', _dataType: 'text', _value: [], _desc: '' }],
     rawType: 'Text',
     rawData: '',
     mode: 'formdata'

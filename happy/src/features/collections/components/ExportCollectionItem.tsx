@@ -108,11 +108,15 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
       ],
       body: {},
       url: {
-        raw: request.url
+        raw: request.url,
         // protocol: parsedUrl.protocol.split(':')[0] ?? '',
         // host: parsedUrl.hostname.split('.') ?? [],
         // port: parsedUrl.port ?? '',
         // path: parsedUrl.pathname.split('/').filter((path) => path !== '') ?? []
+        query: request.params.map((params) => ({
+          key: params._key,
+          value: params._value
+        }))
       },
       response: []
     }
