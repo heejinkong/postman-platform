@@ -72,7 +72,6 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
         item: getSubFolderData(folder).item
       }))
     } else {
-      dfs(folder.id)
       return {
         name: folder.title,
         item: requestList
@@ -101,10 +100,11 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
       ],
       body: {},
       url: {
-        raw: request.url,
-        protocol: request.url.split('://')[0]
-        // host: request.url.split('://')[1].split('/')[0],
-        // path: request.url.split('://')[1].split('/').slice(1)
+        raw: request.url
+        // protocol: parsedUrl.protocol.split(':')[0] ?? '',
+        // host: parsedUrl.hostname.split('.') ?? [],
+        // port: parsedUrl.port ?? '',
+        // path: parsedUrl.pathname.split('/').filter((path) => path !== '') ?? []
       },
       response: []
     }
