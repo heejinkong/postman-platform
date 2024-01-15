@@ -10,9 +10,3 @@ export class workspaceItem implements Item {
   authorId: string = ''
   collections: string[] = []
 }
-
-export interface workspaceCommands {
-  new: unknown
-  delete: unknown
-  update: unknown
-}

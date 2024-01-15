@@ -1,7 +1,7 @@
 import { Box, Container, Divider, Grid, List, Typography } from '@mui/material'
 import { selectAllRunTests } from './service/runTestSlice'
 import ViewResult from './component/ViewResult'
-import { runResultItem } from '../runResults/domain/runResultEntity'
+import { runResultItem } from '../runResults/domain/runResultItem'
 import { useAppSelector } from '../../app/hook'
 import { selectWorkspaceById } from '../workspaces/service/workspaceSlice'
 import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'

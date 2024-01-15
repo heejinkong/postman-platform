@@ -12,9 +12,3 @@ export class folderItem implements Item {
   folders: string[] = []
   requests: string[] = []
 }
-
-export interface folderCommands {
-  new: unknown
-  delete: unknown
-  update: unknown
-}

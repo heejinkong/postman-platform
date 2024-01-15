@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom'
 import { selectAllCollections } from '../../collections/service/collectionSlice'
 import { selectAllFolders } from '../../folders/service/folderSlice'
 import { selectAllRequests } from '../../requests/service/requestSlice'
-import { requestItem } from '../../requests/domain/requestEntity'
-import { runResultItem } from '../../runResults/domain/runResultEntity'
+import { requestItem } from '../../requests/domain/requestItem'
+import { runResultItem } from '../../runResults/domain/runResultItem'
 import runResultService from '../../runResults/service/runResultService'
-import { runTestItem } from '../../runTests/domain/runTestEntity'
+import { runTestItem } from '../../runTests/domain/runTestItem'
 import runTestService from '../../runTests/service/runTestService'
 import requestService from '../../requests/service/requestService'
 
@@ -71,7 +71,7 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
     })
 
     requestList.forEach(async (request) => {
-      const response = await dispatch(requestService.send({ request, formFiles: null }))
+      const response = await dispatch(requestService.send({ request: request, formFiles: [] }))
       const resBody = (response.payload as PayloadType)?.response?.body
       const resTitle = (response.payload as PayloadType)?.title
       const resStatus = (response.payload as PayloadType)?.response?.status
@@ -95,7 +95,7 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
 
   return (
     <MenuItem>
-    {/* Run Workspace 버튼 클릭 시, 해당 workspace 내의 모든 request를 실행 */}
+      {/* Run Workspace 버튼 클릭 시, 해당 workspace 내의 모든 request를 실행 */}
       <Typography textAlign="center" sx={{ ml: 4 }} onClick={handleRunClick}>
         Run Workspace
       </Typography>

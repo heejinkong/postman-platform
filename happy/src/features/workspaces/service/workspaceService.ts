@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { workspaceCommands, workspaceItem } from '../domain/workspaceEntity'
+import { workspaceItem } from '../domain/workspaceItem'
 
-class workspaceService implements workspaceCommands {
+class workspaceService {
   new = createAsyncThunk('workspaceService/new', async (workspace: workspaceItem, thunkAPI) => {
     thunkAPI.dispatch({ type: 'workspaces/createWorkspace', payload: workspace })
   })

@@ -4,9 +4,8 @@ import { RootState } from '../../../app/store'
 import { selectFolderById } from '../../folders/service/folderSlice'
 import { selectCollectionById } from '../../collections/service/collectionSlice'
 import { selectNavBarData, selectNavTreeExpanded } from '../configSlice'
-import { configCommands } from '../domain/configEntity'
 
-class configService implements configCommands {
+class configService {
   navItemOpened = createAsyncThunk('configService/navItemOpened', async (item: Item, thunkAPI) => {
     const state = thunkAPI.getState() as RootState
 

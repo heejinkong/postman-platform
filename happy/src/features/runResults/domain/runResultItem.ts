@@ -12,10 +12,3 @@ export class runResultItem implements Item {
   Duration: number = 0
   runTestList: string[] = []
 }
-
-export interface runResultCommands {
-  new: unknown
-  delete: unknown
-  runAgain: unknown
-  setStage: unknown
-}

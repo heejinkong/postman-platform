@@ -8,6 +8,7 @@ import folderSlice from '../features/folders/service/folderSlice'
 import configSlice from '../features/config/configSlice'
 import runTestSlice from '../features/runTests/service/runTestSlice'
 import runResultSlice from '../features/runResults/service/runResultSlice'
+import environmentSlice from '../features/variables/service/environmentSlice'
 
 const persistedWorkspacesReducer = persistReducer(
   {
@@ -72,6 +73,15 @@ const persistedRunResultsReducer = persistReducer(
   runResultSlice
 )
 
+const persistEnvironmentsReducer = persistReducer(
+  {
+    key: 'environments',
+    storage,
+    version: 1
+  },
+  environmentSlice
+)
+
 export const store = configureStore({
   reducer: {
     workspaces: persistedWorkspacesReducer,
@@ -80,7 +90,8 @@ export const store = configureStore({
     folders: persistedFoldersReducer,
     config: persistedConfigReducer,
     runTests: persistedRunTestsReducer,
-    runResults: persistedRunResultsReducer
+    runResults: persistedRunResultsReducer,
+    environments: persistEnvironmentsReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

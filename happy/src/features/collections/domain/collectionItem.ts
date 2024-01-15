@@ -12,9 +12,3 @@ export class collectionItem implements Item {
   folders: string[] = []
   requests: string[] = []
 }
-
-export interface collectionCommands {
-  new: unknown
-  delete: unknown
-  update: unknown
-}

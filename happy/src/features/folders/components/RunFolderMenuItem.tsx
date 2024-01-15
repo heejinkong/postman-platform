@@ -1,12 +1,12 @@
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import { MenuItem, Typography } from '@mui/material'
 import { selectAllFolders, selectFolderById } from '../service/folderSlice'
-import { runTestItem } from '../../runTests/domain/runTestEntity'
+import { runTestItem } from '../../runTests/domain/runTestItem'
 import { selectAllRequests } from '../../requests/service/requestSlice'
 import { useNavigate, useParams } from 'react-router-dom'
-import { runResultItem } from '../../runResults/domain/runResultEntity'
+import { runResultItem } from '../../runResults/domain/runResultItem'
 import runResultService from '../../runResults/service/runResultService'
-import { requestItem } from '../../requests/domain/requestEntity'
+import { requestItem } from '../../requests/domain/requestItem'
 import runTestService from '../../runTests/service/runTestService'
 import requestService from '../../requests/service/requestService'
 
@@ -63,7 +63,7 @@ export default function RunFolderMenuItem(props: runFolderMenuItemProps) {
     dfs(folder?.id ?? '')
 
     requestList.forEach(async (request) => {
-      const response = await dispatch(requestService.send({ request, formFiles: null }))
+      const response = await dispatch(requestService.send({ request: request, formFiles: [] }))
       const resBody = (response.payload as PayloadType)?.response?.body
       const resTitle = (response.payload as PayloadType)?.title
       const resStatus = (response.payload as PayloadType)?.response?.status

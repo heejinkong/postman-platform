@@ -11,8 +11,3 @@ export class runTestItem implements Item {
   responseResult: string = ''
   expectedResult: string = ''
 }
-
-export interface runTestCommands {
-  new: unknown
-  delete: unknown
-}

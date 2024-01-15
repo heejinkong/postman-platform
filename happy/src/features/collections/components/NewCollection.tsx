@@ -3,7 +3,7 @@ import AddIcon from '@mui/icons-material/Add'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import { selectWorkspaceById } from '../../workspaces/service/workspaceSlice'
-import { collectionItem } from '../domain/collectionEntity'
+import { collectionItem } from '../domain/collectionItem'
 import collectionService from '../service/collectionService'
 
 export default function NewCollection() {

@@ -10,7 +10,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { useNavigate } from 'react-router-dom'
 import { useAppSelector } from '../../../app/hook'
 import { selectCollectionById } from '../service/collectionSlice'
-import { collectionItem } from '../domain/collectionEntity'
+import { collectionItem } from '../domain/collectionItem'
 import RunCollectionMenuItem from './RuncollectionMenuItem'
 import ExportCollectionItem from './ExportCollectionItem'
 

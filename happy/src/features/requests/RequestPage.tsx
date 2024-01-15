@@ -2,9 +2,6 @@ import {
   Box,
   Button,
   Chip,
-  Dialog,
-  DialogContent,
-  DialogTitle,
   FormControl,
   FormControlLabel,
   IconButton,
@@ -42,15 +39,15 @@ import { xml } from '@codemirror/lang-xml'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { selectRequestById } from './service/requestSlice'
 import requestService from './service/requestService'
-import { requestItem } from './domain/requestEntity'
+import { requestItem } from './domain/requestItem'
 import configService from '../config/service/configService'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { v4 as uuidv4 } from 'uuid'
-import { runResultItem } from '../runResults/domain/runResultEntity'
-import { runTestItem } from '../runTests/domain/runTestEntity'
+import { runResultItem } from '../runResults/domain/runResultItem'
+import { runTestItem } from '../runTests/domain/runTestItem'
 import runResultService from '../runResults/service/runResultService'
 import runTestService from '../runTests/service/runTestService'
-import BuildIcon from '@mui/icons-material/Build'
+import SettingsVariable from '../variables/components/SettingsVariable'
 
 interface ResponseType {
   elapsed?: number
@@ -73,16 +70,6 @@ type FormFileType = {
 export default function RequestPage() {
   const { requestId } = useParams()
   const codeBoxRef = useRef<HTMLDivElement>(null)
-
-  const [open, setOpen] = React.useState(false)
-
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
 
   const [rowIdHover, setRowIdHover] = useState<GridRowId>(-1)
 
@@ -556,25 +543,9 @@ export default function RequestPage() {
     <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* RequestPage의 상단에는 WorkspaceNavBar를 통해 현재 path 표시 */}
       <Box>
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <WorkspaceNavBar _id={requestId ?? ''} />
-          <IconButton size="small" aria-label="settings" onClick={handleClickOpen}>
-            <BuildIcon />
-          </IconButton>
-          <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title">
-            <Box sx={{ width: 600, height: 500 }}>
-              {/* Dialog 창 상단에는 title 표시 */}
-              <DialogTitle sx={{ pt: 1, pb: 1 }} id="alert-dialog-title"></DialogTitle>
-              <Box sx={{ height: '90%', width: '100%' }}>
-                {/* Dialog 창 중앙에는 응답값 표시 */}
-                <Box sx={{ height: '85%' }}>
-                  <DialogContent>
-                    <Box sx={{ height: '100%', overflow: 'auto' }}></Box>
-                  </DialogContent>
-                </Box>
-              </Box>
-            </Box>
-          </Dialog>
+          <SettingsVariable />
         </Box>
         <Box sx={{ pt: 1 }}>
           <Divider />

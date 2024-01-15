@@ -16,6 +16,8 @@ import RunTestLayout from './features/runTests/RunTestLayout'
 import RunTestPage from './features/runTests/RunTestPage'
 import RunResultLayout from './features/runResults/runResultLayout'
 import RunResultPage from './features/runResults/runResultPage'
+import VariableLayout from './features/variables/VariableLayout'
+import EnvironmentPage from './features/variables/EnvironmentPage'
 
 function App() {
   return (
@@ -41,6 +43,9 @@ function App() {
           </Route>
           <Route path="runTest" element={<RunTestLayout />}>
             <Route index element={<RunTestPage />} />
+          </Route>
+          <Route path="environments/:environmentId" element={<VariableLayout />}>
+            <Route index element={<EnvironmentPage />} />
           </Route>
         </Route>
       </Route>

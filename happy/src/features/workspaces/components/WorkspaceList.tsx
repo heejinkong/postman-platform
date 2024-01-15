@@ -17,7 +17,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete'
 import { selectAllWorkspaces } from '../service/workspaceSlice'
 import workspaceService from '../service/workspaceService'
-import { workspaceItem } from '../domain/workspaceEntity'
+import { workspaceItem } from '../domain/workspaceItem'
 import { useState } from 'react'
 import NewWorkspace from './NewWorkspace'
 

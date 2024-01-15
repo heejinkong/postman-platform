@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import { selectCollectionById } from '../../collections/service/collectionSlice'
 import { selectFolderById } from '../service/folderSlice'
-import { collectionItem } from '../../collections/domain/collectionEntity'
-import { folderItem } from '../domain/folderEntity'
+import { collectionItem } from '../../collections/domain/collectionItem'
+import { folderItem } from '../domain/folderItem'
 import folderService from '../service/folderService'
 
 type addFolderMenuItemProps = {

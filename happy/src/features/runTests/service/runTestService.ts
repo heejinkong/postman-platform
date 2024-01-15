@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { runTestCommands, runTestItem } from '../domain/runTestEntity'
+import { runTestItem } from '../domain/runTestItem'
 
-class runTestService implements runTestCommands {
+class runTestService {
   new = createAsyncThunk('runTestService/new', async (runTest: runTestItem, thunkAPI) => {
     thunkAPI.dispatch({ type: 'runTests/createRunTest', payload: runTest })
   })

@@ -1,16 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { Item } from '../../../repository/Item'
-import { runResultCommands, runResultItem } from '../domain/runResultEntity'
-import { requestItem } from '../../requests/domain/requestEntity'
+import { runResultItem } from '../domain/runResultItem'
+import { requestItem } from '../../requests/domain/requestItem'
 import axios from 'axios'
-import { folderItem } from '../../folders/domain/folderEntity'
+import { folderItem } from '../../folders/domain/folderItem'
 import { v4 as uuidv4 } from 'uuid'
-import { runTestItem } from '../../runTests/domain/runTestEntity'
+import { runTestItem } from '../../runTests/domain/runTestItem'
 
-
-
-class runResultService implements runResultCommands {
+class runResultService {
   new = createAsyncThunk('runResultService/new', async (runResult: runResultItem, thunkAPI) => {
     thunkAPI.dispatch({ type: 'runResults/createRunResult', payload: runResult })
   })
@@ -69,35 +67,33 @@ class runResultService implements runResultCommands {
           })
         })
         const resUrl = response.config.url
-    const resMethod = response.config.method
-    const resDuration =  elapsed
-    const resBody = JSON.stringify(response.data, null, 2)
-    const resStatus = response.status
-    const resExpectedResult = request.expectedResult
+        const resMethod = response.config.method
+        const resDuration = elapsed
+        const resBody = JSON.stringify(response.data, null, 2)
+        const resStatus = response.status
+        const resExpectedResult = request.expectedResult
 
-    const newRunResult = new runResultItem()
-    newRunResult.workspaceId =  request.workspaceId
-    newRunResult.parentId = request.parentId
-    newRunResult.method = resMethod || ''
-    newRunResult.url = resUrl || ''
-    newRunResult.created = Date.now()
-    newRunResult.Duration = resDuration ?? 0
-   
-   
-    const newRunTest = new runTestItem()
-    newRunTest.title = request.title || ''
-    newRunTest.parentId = request.parentId
-    newRunTest.requestId = request.id
-    newRunTest.created = Date.now()
-    newRunTest.status = resStatus || 0
-    newRunTest.responseResult = resBody || ''
-    newRunTest.expectedResult = resExpectedResult || ''
+        const newRunResult = new runResultItem()
+        newRunResult.workspaceId = request.workspaceId
+        newRunResult.parentId = request.parentId
+        newRunResult.method = resMethod || ''
+        newRunResult.url = resUrl || ''
+        newRunResult.created = Date.now()
+        newRunResult.Duration = resDuration ?? 0
 
-    thunkAPI.dispatch({type: 'runTest/createRunTest', payload: newRunTest})
+        const newRunTest = new runTestItem()
+        newRunTest.title = request.title || ''
+        newRunTest.parentId = request.parentId
+        newRunTest.requestId = request.id
+        newRunTest.created = Date.now()
+        newRunTest.status = resStatus || 0
+        newRunTest.responseResult = resBody || ''
+        newRunTest.expectedResult = resExpectedResult || ''
 
-    newRunResult.runTestList?.push(newRunTest.id)
-    thunkAPI.dispatch({ type: 'runResult/newRunResult', payload: newRunResult })
+        thunkAPI.dispatch({ type: 'runTest/createRunTest', payload: newRunTest })
 
+        newRunResult.runTestList?.push(newRunTest.id)
+        thunkAPI.dispatch({ type: 'runResult/newRunResult', payload: newRunResult })
 
         return newRequest
       } catch (error) {

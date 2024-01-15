@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { requestCommands, requestItem } from '../domain/requestEntity'
+import { requestItem } from '../domain/requestItem'
 import { RootState } from '../../../app/store'
 import { selectCollectionById } from '../../collections/service/collectionSlice'
 import { selectFolderById } from '../../folders/service/folderSlice'
@@ -11,7 +11,7 @@ type FormFileType = {
   file: File
 }
 
-class requestService implements requestCommands {
+class requestService {
   new = createAsyncThunk('requestService/new', async (request: requestItem, thunkAPI) => {
     const state = thunkAPI.getState() as RootState
 

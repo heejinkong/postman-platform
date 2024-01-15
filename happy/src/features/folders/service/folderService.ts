@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { folderCommands, folderItem } from '../domain/folderEntity'
+import { folderItem } from '../domain/folderItem'
 import { RootState } from '../../../app/store'
 import { selectCollectionById } from '../../collections/service/collectionSlice'
 import { selectFolderById } from './folderSlice'
 
-class folderService implements folderCommands {
+class folderService {
   new = createAsyncThunk('folderService/new', async (folder: folderItem, thunkAPI) => {
     const state = thunkAPI.getState() as RootState
 

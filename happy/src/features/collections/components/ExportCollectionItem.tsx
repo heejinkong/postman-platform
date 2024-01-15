@@ -1,10 +1,10 @@
 import { MenuItem, Typography } from '@mui/material'
 import { selectCollectionById } from '../service/collectionSlice'
 import { useAppSelector } from '../../../app/hook'
-import { collectionItem } from '../domain/collectionEntity'
+import { collectionItem } from '../domain/collectionItem'
 import { selectAllFolders } from '../../folders/service/folderSlice'
-import { folderItem } from '../../folders/domain/folderEntity'
-import { requestItem } from '../../requests/domain/requestEntity'
+import { folderItem } from '../../folders/domain/folderItem'
+import { requestItem } from '../../requests/domain/requestItem'
 import { selectAllRequests } from '../../requests/service/requestSlice'
 
 type exportCollectionItemProps = {

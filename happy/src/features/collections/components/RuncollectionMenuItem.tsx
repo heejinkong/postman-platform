@@ -1,14 +1,14 @@
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
-import { runTestItem } from '../../runTests/domain/runTestEntity'
+import { runTestItem } from '../../runTests/domain/runTestItem'
 import runTestService from '../../runTests/service/runTestService'
 import { selectCollectionById } from '../service/collectionSlice'
 import { MenuItem, Typography } from '@mui/material'
 import { selectAllRequests } from '../../requests/service/requestSlice'
 import { selectAllFolders } from '../../folders/service/folderSlice'
 import runResultService from '../../runResults/service/runResultService'
-import { runResultItem } from '../../runResults/domain/runResultEntity'
+import { runResultItem } from '../../runResults/domain/runResultItem'
 import { useNavigate } from 'react-router-dom'
-import { requestItem } from '../../requests/domain/requestEntity'
+import { requestItem } from '../../requests/domain/requestItem'
 import requestService from '../../requests/service/requestService'
 
 type runCollectionMenuItemProps = {
@@ -74,7 +74,7 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
     })
 
     requestList.forEach(async (request) => {
-      const response = await dispatch(requestService.send({ request, formFiles: null }))
+      const response = await dispatch(requestService.send({ request: request, formFiles: [] }))
       const resBody = (response.payload as PayloadType)?.response?.body
       const resTitle = (response.payload as PayloadType)?.title
       const resStatus = (response.payload as PayloadType)?.response?.status
