@@ -1,17 +1,26 @@
-import { Box, Button, Dialog, DialogTitle, Divider, IconButton } from '@mui/material'
+import { Box, Button, Dialog, DialogContent, DialogTitle, Divider, IconButton } from '@mui/material'
 import BuildIcon from '@mui/icons-material/Build'
 import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { environmentItem } from '../domain/environmentEntity'
-import { useAppDispatch } from '../../../app/hook'
+import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import environmentService from '../service/environmentService'
+import { selectAllEnvironments } from '../service/environmentSlice'
 
-export default function SettingsVariable() {
+type SettingsVariableProps = {
+  _id: string
+}
+export default function SettingsVariable(props: SettingsVariableProps) {
   const [open, setOpen] = React.useState(false)
   const navigate = useNavigate()
   const { workspaceId } = useParams()
 
   const dispatch = useAppDispatch()
+
+  const environments = useAppSelector(selectAllEnvironments)
+  const environment = environments.find((item) => item.parentId === props._id)
+
+  console.log('environment', environment)
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -43,6 +52,8 @@ export default function SettingsVariable() {
             <Button variant="text" onClick={addEnvironment}>
               Add
             </Button>
+
+            <DialogContent>hi</DialogContent>
           </Box>
         </Box>
 

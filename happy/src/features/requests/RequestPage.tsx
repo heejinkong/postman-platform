@@ -545,7 +545,7 @@ export default function RequestPage() {
       <Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <WorkspaceNavBar _id={requestId ?? ''} />
-          <SettingsVariable />
+          <SettingsVariable _id={requestId ?? ''} />
         </Box>
         <Box sx={{ pt: 1 }}>
           <Divider />
