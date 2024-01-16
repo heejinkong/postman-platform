@@ -47,7 +47,7 @@ import { runResultItem } from '../runResults/domain/runResultItem'
 import { runTestItem } from '../runTests/domain/runTestItem'
 import runResultService from '../runResults/service/runResultService'
 import runTestService from '../runTests/service/runTestService'
-import SettingsVariable from '../variables/components/SettingsVariable'
+import SettingsVariable from './components/SettingsVariable'
 
 interface ResponseType {
   elapsed?: number

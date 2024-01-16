@@ -9,4 +9,5 @@ export class workspaceItem implements Item {
   updated: number = Date.now()
   authorId: string = ''
   collections: string[] = []
+  globalsId: string[] = []
 }

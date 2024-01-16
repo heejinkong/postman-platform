@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { memoryRepository } from '../../../repository/memoryRepository'
-import { environmentItem } from '../domain/environmentEntity'
+import { environmentItem } from '../domain/environmentItem'
 import { RootState } from '../../../app/store'
 
 const repo = new memoryRepository()
@@ -24,7 +24,8 @@ const environmentSlice = createSlice({
   }
 })
 
-export const { createEnvironment, deleteEnvironmentById } = environmentSlice.actions
+export const { createEnvironment, updateEnvironment, deleteEnvironmentById } =
+  environmentSlice.actions
 
 export const selectAllEnvironments = (state: RootState) =>
   repo.data(state.environments.data).findAll() as environmentItem[]

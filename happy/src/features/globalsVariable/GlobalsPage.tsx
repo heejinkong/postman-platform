@@ -1,39 +1,23 @@
-import { Box, Button, Divider, IconButton, TextField } from '@mui/material'
-import { useParams } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../../app/hook'
-import { selectEnvironmentById } from './service/environmentSlice'
+import { Box, Button, Divider, IconButton } from '@mui/material'
+import { useAppDispatch } from '../../app/hook'
 import React, { useEffect, useState } from 'react'
-import { environmentItem } from './domain/environmentItem'
 import SaveIcon from '@mui/icons-material/Save'
-import environmentService from './service/environmentService'
 import { DataGrid, GridColDef, GridEventListener, GridRowId, useGridApiRef } from '@mui/x-data-grid'
 import { v4 as uuidv4 } from 'uuid'
 import DeleteIcon from '@mui/icons-material/Delete'
+import globalsService from './service/globalsService'
+import { globalsItem } from './domain/globalsItem'
 
-export default function EnvironmentPage() {
+export default function GlobalsPage() {
   const dispatch = useAppDispatch()
-  const { environmentId } = useParams()
-  const environment = useAppSelector((state) => selectEnvironmentById(state, environmentId ?? ''))
-
-  const [environmentClone, setEnvironmentClone] = React.useState(new environmentItem())
-  const [title, setTitle] = useState('')
+  const [globalsClone, setGlobalsClone] = React.useState(new globalsItem())
 
   const handleSave = () => {
-    const cloned = JSON.parse(JSON.stringify(environmentClone))
-    cloned.title = title
-    dispatch(environmentService.update(environmentClone))
+    dispatch(globalsService.update(globalsClone))
   }
 
-  useEffect(() => {
-    if (!environment) {
-      return
-    }
-    setEnvironmentClone(environment)
-    setTitle(environment.title)
-  }, [environment])
-
   const [rowIdHover, setRowIdHover] = useState<GridRowId>(-1)
-  const environmentRef = useGridApiRef()
+  const globalsRef = useGridApiRef()
 
   const handleMouseEnter: GridEventListener<'rowMouseEnter'> = (variables) => {
     setRowIdHover(variables.id)
@@ -58,17 +42,17 @@ export default function EnvironmentPage() {
   }
 
   const isLastRow = (id: GridRowId) => {
-    if (environmentClone.variables.length > 0) {
-      return id === environmentClone.variables[environmentClone.variables.length - 1].id
+    if (globalsClone.variables.length > 0) {
+      return id === globalsClone.variables[globalsClone.variables.length - 1].id
     }
     return false
   }
 
   const deleteRow = (id: GridRowId) => {
-    const newRows = [...environmentClone.variables]
+    const newRows = [...globalsClone.variables]
     const index = newRows.findIndex((row) => row.id === id)
     newRows.splice(index, 1)
-    setEnvironmentClone({ ...environmentClone, variables: newRows })
+    setGlobalsClone({ ...globalsClone, variables: newRows })
   }
 
   const editableColumns: GridColDef[] = [
@@ -117,33 +101,22 @@ export default function EnvironmentPage() {
 
   useEffect(() => {
     try {
-      return environmentRef.current.subscribeEvent('rowMouseEnter', handleMouseEnter)
+      return globalsRef.current.subscribeEvent('rowMouseEnter', handleMouseEnter)
     } catch {
       /* empty */
     }
-  }, [environmentRef])
+  }, [globalsRef])
 
   return (
     <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Box>
         <Box sx={{ pt: 1 }}>
-          {environment?.title}
+          Globals
           <Divider />
         </Box>
         <Box sx={{ pt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           {/* EnvironmentPage의 title */}
-          <Box>
-            <TextField
-              id="outlined-basic"
-              label="environment title"
-              variant="outlined"
-              size="small"
-              value={environmentClone.title}
-              onChange={(e) => {
-                setEnvironmentClone({ ...environmentClone, title: e.target.value as string })
-              }}
-            />
-          </Box>
+          <Box></Box>
           {/* EnvironmentPage의 저장버튼 */}
           <Box>
             <Button variant="outlined" startIcon={<SaveIcon />} onClick={handleSave}>
@@ -155,26 +128,26 @@ export default function EnvironmentPage() {
           <Box sx={{ height: '40%', overflow: 'auto' }}>
             {/* DataGrid를 통해 params 표시 */}
             <DataGrid
-              apiRef={environmentRef}
-              rows={environmentClone.variables}
+              apiRef={globalsRef}
+              rows={globalsClone.variables}
               columns={editableColumns}
               editMode="row"
               checkboxSelection
               disableRowSelectionOnClick
               hideFooter
               disableColumnMenu
-              rowSelectionModel={environmentClone.variablesSelection} // check 선택한 row 표시
+              rowSelectionModel={globalsClone.variablesSelection} // check 선택한 row 표시
               onRowSelectionModelChange={(newRowSelectionModel) => {
-                // check 선택한 row 변경 시, environmentClone에 반영
-                setEnvironmentClone({
-                  ...environmentClone,
+                // check 선택한 row 변경 시, globalsClone에 반영
+                setGlobalsClone({
+                  ...globalsClone,
                   variablesSelection: newRowSelectionModel as string[]
                 })
               }}
               processRowUpdate={(newRow) => {
-                // row 수정 시, environmentClone에 반영
-                const newRows = handleProcessNewRows(newRow, environmentClone.variables)
-                setEnvironmentClone({ ...environmentClone, variables: newRows })
+                // row 수정 시, globalsClone에 반영
+                const newRows = handleProcessNewRows(newRow, globalsClone.variables)
+                setGlobalsClone({ ...globalsClone, variables: newRows })
                 return newRow
               }}
               onProcessRowUpdateError={(e) => console.log(e)}

@@ -9,6 +9,7 @@ import configSlice from '../features/config/configSlice'
 import runTestSlice from '../features/runTests/service/runTestSlice'
 import runResultSlice from '../features/runResults/service/runResultSlice'
 import environmentSlice from '../features/variables/service/environmentSlice'
+import globalsSlice from '../features/globalsVariable/service/globalsSlice'
 
 const persistedWorkspacesReducer = persistReducer(
   {
@@ -82,6 +83,15 @@ const persistEnvironmentsReducer = persistReducer(
   environmentSlice
 )
 
+const persistGlobalsReducer = persistReducer(
+  {
+    key: 'globals',
+    storage,
+    version: 1
+  },
+  globalsSlice
+)
+
 export const store = configureStore({
   reducer: {
     workspaces: persistedWorkspacesReducer,
@@ -91,7 +101,8 @@ export const store = configureStore({
     config: persistedConfigReducer,
     runTests: persistedRunTestsReducer,
     runResults: persistedRunResultsReducer,
-    environments: persistEnvironmentsReducer
+    environments: persistEnvironmentsReducer,
+    globals: persistGlobalsReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

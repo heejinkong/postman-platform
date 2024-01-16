@@ -1,13 +1,21 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { environmentCommands, environmentItem } from '../domain/environmentEntity'
+import { environmentItem } from '../domain/environmentItem'
+import { RootState } from '../../../app/store'
+import { selectRequestById } from '../../requests/service/requestSlice'
 
-class environmentService implements environmentCommands {
-  edit: unknown
-  save: unknown
+class environmentService {
   new = createAsyncThunk(
     'environmentService/new',
     async (environment: environmentItem, thunkAPI) => {
+      const state = thunkAPI.getState() as RootState
+
       thunkAPI.dispatch({ type: 'environments/createEnvironment', payload: environment })
+
+      const request = selectRequestById(state, environment.parentId)
+      const cloned = JSON.parse(JSON.stringify(request))
+      cloned.environmentId.push(environment.id)
+
+      thunkAPI.dispatch({ type: 'requests/updateRequest', payload: cloned })
     }
   )
 

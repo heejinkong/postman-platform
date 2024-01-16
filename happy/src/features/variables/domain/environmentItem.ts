@@ -14,10 +14,3 @@ export class environmentItem implements Item {
     { id: uuidv4(), _variable: '', _initialValue: '', _currentValue: '' }
   ]
 }
-
-export interface environmentCommands {
-  new: unknown
-  delete: unknown
-  edit: unknown
-  save: unknown
-}
