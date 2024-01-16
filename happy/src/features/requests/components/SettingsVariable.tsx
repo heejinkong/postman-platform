@@ -9,7 +9,7 @@ import {
   Typography
 } from '@mui/material'
 import BuildIcon from '@mui/icons-material/Build'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { environmentItem } from '../../variables/domain/environmentItem'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
@@ -19,6 +19,9 @@ import { selectRequestById } from '../service/requestSlice'
 import { globalsItem } from '../../globalsVariable/domain/globalsItem'
 import globalsService from '../../globalsVariable/service/globalsService'
 import { selectWorkspaceById } from '../../workspaces/service/workspaceSlice'
+import { DataGrid, GridColDef, GridEventListener, GridRowId, useGridApiRef } from '@mui/x-data-grid'
+import { v4 as uuidv4 } from 'uuid'
+import { selectAllGlobals } from '../../globalsVariable/service/globalsSlice'
 
 type SettingsVariableProps = {
   _id: string
@@ -39,6 +42,37 @@ export default function SettingsVariable(props: SettingsVariableProps) {
 
   const environments = useAppSelector(selectAllEnvironments)
   const environment = environments.find((item) => item.parentId === props._id)
+
+  const gloabals = useAppSelector(selectAllGlobals)
+  const global = gloabals.find((item) => item.workspaceId === workspaceId)
+
+  const [globalsClone, setGlobalsClone] = React.useState(new globalsItem())
+  const [environmentClone, setEnvironmentClone] = React.useState(new environmentItem())
+
+  useEffect(() => {
+    if (!environment) {
+      return
+    }
+    setEnvironmentClone(environment)
+  }, [environment])
+
+  useEffect(() => {
+    if (!global) {
+      return
+    }
+    setGlobalsClone(global)
+  }, [global])
+
+  const [rowIdHover, setRowIdHover] = useState<GridRowId>(-1)
+  const globalsRef = useGridApiRef()
+  const environmentRef = useGridApiRef()
+
+  const handleMouseEnter: GridEventListener<'rowMouseEnter'> = (variables) => {
+    setRowIdHover(variables.id)
+  }
+  const handleMouseLeave: GridEventListener<'rowMouseLeave'> = () => {
+    setRowIdHover(-1)
+  }
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -72,6 +106,85 @@ export default function SettingsVariable(props: SettingsVariableProps) {
     navigate(`/workspaces/${workspaceId}/globals`)
   }
 
+  const handleEditGlobals = () => {
+    navigate(`/workspaces/${workspaceId}/globals`)
+  }
+
+  type Row = {
+    id: string
+    _variable: string
+    _initialValue: string
+    _currentValue: string
+  }
+
+  const handleProcessNewRows = (newRow: Row, targetRows: Row[]) => {
+    const newRows = [...targetRows]
+    const index = newRows.findIndex((row) => row.id === newRow.id)
+    newRows[index] = newRow
+    const lastRow = newRows[newRows.length - 1]
+    if (lastRow._variable !== '' || lastRow._initialValue !== '' || lastRow._currentValue !== '') {
+      newRows.push({ id: uuidv4(), _variable: '', _initialValue: '', _currentValue: '' })
+    }
+    return newRows
+  }
+
+  const editableColumns: GridColDef[] = [
+    {
+      field: '_variable',
+      headerName: 'Variable',
+      flex: 1,
+      editable: true,
+      sortable: false
+    },
+    {
+      field: '_initialValue',
+      headerName: 'Initial Value',
+      flex: 1,
+      editable: true,
+      sortable: false
+    },
+
+    {
+      field: '_currentValue',
+      headerName: 'Current Value',
+      flex: 1,
+      editable: true,
+      sortable: false
+    }
+  ]
+
+  useEffect(() => {
+    try {
+      return environmentRef.current.subscribeEvent('rowMouseEnter', handleMouseEnter)
+    } catch {
+      /* empty */
+    }
+  }, [environmentRef])
+
+  useEffect(() => {
+    try {
+      return environmentRef.current.subscribeEvent('rowMouseLeave', handleMouseEnter)
+    } catch {
+      /* empty */
+    }
+  }, [environmentRef])
+
+  useEffect(() => {
+    try {
+      return globalsRef.current.subscribeEvent('rowMouseEnter', handleMouseEnter)
+    } catch {
+      /* empty */
+    }
+  }, [globalsRef])
+
+  useEffect(() => {
+    try {
+      return globalsRef.current.subscribeEvent('rowMouseLeave', handleMouseLeave)
+    } catch {
+      /* empty */
+    }
+  }, [globalsRef])
+
   return (
     <Box>
       {/* BuildIcon 버튼 클릭 시, Dialog 노출 */}
@@ -80,6 +193,7 @@ export default function SettingsVariable(props: SettingsVariableProps) {
       </IconButton>
       <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title">
         <Box sx={{ width: 600, height: 250 }}>
+          {/* Environment variables가 있을 경우, 해당 Environment variables를 뿌려줌 */}
           {requestEnvironmentId.length > 0 ? (
             <Box>
               <Box
@@ -99,9 +213,30 @@ export default function SettingsVariable(props: SettingsVariableProps) {
                   Edit
                 </Button>
               </Box>
-              <DialogContent></DialogContent>
+              <DialogContent>
+                <Box sx={{ maxHeight: 140, overflowY: 'auto' }}>
+                  {/* DataGrid를 통해 params 표시 */}
+                  <DataGrid
+                    apiRef={environmentRef}
+                    rows={environmentClone.variables}
+                    columns={editableColumns}
+                    editMode="row"
+                    disableRowSelectionOnClick
+                    hideFooter
+                    disableColumnMenu
+                    processRowUpdate={(newRow) => {
+                      // row 수정 시, environmentClone에 반영
+                      const newRows = handleProcessNewRows(newRow, environmentClone.variables)
+                      setEnvironmentClone({ ...environmentClone, variables: newRows })
+                      return newRow
+                    }}
+                    onProcessRowUpdateError={(e) => console.log(e)}
+                  />
+                </Box>
+              </DialogContent>
             </Box>
           ) : (
+            /*Environment variables가 없을 경우, Environment variables를 추가할 수 있는 버튼을 뿌려줌 */
             <Box>
               <Box
                 sx={{
@@ -136,7 +271,9 @@ export default function SettingsVariable(props: SettingsVariableProps) {
         </Box>
 
         <Divider />
+        {/* Global variables */}
         <Box sx={{ width: 600, height: 250 }}>
+          {/*Global variables가 있을 경우, 해당 global variables를 뿌려줌 */}
           {workspaceGlobalId.length > 0 ? (
             <Box>
               <Box
@@ -152,13 +289,34 @@ export default function SettingsVariable(props: SettingsVariableProps) {
                     Globals
                   </Typography>
                 </DialogTitle>
-                <Button variant="text" onClick={handleEditEnvironment}>
+                <Button variant="text" onClick={handleEditGlobals}>
                   Edit
                 </Button>
               </Box>
-              <DialogContent>hi</DialogContent>
+              <DialogContent>
+                <Box sx={{ maxHeight: 140, overflowY: 'auto' }}>
+                  {/* DataGrid를 통해 params 표시 */}
+                  <DataGrid
+                    apiRef={globalsRef}
+                    rows={globalsClone.variables}
+                    columns={editableColumns}
+                    editMode="row"
+                    disableRowSelectionOnClick
+                    hideFooter
+                    disableColumnMenu
+                    processRowUpdate={(newRow) => {
+                      // row 수정 시, environmentClone에 반영
+                      const newRows = handleProcessNewRows(newRow, globalsClone.variables)
+                      setGlobalsClone({ ...globalsClone, variables: newRows })
+                      return newRow
+                    }}
+                    onProcessRowUpdateError={(e) => console.log(e)}
+                  />
+                </Box>
+              </DialogContent>
             </Box>
           ) : (
+            /*Global variables가 없을 경우, Global variables를 추가할 수 있는 버튼을 뿌려줌 */
             <Box>
               <Box
                 sx={{

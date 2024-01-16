@@ -1,5 +1,5 @@
 import { Box, Button, Divider, IconButton, TextField } from '@mui/material'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
 import { selectEnvironmentById } from './service/environmentSlice'
 import React, { useEffect, useState } from 'react'
@@ -12,16 +12,25 @@ import DeleteIcon from '@mui/icons-material/Delete'
 
 export default function EnvironmentPage() {
   const dispatch = useAppDispatch()
+
   const { environmentId } = useParams()
   const environment = useAppSelector((state) => selectEnvironmentById(state, environmentId ?? ''))
 
   const [environmentClone, setEnvironmentClone] = React.useState(new environmentItem())
   const [title, setTitle] = useState('')
 
+  const navigate = useNavigate()
+
   const handleSave = () => {
     const cloned = JSON.parse(JSON.stringify(environmentClone))
     cloned.title = title
     dispatch(environmentService.update(environmentClone))
+  }
+
+  const handleDeletePage = () => {
+    dispatch(environmentService.delete(environmentClone))
+
+    navigate(-1)
   }
 
   useEffect(() => {
@@ -37,6 +46,10 @@ export default function EnvironmentPage() {
 
   const handleMouseEnter: GridEventListener<'rowMouseEnter'> = (variables) => {
     setRowIdHover(variables.id)
+  }
+
+  const handleMouseLeave: GridEventListener<'rowMouseLeave'> = () => {
+    setRowIdHover(-1)
   }
 
   type Row = {
@@ -123,11 +136,22 @@ export default function EnvironmentPage() {
     }
   }, [environmentRef])
 
+  useEffect(() => {
+    try {
+      return environmentRef.current.subscribeEvent('rowMouseLeave', handleMouseLeave)
+    } catch {
+      /* empty */
+    }
+  }, [environmentRef])
+
   return (
     <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Box>
         <Box sx={{ pt: 1 }}>
           {environment?.title}
+          <IconButton onClick={handleDeletePage}>
+            <DeleteIcon />
+          </IconButton>
           <Divider />
         </Box>
         <Box sx={{ pt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

@@ -1,5 +1,5 @@
-import { Box, Button, Divider, IconButton } from '@mui/material'
-import { useAppDispatch } from '../../app/hook'
+import { Box, Button, Divider, IconButton, Typography } from '@mui/material'
+import { useAppDispatch, useAppSelector } from '../../app/hook'
 import React, { useEffect, useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 import { DataGrid, GridColDef, GridEventListener, GridRowId, useGridApiRef } from '@mui/x-data-grid'
@@ -7,20 +7,44 @@ import { v4 as uuidv4 } from 'uuid'
 import DeleteIcon from '@mui/icons-material/Delete'
 import globalsService from './service/globalsService'
 import { globalsItem } from './domain/globalsItem'
+import { useNavigate, useParams } from 'react-router-dom'
+import { selectAllGlobals } from './service/globalsSlice'
 
 export default function GlobalsPage() {
   const dispatch = useAppDispatch()
+  const { workspaceId } = useParams()
+
+  const gloabals = useAppSelector(selectAllGlobals)
+  const global = gloabals.find((item) => item.workspaceId === workspaceId)
+
   const [globalsClone, setGlobalsClone] = React.useState(new globalsItem())
+
+  const navigate = useNavigate()
 
   const handleSave = () => {
     dispatch(globalsService.update(globalsClone))
   }
 
+  const handleDeletePage = () => {
+    dispatch(globalsService.delete(globalsClone))
+
+    navigate(-1)
+  }
+  useEffect(() => {
+    if (!global) {
+      return
+    }
+    setGlobalsClone(global)
+  }, [global])
+
   const [rowIdHover, setRowIdHover] = useState<GridRowId>(-1)
   const globalsRef = useGridApiRef()
-
   const handleMouseEnter: GridEventListener<'rowMouseEnter'> = (variables) => {
     setRowIdHover(variables.id)
+  }
+
+  const handleMouseLeave: GridEventListener<'rowMouseLeave'> = () => {
+    setRowIdHover(-1)
   }
 
   type Row = {
@@ -107,16 +131,30 @@ export default function GlobalsPage() {
     }
   }, [globalsRef])
 
+  useEffect(() => {
+    try {
+      return globalsRef.current.subscribeEvent('rowMouseLeave', handleMouseLeave)
+    } catch {
+      /* empty */
+    }
+  }, [globalsRef])
+
   return (
     <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Box>
         <Box sx={{ pt: 1 }}>
           Globals
+          <IconButton onClick={handleDeletePage}>
+            <DeleteIcon />
+          </IconButton>
           <Divider />
         </Box>
         <Box sx={{ pt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          {/* EnvironmentPage의 title */}
-          <Box></Box>
+          <Box>
+            <Typography variant="h6" gutterBottom>
+              Globals
+            </Typography>
+          </Box>
           {/* EnvironmentPage의 저장버튼 */}
           <Box>
             <Button variant="outlined" startIcon={<SaveIcon />} onClick={handleSave}>

@@ -29,6 +29,13 @@ class environmentService {
   delete = createAsyncThunk(
     'environmentService/delete',
     async (environment: environmentItem, thunkAPI) => {
+      const state = thunkAPI.getState() as RootState
+
+      const request = selectRequestById(state, environment.parentId)
+      const cloned = JSON.parse(JSON.stringify(request))
+      cloned.environmentId = cloned.environmentId.filter((id: string) => id !== environment.id)
+      thunkAPI.dispatch({ type: 'requests/updateRequest', payload: cloned })
+
       thunkAPI.dispatch({ type: 'environments/deleteEnvironmentById', payload: environment.id })
     }
   )

@@ -21,6 +21,13 @@ class globalsService {
   })
 
   delete = createAsyncThunk('globalsService/delete', async (globals: globalsItem, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState
+
+    const workspace = selectWorkspaceById(state, globals.workspaceId)
+    const cloned = JSON.parse(JSON.stringify(workspace))
+    cloned.globalsId = cloned.globalsId.filter((id: string) => id !== globals.id)
+    thunkAPI.dispatch({ type: 'workspaces/updateWorkspace', payload: cloned })
+
     thunkAPI.dispatch({ type: 'globals/deleteGlobalsById', payload: globals.id })
   })
 }
