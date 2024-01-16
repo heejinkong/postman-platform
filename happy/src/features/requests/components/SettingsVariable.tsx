@@ -192,87 +192,8 @@ export default function SettingsVariable(props: SettingsVariableProps) {
         <BuildIcon />
       </IconButton>
       <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title">
-        <Box sx={{ width: 600, height: 250 }}>
-          {/* Environment variables가 있을 경우, 해당 Environment variables를 뿌려줌 */}
-          {requestEnvironmentId.length > 0 ? (
-            <Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  pr: 2
-                }}
-              >
-                <DialogTitle>
-                  <Typography variant="h6" gutterBottom>
-                    {environment?.title}
-                  </Typography>
-                </DialogTitle>
-                <Button variant="text" onClick={handleEditEnvironment}>
-                  Edit
-                </Button>
-              </Box>
-              <DialogContent>
-                <Box sx={{ maxHeight: 140, overflowY: 'auto' }}>
-                  {/* DataGrid를 통해 params 표시 */}
-                  <DataGrid
-                    apiRef={environmentRef}
-                    rows={environmentClone.variables}
-                    columns={editableColumns}
-                    editMode="row"
-                    disableRowSelectionOnClick
-                    hideFooter
-                    disableColumnMenu
-                    processRowUpdate={(newRow) => {
-                      // row 수정 시, environmentClone에 반영
-                      const newRows = handleProcessNewRows(newRow, environmentClone.variables)
-                      setEnvironmentClone({ ...environmentClone, variables: newRows })
-                      return newRow
-                    }}
-                    onProcessRowUpdateError={(e) => console.log(e)}
-                  />
-                </Box>
-              </DialogContent>
-            </Box>
-          ) : (
-            /*Environment variables가 없을 경우, Environment variables를 추가할 수 있는 버튼을 뿌려줌 */
-            <Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  pr: 2
-                }}
-              >
-                <DialogTitle>
-                  <Typography variant="h6" gutterBottom>
-                    Environment
-                  </Typography>
-                </DialogTitle>
-                <Button variant="text" onClick={handleAddEnvironment}>
-                  Add
-                </Button>
-              </Box>
-              <DialogContent>
-                <Box>
-                  <Typography variant="subtitle2" gutterBottom sx={{ mt: 5, ml: 3 }}>
-                    No Environment variables
-                  </Typography>
-                  <Typography variant="caption" display="block" gutterBottom sx={{ mt: 1, ml: 2 }}>
-                    An environment is a set of variables that allow you to switch the context of
-                    your requests.
-                  </Typography>
-                </Box>
-              </DialogContent>
-            </Box>
-          )}
-        </Box>
-
-        <Divider />
         {/* Global variables */}
-        <Box sx={{ width: 600, height: 250 }}>
+        <Box sx={{ width: 600, height: 500 }}>
           {/*Global variables가 있을 경우, 해당 global variables를 뿌려줌 */}
           {workspaceGlobalId.length > 0 ? (
             <Box>
@@ -294,7 +215,7 @@ export default function SettingsVariable(props: SettingsVariableProps) {
                 </Button>
               </Box>
               <DialogContent>
-                <Box sx={{ maxHeight: 140, overflowY: 'auto' }}>
+                <Box sx={{ maxHeight: 350, overflowY: 'auto' }}>
                   {/* DataGrid를 통해 params 표시 */}
                   <DataGrid
                     apiRef={globalsRef}
