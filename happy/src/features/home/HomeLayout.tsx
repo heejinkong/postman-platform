@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate, useParams } from 'react-router-dom'
 import {
   AppBar,
   Avatar,
@@ -21,6 +21,7 @@ import NewWorkspace from '../workspaces/components/NewWorkspace'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { useAppSelector } from '../../app/hook'
 import { selectAllWorkspaces } from '../workspaces/service/workspaceSlice'
+import SettingsVariable from '../globalsVariable/components/SettingsVariable'
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
@@ -65,6 +66,8 @@ export default function HomeLayout() {
   const headerRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
   const headerBarRef = useRef<HTMLDivElement>(null)
+
+  const { workspaceId } = useParams()
 
   const navigate = useNavigate()
   const allWorkspaces = useAppSelector(selectAllWorkspaces)
@@ -115,7 +118,7 @@ export default function HomeLayout() {
           {/* AppBar는 Toolbar로 구성 */}
           <Box sx={{ mx: 2 }}>
             <Toolbar disableGutters>
-            {/* Top Menu */}
+              {/* Top Menu */}
               <Avatar
                 alt="ToolBal Icon"
                 src="/iconTool.jpg"
@@ -194,7 +197,6 @@ export default function HomeLayout() {
                           </Typography>
                         </Box>
                       ) : (
-
                         // workspace가 있을 경우, 해당 workspace 목록 표시
                         <Box sx={{ maxHeight: 200, overflowY: 'auto' }}>
                           {allWorkspaces.map((ws) => (
@@ -226,6 +228,13 @@ export default function HomeLayout() {
                   </Box>
                 </StyledMenu>
               </Box>
+
+              {/* AppBar의 Globals Variable 아이콘 표시 (Home 화면일때는 보이지 않음)*/}
+              {workspaceId && (
+                <Box sx={{ flex: 52, display: 'flex', size: 'small' }}>
+                  <SettingsVariable />
+                </Box>
+              )}
 
               {/* AppBar의 회원 정보 버튼 표시 (임시로 만들어 놓은 버튼) */}
               <Box sx={{ flexGrow: 0 }}>
@@ -261,7 +270,7 @@ export default function HomeLayout() {
           </Box>
         </AppBar>
       </Box>
-      
+
       {/* HomePage 부분 */}
       <Box ref={bodyRef}>
         <Outlet />

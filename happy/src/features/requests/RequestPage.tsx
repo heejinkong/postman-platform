@@ -47,7 +47,6 @@ import { runResultItem } from '../runResults/domain/runResultItem'
 import { runTestItem } from '../runTests/domain/runTestItem'
 import runResultService from '../runResults/service/runResultService'
 import runTestService from '../runTests/service/runTestService'
-import SettingsVariable from './components/SettingsVariable'
 
 interface ResponseType {
   elapsed?: number
@@ -309,15 +308,16 @@ export default function RequestPage() {
   const handleClickFile = (id: GridRowId) => {
     const fileInput = document.createElement('input')
     fileInput.type = 'file'
-    fileInput.multiple = false
+    fileInput.multiple = true
     fileInput.addEventListener('change', (e) => {
-      const files = (e.target as HTMLInputElement).files
-      if (files) {
+      const files = (e.target as HTMLInputElement).files as FileList
+      if (files && files.length > 0) {
         const formFile: FormFileType = {
           id: id as string,
           file: files[0],
           name: files[0].name
         }
+
         console.log(formFile.name)
 
         const cloneFormFiles = [...formFiles]
@@ -333,7 +333,7 @@ export default function RequestPage() {
 
         const cloneFormData = [...formData]
         const index = cloneFormData.findIndex((row) => row.id === id)
-        cloneFormData[index]._value = [files[0].name] as string[]
+        cloneFormData[index]._value = files ? Array.from(files).map((file) => file.name) : []
         setFormData(cloneFormData)
       }
     })
@@ -347,7 +347,7 @@ export default function RequestPage() {
         body: {
           ...prevRequestClone.body,
           formData: prevRequestClone.body.formData.map((formItem) => {
-            if (formItem.id === id && formItem._dataType === 'file') {
+            if (formItem.id === id && formItem._dataType === 'File') {
               const updatedFiles = (formItem._value as string[]).filter(
                 (_: string, i: number) => i !== index
               )
@@ -402,7 +402,7 @@ export default function RequestPage() {
       sortable: false,
       renderCell: (params: GridRenderCellParams) => {
         const handleClick = () => {
-          if (params.row._dataType === 'file') {
+          if (params.row._dataType === 'File') {
             handleClickFile(params.id)
           } else {
             params.api.getCellMode(params.id, params.field)
@@ -419,7 +419,7 @@ export default function RequestPage() {
               overflowX: 'auto'
             }}
           >
-            {params.row._dataType === 'file' ? (
+            {params.row._dataType === 'File' ? (
               // Body탭의 form-data의 dataType이 File일 경우
               params.value && (params.value as string[]).length > 0 ? (
                 // 파일이 선택되었을 경우, 파일 이름 표시
@@ -543,9 +543,8 @@ export default function RequestPage() {
     <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* RequestPage의 상단에는 WorkspaceNavBar를 통해 현재 path 표시 */}
       <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box>
           <WorkspaceNavBar _id={requestId ?? ''} />
-          <SettingsVariable _id={requestId ?? ''} />
         </Box>
         <Box sx={{ pt: 1 }}>
           <Divider />

@@ -97,7 +97,30 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
     }
   }
 
+  interface ParsedUrl {
+    protocol: string
+    host: string
+    path: string[]
+  }
+
+  function parseUrl(url: string): ParsedUrl | null {
+    const regex = /^(https?:\/\/)?([^\/]+)(\/.*)?$/
+    const match = url.match(regex)
+    if (!match) {
+      return null
+    }
+    const [, protocol, host, path] = match
+    const pathArray = path ? path.split('/').filter((item) => item) : []
+    return {
+      protocol: protocol || 'http://',
+      host,
+      path: pathArray
+    }
+  }
+
   const getRequestData = (request: requestItem) => {
+    const parsedUrl = parseUrl(request.url)
+
     const requestData = {
       method: request.method,
       header: [
@@ -109,10 +132,9 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
       body: {},
       url: {
         raw: request.url,
-        // protocol: parsedUrl.protocol.split(':')[0] ?? '',
-        // host: parsedUrl.hostname.split('.') ?? [],
-        // port: parsedUrl.port ?? '',
-        // path: parsedUrl.pathname.split('/').filter((path) => path !== '') ?? []
+        protocol: parsedUrl?.protocol.split(':')[0] ?? '',
+        host: parsedUrl?.host ?? '',
+        path: parsedUrl?.path ?? [],
         query: request.params.map((params) => ({
           key: params._key,
           value: params._value
@@ -120,6 +142,7 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
       },
       response: []
     }
+
     if (request.body.mode === 'raw') {
       requestData.body = {
         mode: 'raw',

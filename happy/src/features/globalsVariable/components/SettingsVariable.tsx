@@ -4,57 +4,35 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  Divider,
   IconButton,
   Typography
 } from '@mui/material'
 import BuildIcon from '@mui/icons-material/Build'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { environmentItem } from '../../variables/domain/environmentItem'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
-import environmentService from '../../variables/service/environmentService'
-import { selectAllEnvironments } from '../../variables/service/environmentSlice'
-import { selectRequestById } from '../service/requestSlice'
-import { globalsItem } from '../../globalsVariable/domain/globalsItem'
-import globalsService from '../../globalsVariable/service/globalsService'
-import { selectWorkspaceById } from '../../workspaces/service/workspaceSlice'
+import { globalsItem } from '../domain/globalsItem'
+import globalsService from '../service/globalsService'
 import { DataGrid, GridColDef, GridEventListener, GridRowId, useGridApiRef } from '@mui/x-data-grid'
-import { v4 as uuidv4 } from 'uuid'
-import { selectAllGlobals } from '../../globalsVariable/service/globalsSlice'
+import { selectAllGlobals } from '../service/globalsSlice'
 
-type SettingsVariableProps = {
-  _id: string
-}
-export default function SettingsVariable(props: SettingsVariableProps) {
+export default function SettingsVariable() {
   const [open, setOpen] = React.useState(false)
   const navigate = useNavigate()
   const { workspaceId } = useParams()
-  const { requestId } = useParams()
-
-  const workspace = useAppSelector((state) => selectWorkspaceById(state, workspaceId ?? ''))
-  const workspaceGlobalId = workspace?.globalsId
-
-  const request = useAppSelector((state) => selectRequestById(state, requestId ?? ''))
-  const requestEnvironmentId = request.environmentId
 
   const dispatch = useAppDispatch()
-
-  const environments = useAppSelector(selectAllEnvironments)
-  const environment = environments.find((item) => item.parentId === props._id)
 
   const gloabals = useAppSelector(selectAllGlobals)
   const global = gloabals.find((item) => item.workspaceId === workspaceId)
 
   const [globalsClone, setGlobalsClone] = React.useState(new globalsItem())
-  const [environmentClone, setEnvironmentClone] = React.useState(new environmentItem())
 
-  useEffect(() => {
-    if (!environment) {
-      return
-    }
-    setEnvironmentClone(environment)
-  }, [environment])
+  const variablesSelection = globalsClone.variablesSelection
+
+  const variables = globalsClone.variables.filter((variable) =>
+    variablesSelection.includes(variable.id)
+  )
 
   useEffect(() => {
     if (!global) {
@@ -65,7 +43,6 @@ export default function SettingsVariable(props: SettingsVariableProps) {
 
   const [rowIdHover, setRowIdHover] = useState<GridRowId>(-1)
   const globalsRef = useGridApiRef()
-  const environmentRef = useGridApiRef()
 
   const handleMouseEnter: GridEventListener<'rowMouseEnter'> = (variables) => {
     setRowIdHover(variables.id)
@@ -82,20 +59,6 @@ export default function SettingsVariable(props: SettingsVariableProps) {
     setOpen(false)
   }
 
-  const handleAddEnvironment = () => {
-    const newItem = new environmentItem()
-    newItem.title = 'New Environment'
-    newItem.workspaceId = workspaceId ?? ''
-    newItem.parentId = props._id
-    dispatch(environmentService.new(newItem))
-
-    navigate(`/workspaces/${workspaceId}/environments/${newItem.id}`)
-  }
-
-  const handleEditEnvironment = () => {
-    navigate(`/workspaces/${workspaceId}/environments/${requestEnvironmentId}`)
-  }
-
   const handleAddGlobals = () => {
     const newItem = new globalsItem()
     newItem.title = 'Globals'
@@ -104,43 +67,27 @@ export default function SettingsVariable(props: SettingsVariableProps) {
     dispatch(globalsService.new(newItem))
 
     navigate(`/workspaces/${workspaceId}/globals`)
+    setOpen(false)
   }
 
   const handleEditGlobals = () => {
     navigate(`/workspaces/${workspaceId}/globals`)
+    setOpen(false)
   }
 
-  type Row = {
-    id: string
-    _variable: string
-    _initialValue: string
-    _currentValue: string
-  }
-
-  const handleProcessNewRows = (newRow: Row, targetRows: Row[]) => {
-    const newRows = [...targetRows]
-    const index = newRows.findIndex((row) => row.id === newRow.id)
-    newRows[index] = newRow
-    const lastRow = newRows[newRows.length - 1]
-    if (lastRow._variable !== '' || lastRow._initialValue !== '' || lastRow._currentValue !== '') {
-      newRows.push({ id: uuidv4(), _variable: '', _initialValue: '', _currentValue: '' })
-    }
-    return newRows
-  }
-
-  const editableColumns: GridColDef[] = [
+  const readOnlyColumns: GridColDef[] = [
     {
       field: '_variable',
       headerName: 'Variable',
       flex: 1,
-      editable: true,
+      editable: false,
       sortable: false
     },
     {
       field: '_initialValue',
       headerName: 'Initial Value',
       flex: 1,
-      editable: true,
+      editable: false,
       sortable: false
     },
 
@@ -148,26 +95,10 @@ export default function SettingsVariable(props: SettingsVariableProps) {
       field: '_currentValue',
       headerName: 'Current Value',
       flex: 1,
-      editable: true,
+      editable: false,
       sortable: false
     }
   ]
-
-  useEffect(() => {
-    try {
-      return environmentRef.current.subscribeEvent('rowMouseEnter', handleMouseEnter)
-    } catch {
-      /* empty */
-    }
-  }, [environmentRef])
-
-  useEffect(() => {
-    try {
-      return environmentRef.current.subscribeEvent('rowMouseLeave', handleMouseEnter)
-    } catch {
-      /* empty */
-    }
-  }, [environmentRef])
 
   useEffect(() => {
     try {
@@ -195,7 +126,7 @@ export default function SettingsVariable(props: SettingsVariableProps) {
         {/* Global variables */}
         <Box sx={{ width: 600, height: 500 }}>
           {/*Global variables가 있을 경우, 해당 global variables를 뿌려줌 */}
-          {workspaceGlobalId.length > 0 ? (
+          {variablesSelection.length > 0 ? (
             <Box>
               <Box
                 sx={{
@@ -219,19 +150,12 @@ export default function SettingsVariable(props: SettingsVariableProps) {
                   {/* DataGrid를 통해 params 표시 */}
                   <DataGrid
                     apiRef={globalsRef}
-                    rows={globalsClone.variables}
-                    columns={editableColumns}
+                    rows={variables}
+                    columns={readOnlyColumns}
                     editMode="row"
                     disableRowSelectionOnClick
                     hideFooter
                     disableColumnMenu
-                    processRowUpdate={(newRow) => {
-                      // row 수정 시, environmentClone에 반영
-                      const newRows = handleProcessNewRows(newRow, globalsClone.variables)
-                      setGlobalsClone({ ...globalsClone, variables: newRows })
-                      return newRow
-                    }}
-                    onProcessRowUpdateError={(e) => console.log(e)}
                   />
                 </Box>
               </DialogContent>

@@ -16,9 +16,7 @@ import RunTestLayout from './features/runTests/RunTestLayout'
 import RunTestPage from './features/runTests/RunTestPage'
 import RunResultLayout from './features/runResults/runResultLayout'
 import RunResultPage from './features/runResults/runResultPage'
-import EnvironmentPage from './features/variables/EnvironmentPage'
 import GlobalsLayout from './features/globalsVariable/GlobalsLayout'
-import EnvironmentLayout from './features/variables/EnvironmentLayout'
 import GlobalsPage from './features/globalsVariable/GlobalsPage'
 
 function App() {
@@ -45,9 +43,6 @@ function App() {
           </Route>
           <Route path="runTest" element={<RunTestLayout />}>
             <Route index element={<RunTestPage />} />
-          </Route>
-          <Route path="environments/:environmentId" element={<EnvironmentLayout />}>
-            <Route index element={<EnvironmentPage />} />
           </Route>
           <Route path="globals" element={<GlobalsLayout />}>
             <Route index element={<GlobalsPage />} />
