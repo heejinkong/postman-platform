@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Outlet, useNavigate, useParams } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import {
   AppBar,
   Avatar,
@@ -21,7 +21,6 @@ import NewWorkspace from '../workspaces/components/NewWorkspace'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { useAppSelector } from '../../app/hook'
 import { selectAllWorkspaces } from '../workspaces/service/workspaceSlice'
-import SettingsVariable from '../globalsVariable/components/SettingsVariable'
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
@@ -66,8 +65,6 @@ export default function HomeLayout() {
   const headerRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
   const headerBarRef = useRef<HTMLDivElement>(null)
-
-  const { workspaceId } = useParams()
 
   const navigate = useNavigate()
   const allWorkspaces = useAppSelector(selectAllWorkspaces)
@@ -228,13 +225,6 @@ export default function HomeLayout() {
                   </Box>
                 </StyledMenu>
               </Box>
-
-              {/* AppBar의 Globals Variable 아이콘 표시 (Home 화면일때는 보이지 않음)*/}
-              {workspaceId && (
-                <Box sx={{ flex: 52, display: 'flex', size: 'small' }}>
-                  <SettingsVariable />
-                </Box>
-              )}
 
               {/* AppBar의 회원 정보 버튼 표시 (임시로 만들어 놓은 버튼) */}
               <Box sx={{ flexGrow: 0 }}>

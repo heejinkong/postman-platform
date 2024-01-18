@@ -100,7 +100,29 @@ class requestService {
             }
           }
         })
-        console.log(request.url)
+
+        // const workspaceId = request.workspaceId
+        // const gloabals = useAppSelector(selectAllGlobals)
+        // const global = gloabals.find((item) => item.workspaceId === workspaceId)
+
+        // const variablesSelection = global?.variablesSelection
+        // const variables =
+        //   global?.variables.filter((variable) => variablesSelection?.includes(variable.id)) || []
+
+        // const regex = /{{(.*?)}}/g
+        // const match = request.url.match(regex)
+        // if (match) {
+        //   match.forEach((m) => {
+        //     const variable = m.replace('{{', '').replace('}}', '')
+        //     const item = variables.find((i) => i._variable === variable)
+        //     if (item) {
+        //       request.url = request.url.replace(m, item._currentValue)
+        //     }
+        //   })
+        // }
+
+        // console.log(request.url)
+
         const axiosConfig = {
           method: request.method,
           url: request.url,

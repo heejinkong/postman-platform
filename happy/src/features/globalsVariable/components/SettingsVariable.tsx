@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  MenuItem,
   Typography
 } from '@mui/material'
 import BuildIcon from '@mui/icons-material/Build'
@@ -118,10 +119,12 @@ export default function SettingsVariable() {
 
   return (
     <Box>
-      {/* BuildIcon 버튼 클릭 시, Dialog 노출 */}
-      <IconButton sx={{ pr: 5 }} size="small" aria-label="settings" onClick={handleClickOpen}>
-        <BuildIcon />
-      </IconButton>
+      {/* BuildIcon 버튼 클릭 시, Dialog 노출 */}{' '}
+      <MenuItem>
+        <Typography textAlign="center" sx={{ ml: 5 }} onClick={handleClickOpen}>
+          Environment
+        </Typography>
+      </MenuItem>
       <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title">
         {/* Global variables */}
         <Box sx={{ width: 600, height: 500 }}>

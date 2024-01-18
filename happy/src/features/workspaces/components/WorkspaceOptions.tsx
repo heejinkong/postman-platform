@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import RunWorkspaceOptionItem from './RunWorkspaceOptionItem'
 import { selectWorkspaceById } from '../service/workspaceSlice'
 import { useAppSelector } from '../../../app/hook'
+import SettingsVariable from '../../globalsVariable/components/SettingsVariable'
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -102,6 +103,7 @@ export default function WorkspaceOptions() {
         <Box>
           <Divider sx={{ my: 0.5 }} />
         </Box>
+        <SettingsVariable />
         {/* Workspace Options 메뉴의 Import Collection 클릭 시, 해당 workspace의 collection import */}
         <MenuItem onClick={handleClose} disableRipple sx={{ justifyContent: 'center' }}>
           Import Collection
