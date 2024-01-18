@@ -1,4 +1,13 @@
-import { Box, Button, Divider, IconButton, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Divider,
+  IconButton,
+  Typography
+} from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../../app/hook'
 import React, { useEffect, useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
@@ -21,6 +30,8 @@ export default function GlobalsPage() {
 
   const navigate = useNavigate()
 
+  const [open, setOpen] = React.useState(false)
+
   const handleSave = () => {
     dispatch(globalsService.update(globalsClone))
   }
@@ -30,6 +41,15 @@ export default function GlobalsPage() {
 
     navigate(-1)
   }
+
+  const handleClickOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
   useEffect(() => {
     if (!global) {
       return
@@ -144,9 +164,27 @@ export default function GlobalsPage() {
       <Box>
         <Box sx={{ pt: 1 }}>
           Globals
-          <IconButton onClick={handleDeletePage}>
+          {/* <IconButton onClick={handleDeletePage}>
+            <DeleteIcon />
+          </IconButton> */}
+          <IconButton onClick={handleClickOpen}>
             <DeleteIcon />
           </IconButton>
+          <Dialog open={open} onClose={handleClose}>
+            {/* Dialog의 문구*/}
+
+            <DialogContent>
+              <Typography variant="h6" gutterBottom>
+                삭제하시겠습니까 ?
+              </Typography>
+            </DialogContent>
+
+            {/* Dialog의 버튼 */}
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button onClick={handleDeletePage}>Delete</Button>
+            </DialogActions>
+          </Dialog>
           <Divider />
         </Box>
         <Box sx={{ pt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

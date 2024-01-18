@@ -100,7 +100,7 @@ class requestService {
             }
           }
         })
-
+        console.log(request.url)
         const axiosConfig = {
           method: request.method,
           url: request.url,
