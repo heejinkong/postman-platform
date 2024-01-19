@@ -223,7 +223,11 @@ export default function GlobalsPage() {
               processRowUpdate={(newRow) => {
                 // row 수정 시, globalsClone에 반영
                 const newRows = handleProcessNewRows(newRow, globalsClone.variables)
-                setGlobalsClone({ ...globalsClone, variables: newRows })
+                setGlobalsClone({
+                  ...globalsClone,
+                  variables: newRows,
+                  variablesSelection: [...globalsClone.variablesSelection, newRow.id]
+                })
                 return newRow
               }}
               onProcessRowUpdateError={(e) => console.log(e)}

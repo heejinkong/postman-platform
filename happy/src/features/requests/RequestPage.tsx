@@ -657,7 +657,11 @@ export default function RequestPage() {
               processRowUpdate={(newRow) => {
                 // row 수정 시, requestClone에 반영
                 const newRows = handleProcessNewRows(newRow, requestClone.params)
-                setRequestClone({ ...requestClone, params: newRows })
+                setRequestClone({
+                  ...requestClone,
+                  params: newRows,
+                  paramsSelection: [...requestClone.paramsSelection, newRow.id] // 수정한 row 선택
+                })
                 return newRow
               }}
               onProcessRowUpdateError={(e) => console.log(e)}
@@ -688,7 +692,11 @@ export default function RequestPage() {
               processRowUpdate={(newRow) => {
                 // row 수정 시, requestClone에 반영
                 const newRows = handleProcessNewRows(newRow, requestClone.headers)
-                setRequestClone({ ...requestClone, headers: newRows })
+                setRequestClone({
+                  ...requestClone,
+                  headers: newRows,
+                  headersSelection: [...requestClone.headersSelection, newRow.id] // 수정한 row 선택
+                })
                 return newRow
               }}
               onProcessRowUpdateError={(e) => console.log(e)}
@@ -761,10 +769,15 @@ export default function RequestPage() {
                     })
                   }}
                   processRowUpdate={(newRow) => {
+                    // row 수정 시, requestClone에 반영
                     const newRows = handleProcessNewRowsFormData(newRow, requestClone.body.formData)
                     setRequestClone({
                       ...requestClone,
-                      body: { ...requestClone.body, formData: newRows }
+                      body: {
+                        ...requestClone.body,
+                        formData: newRows,
+                        formDataSelection: [...requestClone.body.formDataSelection, newRow.id] // 수정한 row 선택
+                      }
                     })
                     return newRow
                   }}

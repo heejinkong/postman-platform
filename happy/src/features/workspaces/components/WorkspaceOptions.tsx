@@ -99,11 +99,17 @@ export default function WorkspaceOptions() {
           Run History
         </MenuItem>
         {/* Workspace Options 메뉴의 Run Workspace 클릭 시, 해당 workspace의 run workspace로 이동 */}
-        <RunWorkspaceOptionItem workspaceId={workspace.id} handleClose={() => handleClose} />
+        <MenuItem onClick={handleClose} disableRipple sx={{ justifyContent: 'center' }}>
+          <RunWorkspaceOptionItem workspaceId={workspace.id} />
+        </MenuItem>
+
         <Box>
           <Divider sx={{ my: 0.5 }} />
         </Box>
+        {/* Workspace Options 메뉴의 Environment 클릭 시, Dialog 창 노출 */}
+
         <SettingsVariable />
+
         {/* Workspace Options 메뉴의 Import Collection 클릭 시, 해당 workspace의 collection import */}
         <MenuItem onClick={handleClose} disableRipple sx={{ justifyContent: 'center' }}>
           Import Collection

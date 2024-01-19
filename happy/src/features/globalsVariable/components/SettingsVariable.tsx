@@ -4,11 +4,9 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  IconButton,
   MenuItem,
   Typography
 } from '@mui/material'
-import BuildIcon from '@mui/icons-material/Build'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
@@ -119,7 +117,7 @@ export default function SettingsVariable() {
 
   return (
     <Box>
-      {/* BuildIcon 버튼 클릭 시, Dialog 노출 */}{' '}
+      {/* BuildIcon 버튼 클릭 시, Dialog 노출 */}
       <MenuItem>
         <Typography textAlign="center" sx={{ ml: 5 }} onClick={handleClickOpen}>
           Environment
