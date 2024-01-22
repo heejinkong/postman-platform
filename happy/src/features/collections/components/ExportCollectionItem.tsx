@@ -7,41 +7,38 @@ import { folderItem } from '../../folders/domain/folderItem'
 import { requestItem } from '../../requests/domain/requestItem'
 import { selectAllRequests } from '../../requests/service/requestSlice'
 
-type exportCollectionItemProps = {
+type ExportCollectionItemProps = {
   collectionId: string
   handleClose: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
 }
 
-export default function ExportCollectionItem(props: exportCollectionItemProps) {
+export default function ExportCollectionItem(props: ExportCollectionItemProps) {
   const collection = useAppSelector((state) => selectCollectionById(state, props.collectionId))
   const folders = useAppSelector(selectAllFolders) ?? []
   const requests = useAppSelector(selectAllRequests) ?? []
 
-  const requestList: requestItem[] = []
-  const subFolderList: folderItem[] = []
+  // const requestList: requestItem[] = []
+  // const subFolderList: folderItem[] = []
 
-  const folderInCollection = folders.filter((folder) => {
-    return folder.parentId === props.collectionId
-  })
+  const folderInCollection = folders.filter((folder) => folder.parentId === props.collectionId)
 
-  const requestInCollection = requests.filter((request) => {
-    return request.parentId === props.collectionId
-  })
+  const requestInCollection = requests.filter((request) => request.parentId === props.collectionId)
 
-  const dfs = (folderId: string) => {
-    const requestInFolder = requests.filter((request) => request.parentId === folderId)
-    requestList.push(...requestInFolder)
+  // const dfs = (folderId: string): { requestList: requestItem[]; subFolderList: folderItem[] } => {
+  //   const requestInFolder = requests.filter((request) => request.parentId === folderId)
+  //   requestList.push(...requestInFolder)
 
-    const subFolder = folders.filter((folder) => folder.parentId === folderId)
-    if (subFolder.length > 0) {
-      subFolder.forEach((folder) => {
-        dfs(folder.id)
-        subFolderList.push(folder)
-      })
-    }
+  //   const subFolder = folders.filter((folder) => folder.parentId === folderId)
+  //   if (subFolder.length > 0) {
+  //     subFolder.forEach((folder) => {
+  //       const { requestList: subFolderRequests, subFolderList: nestedSubFolders } = dfs(folder.id)
+  //       requestList.push(...subFolderRequests)
+  //       subFolderList.push(...nestedSubFolders, folder)
+  //     })
+  //   }
 
-    return { requestList, subFolderList }
-  }
+  //   return { requestList, subFolderList }
+  // }
 
   const handleExport = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     exportCollectionToJson(props.collectionId, collection)
@@ -64,35 +61,31 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
   }
 
   const getSubFolderData = (folder: folderItem) => {
-    const subFolder = subFolderList.filter((subFolder) => subFolder.parentId === folder.id)
+    const subFolder = folders.filter((subFolder) => subFolder.parentId === folder.id)
+    const requestInSubFolder = requests.filter((request) => request.parentId === folder.id)
 
     if (subFolder.length > 0) {
       return subFolder.map((subFolder) => ({
         name: subFolder.title,
-        item: getSubFolderData(subFolder).item
+        item: getSubFolderData(subFolder)
       }))
     } else {
-      return {
-        name: folder.title,
-        item: requestList
-          .filter((request) => request.parentId === folder.id)
-          .map((request) => getRequestData(request))
-      }
+      return requestInSubFolder.map((request) => ({
+        name: request.title,
+        item: getRequestData(request)
+      }))
     }
   }
 
   const getFolderData = (folder: folderItem) => {
-    dfs(folder.id)
+    const requestInFolder = requests.filter((request) => request.parentId === folder.id)
+    const subFolderInFolder = folders.filter((subFolder) => subFolder.parentId === folder.id)
 
     return {
       name: folder.title,
       item: [
-        ...requestList
-          .filter((request) => request.parentId === folder.id)
-          .map((request) => getRequestData(request)),
-        ...subFolderList
-          .filter((subFolder) => subFolder.parentId === folder.id)
-          .map((subFolder) => getSubFolderData(subFolder))
+        ...requestInFolder.map((request) => getRequestData(request)),
+        ...subFolderInFolder.map((subFolder) => getSubFolderData(subFolder))
       ]
     }
   }
@@ -103,11 +96,11 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
     path: string[]
   }
 
-  function parseUrl(url: string): ParsedUrl | null {
+  function parseUrl(url: string): ParsedUrl | undefined {
     const regex = /^(https?:\/\/)?([^\/]+)(\/.*)?$/
     const match = url.match(regex)
     if (!match) {
-      return null
+      return undefined
     }
     const [, protocol, host, path] = match
     const pathArray = path ? path.split('/').filter((item) => item) : []
@@ -186,7 +179,6 @@ export default function ExportCollectionItem(props: exportCollectionItemProps) {
 
   return (
     <MenuItem onClick={(e) => handleExport(e)}>
-      {/* Export 버튼 클릭 시, 해당 collection을 json 파일로 export */}
       <Typography textAlign="center">Export</Typography>
     </MenuItem>
   )
