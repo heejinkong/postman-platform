@@ -15,14 +15,16 @@ export default function HomePage() {
       {/* HomePage의 상단 부분  */}
       <Box
         sx={{
-          height: 160,
-          p: 1,
-          backgroundColor: '#FAFAFB'
+          height: '164px',
+          backgroundColor: '#FAFAFB',
+          display: 'flex',
+          alignItems: 'center',
         }}
       >
         <Container
           sx={{
-            height: '100%',
+            width:'868px',
+            height: '108px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center'
@@ -34,12 +36,15 @@ export default function HomePage() {
             <Typography
               variant="h5"
               display="block"
-              gutterBottom
-              sx={{ justifyItems: 'center', fontWeight: 700 }}
+              sx={{ 
+                fontSize: '24px',
+                fontWeight: 700 ,
+                marginBottom:'12px'
+              }}
             >
               Workspace List
             </Typography>
-            <Typography variant="body1" display="block" gutterBottom sx={{}}>
+            <Typography variant="body1" display="block" sx={{}}>
               Please select the workspace you'd like to move to.
             </Typography>
           </Box>
@@ -55,7 +60,9 @@ export default function HomePage() {
         </Container>
       </Box>
       {/* HomePage의 하단 부분 */}
-      <Container sx={{ flexGrow: 1 }}>
+      <Container sx={{
+        display: "flex", justifyContent: 'center', height: 'calc(100% - 164px)'
+      }}>
         {/* workspace 목록 표시 */}
         <WorkspaceList />
       </Container>

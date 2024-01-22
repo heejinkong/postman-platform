@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+*{
+    font-family: 'Noto Sans KR', sans-serif !important;
+}
+.MuiButtonBase-root.MuiButton-root{
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    height: 36px;
+    border: 1px solid #C3C6C9;
+    text-transform: none;
+    box-shadow: none;
+    color:#35363A;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 6px;
+    padding-top: 6px;
+}
+.MuiButtonBase-root.MuiButton-root.btnBlue{
+    background-color: #1877F2;
+    border: 1px solid #1877F2;
+    color:#fff
+}
+.MuiButtonBase-root.MuiButton-root.btnBlue:hover{
+    background-color: #1465CE;
+    box-shadow: none;
+}
+.MuiButtonBase-root.MuiButton-root.btnBlue:active{
+    background-color: #1153A9
+}
+
+
+.MuiButtonBase-root.MuiButton-root.btnWhite{
+    background-color: #fff 
+}
+.MuiButtonBase-root.MuiButton-root.btnWhite:hover{
+    background-color: rgba(0, 0, 0, 0.06);
+    box-shadow: none;
+}
+.MuiButtonBase-root.MuiButton-root.btnWhite:active{
+    background-color: rgba(0, 0, 0, 0.12)
+}
+
+.MuiListItemButton-root:hover{background-color: transparent !important}
+.MuiDialog-paper{width: 100%;}
+.MuiInputBase-root.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline{
+    border-color: #1877F2;
+}

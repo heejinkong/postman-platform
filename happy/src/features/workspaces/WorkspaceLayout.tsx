@@ -27,7 +27,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),
-    marginLeft: 0
+    marginLeft: 0,
   })
 }))
 
@@ -54,7 +54,7 @@ export default function WorkspacesLayout() {
 
   return (
     /* WorkspaceLayout 컴포넌트는 Workspace 페이지의 레이아웃을 담당하는 컴포넌트 */
-    <Box sx={{ display: 'flex', height: '100%' }}>
+    <Box sx={{ display: 'flex', height: '100%'}}>
       {/* Sidebar에 Drawer 기능을 사용하여 WorkspaceNavTree 컴포넌트를 표시 */}
       <Drawer
         sx={{
@@ -63,42 +63,44 @@ export default function WorkspacesLayout() {
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
-            border: 0
-          }
+            border: 0,
+          },
         }}
         variant="persistent"
         anchor="left"
         open={isDrawerOpen}
       >
         <DrawerHeader />
-        <Box>
-          {/*Sidebar 상단 'workspace' 문구 표시 */}
-          <Typography variant="subtitle1" gutterBottom sx={{ pl: 1, pt: 1 }}>
-            Workspace
-          </Typography>
-
-          {/*Sidebar 상단 Workspace title 클릭 시, 해당 Workspace로 이동 */}
-          <Link
-            sx={{ textDecoration: 'none' }}
-            component="button"
-            onClick={() => {
-              navigate(`/workspaces/${workspaceId}`)
-            }}
-          >
-            {/* workspace title이 10자 이상일 경우, 10자까지만 표시하고 이후에는 '...'으로 표시 */}
-            <Typography variant="h4" gutterBottom sx={{ pl: 2, color: `primary.main` }}>
-              {workspace.title.length > 10 ? `${workspace.title.slice(0, 10)}...` : workspace.title}
+        <Box sx={{backgroundColor:'#ECEDEE', height:'100%'}}>
+          <Box sx={{ backgroundColor:'#fff'}}>     
+            {/*Sidebar 상단 'workspace' 문구 표시 */}
+            <Typography variant="subtitle1" gutterBottom sx={{ padding:'16px 12px 8px 16px', fontSize:'12px', color:'rgba(0,0,0,.6)'}}>
+              Workspace
             </Typography>
-          </Link>
-          {/*Sidebar 상단 workspace title 아래에 workspace options 버튼 표시 */}
-          <Box sx={{ pb: 2 }}>
-            <WorkspaceOptions />
+
+            {/*Sidebar 상단 Workspace title 클릭 시, 해당 Workspace로 이동 */}
+            <Link
+              sx={{ textDecoration: 'none'}}
+              component="button"
+              onClick={() => {
+                navigate(`/workspaces/${workspaceId}`)
+              }}
+            >
+              {/* workspace title이 10자 이상일 경우, 10자까지만 표시하고 이후에는 '...'으로 표시 */}
+              <Typography variant="h4" gutterBottom sx={{padding:'0 12px 16px 16px',fontSize:'16px', color:'rgba(0,0,0,.9)' }}>
+                {workspace.title.length > 20 ? `${workspace.title.slice(0, 20)}...` : workspace.title}
+              </Typography>
+            </Link>
+            {/*Sidebar 상단 workspace title 아래에 workspace options 버튼 표시 */}
+            <Box sx={{ pb: 2}}>
+              <WorkspaceOptions />
+            </Box>
           </Box>
           <Divider />
 
           {/*Sidebar영역, 'collections' 문구 표시 */}
           <Box
-            sx={{ px: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding:'8px 12px 8px 16px'}}
           >
             Collections
             <NewCollection />
@@ -131,12 +133,12 @@ export default function WorkspacesLayout() {
             ></Box>
             <Box
               sx={{
-                width: 20,
+                width: 24,
                 borderLeft: 1,
                 borderColor: 'lightgrey'
               }}
             >
-              <Box position="relative" sx={{ right: 15, top: 10 }}>
+              <Box position="relative" sx={{ right: 20, top: 8 }}>
                 {/* icon button을 사용하여 Sidebar를 열고 닫는 기능 구현 */}
                 <IconButton
                   size="small"
@@ -145,12 +147,15 @@ export default function WorkspacesLayout() {
                   onClick={handleDrawerOpen}
                   edge="start"
                   sx={{
-                    mr: 2,
+                    width:'32px',
+                    margin:'4px',
+                    height:'32px',
                     border: 1,
                     bgcolor: 'white',
                     borderColor: 'lightgrey',
                     ':hover': {
-                      bgcolor: 'lightgrey'
+                      bgcolor: '#1877F2',
+                      color:'#fff',
                     },
                     ...(isDrawerOpen && { display: 'none' })
                   }}
@@ -164,12 +169,15 @@ export default function WorkspacesLayout() {
                   onClick={handleDrawerClose}
                   edge="start"
                   sx={{
-                    mr: 2,
+                    width:'32px',
+                    height:'32px',
+                    margin:'4px',
                     border: 1,
                     bgcolor: 'white',
                     borderColor: 'lightgrey',
                     ':hover': {
-                      bgcolor: 'lightgrey'
+                      bgcolor: '#1877F2',
+                      color:'#fff',
                     },
                     ...(!isDrawerOpen && { display: 'none' })
                   }}
@@ -184,8 +192,8 @@ export default function WorkspacesLayout() {
           <Box
             sx={{
               flexGrow: 1,
-              ml: 5,
-              ...(isDrawerOpen && { ml: 2.5 })
+              ml: '44px',
+              ...(isDrawerOpen && { ml: '24px' })
             }}
           >
             <Outlet />

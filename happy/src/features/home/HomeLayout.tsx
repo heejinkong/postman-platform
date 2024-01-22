@@ -1,17 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef} from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import {
   AppBar,
   Avatar,
   Box,
   Button,
-  Divider,
-  IconButton,
+  // Divider,
   Menu,
   MenuItem,
   MenuProps,
   Toolbar,
-  Tooltip,
   Typography,
   alpha,
   styled
@@ -22,7 +20,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { useAppSelector } from '../../app/hook'
 import { selectAllWorkspaces } from '../workspaces/service/workspaceSlice'
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
+// const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -39,14 +37,23 @@ const StyledMenu = styled((props: MenuProps) => (
   />
 ))(({ theme }) => ({
   '& .MuiPaper-root': {
-    borderRadius: 6,
+    borderRadius: '4px',
+    width:'382px',
+    top:'52px !important',
+    left:'213px !important',
     marginTop: theme.spacing(1),
     minWidth: 180,
     color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
     boxShadow:
       'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
     '& .MuiMenu-list': {
-      padding: '4px 0'
+      padding: '0'
+    },
+    '& li.MuiButtonBase-root:first-child': {
+      marginTop:'8px',
+    },
+    '& li.MuiButtonBase-root:last-child': {
+      marginBottom:'8px',
     },
     '& .MuiMenuItem-root': {
       '& .MuiSvgIcon-root': {
@@ -94,14 +101,21 @@ export default function HomeLayout() {
   const handleClose = () => {
     setAnchorEl(null)
   }
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget)
-  }
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null)
-  }
-
+  // const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
+  // const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+  //   setAnchorElUser(event.currentTarget)
+  // }
+  // const handleCloseUserMenu = () => {
+  //   setAnchorElUser(null)
+  // }
+  const StyledNewWorkspace = styled(Box)({
+    // 원하는 스타일을 여기에 지정
+    // width: '170px',
+    '& .homeLayOut button' :{
+      width:'169px',
+    }
+    // 추가적인 스타일...
+  });
   return (
     <Box>
       {/* HomeLayout은 Header와 Body로 구성 */}
@@ -115,7 +129,7 @@ export default function HomeLayout() {
           {/* AppBar는 Toolbar로 구성 */}
           <Box sx={{ mx: 2 }}>
             <Toolbar disableGutters>
-              {/* Top Menu */}
+            {/* Top Menu */}
               <Avatar
                 alt="ToolBal Icon"
                 src="/iconTool.jpg"
@@ -128,10 +142,13 @@ export default function HomeLayout() {
                 href="/"
                 letterSpacing="-0.1rem"
                 fontWeight="bold"
-                color={'primary.main'}
+                color='#35363A'
                 sx={{
-                  mr: 6,
-                  textDecoration: 'none'
+                  marginRight:'40px',
+                  textDecoration: 'none',
+                  '&:hover' : {
+                    color: '#1877F2'
+                  },
                 }}
               >
                 통합문서뷰어
@@ -147,9 +164,18 @@ export default function HomeLayout() {
                   disableElevation
                   onClick={handleClick}
                   endIcon={<KeyboardArrowDownIcon />}
-                  sx={{ color: 'text.primary' }}
+                  sx={{ 
+                    color: 'text.primary',
+                    border:'none !important',
+                    fontSize:'20px !important',
+                    height: '48px !important',
+                    padding: '8px 11px',
+                    '&:hover' : {
+                      backgroundColor: 'rgba(0, 0, 0, 0.06)',
+                    },
+                  }}
                 >
-                  Workpsace
+                  WORKSPACE
                 </Button>
 
                 {/* AppBar의 WORKSPACE Button 클릭 시, 해당 workspace 목록 표시 */}
@@ -167,9 +193,10 @@ export default function HomeLayout() {
                       sx={{
                         flexWrap: 'wrap',
                         '& > :not(style)': {
-                          m: 1,
-                          width: 350,
-                          height: 150
+                          // m: 1,
+                          width: '100%',
+                          height: '304px',
+                          maxHeight:'304px',
                         }
                       }}
                     >
@@ -194,6 +221,7 @@ export default function HomeLayout() {
                           </Typography>
                         </Box>
                       ) : (
+
                         // workspace가 있을 경우, 해당 workspace 목록 표시
                         <Box sx={{ maxHeight: 200, overflowY: 'auto' }}>
                           {allWorkspaces.map((ws) => (
@@ -201,33 +229,35 @@ export default function HomeLayout() {
                               key={ws.id}
                               onClick={() => handleNavWorkspace(ws.id)}
                               disableRipple
-                              sx={{ p: 1, m: 0.5, fontSize: '17px' }}
+                              sx={{ padding:'6px 16px',fontSize: '16px', }}
                             >
-                              {ws.title.length > 20 ? `${ws.title.slice(0, 20)}...` : ws.title}
+                              {ws.title.length > 26 ? `${ws.title.slice(0, 26)}...` : ws.title}
                             </MenuItem>
                           ))}
                         </Box>
                       )}
                     </Box>
-                    <Divider sx={{ my: 0.5 }} />
+                    {/* <Divider sx={{ my: 0.5 }} /> */}
 
                     {/* workspace를 import하거나, 새로운 workspace를 생성할 수 있는 버튼 */}
-                    <Box sx={{ display: 'flex' }}>
-                      <Box sx={{ ml: 1 }}>
-                        <Button variant="outlined" size="small">
+                    <Box sx={{ display: 'flex', borderTop:'1px solid #C3C6C9', padding:'12px 16px',justifyContent:'space-between' }}>
+                      <Box sx={{ width: '50%'}}>
+                        <Button variant="outlined" size="small" sx={{width:'169px'}}>
                           Import Workspace
                         </Button>
                       </Box>
-                      <Box sx={{ ml: 1, mr: 1 }}>
+                      <StyledNewWorkspace>
+                      <Box sx={{ width: '50%'}} className='homeLayOut'>
                         <NewWorkspace />
                       </Box>
+                      </StyledNewWorkspace>
                     </Box>
                   </Box>
                 </StyledMenu>
               </Box>
 
               {/* AppBar의 회원 정보 버튼 표시 (임시로 만들어 놓은 버튼) */}
-              <Box sx={{ flexGrow: 0 }}>
+              {/* <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                     <Avatar alt="Remy Sharp" src="/avatar.jpg" />
@@ -255,12 +285,12 @@ export default function HomeLayout() {
                     </MenuItem>
                   ))}
                 </Menu>
-              </Box>
+              </Box> */}
             </Toolbar>
           </Box>
         </AppBar>
       </Box>
-
+      
       {/* HomePage 부분 */}
       <Box ref={bodyRef}>
         <Outlet />

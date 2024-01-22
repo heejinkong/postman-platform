@@ -16,9 +16,10 @@ import RunTestLayout from './features/runTests/RunTestLayout'
 import RunTestPage from './features/runTests/RunTestPage'
 import RunResultLayout from './features/runResults/runResultLayout'
 import RunResultPage from './features/runResults/runResultPage'
+
+import './App.css'
 import GlobalsLayout from './features/globalsVariable/GlobalsLayout'
 import GlobalsPage from './features/globalsVariable/GlobalsPage'
-
 function App() {
   return (
     <Routes>

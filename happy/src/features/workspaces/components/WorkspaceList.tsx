@@ -1,12 +1,11 @@
 import ListItemText from '@mui/material/ListItemText'
-import ListItemAvatar from '@mui/material/ListItemAvatar'
-import Avatar from '@mui/material/Avatar'
+// import ListItemAvatar from '@mui/material/ListItemAvatar'
+// import Avatar from '@mui/material/Avatar'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline'
+// import PersonOutlineIcon from '@mui/icons-material/PersonOutline'
 import { useNavigate } from 'react-router-dom'
 import {
   Box,
-  Divider,
   IconButton,
   ListItemButton,
   Pagination,
@@ -56,10 +55,10 @@ export default function WorkspaceList() {
       <Box
         sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
       >
-        <Typography variant="h6" textAlign="center" mb="0.5rem" sx={{ fontWeight: 500 }}>
+        <Typography variant="h6" textAlign="center" mb="0.5rem" sx={{ fontWeight: 500, fontSize: '20px' }}>
           Workspace does not exist
         </Typography>
-        <Typography variant="body2" textAlign="center" mb="2rem">
+        <Typography variant="body2" textAlign="center" mb="32px" sx={{fontSize:'14px'}}>
           To start your work, try using the 'New Workspace' button at the top.
         </Typography>
         <Box sx={{ mx: 'auto' }}>
@@ -72,40 +71,45 @@ export default function WorkspaceList() {
   return (
     <Box
       sx={{
+        maxWidth:'868px',
+        width:'100%',
         height: '100%',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
       }}
     >
       {/* 새로운 workspace 생성 버튼 */}
-      <Box sx={{ py: 1, display: 'flex', justifyContent: 'flex-end' }}>
+      <Box sx={{padding:'16px 0', display: 'flex', justifyContent: 'flex-end' }}>
         <NewWorkspace />
       </Box>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 0}}>
         {/* Workspace 목록 표시 */}
-        <Table size="small" aria-label="a dense table">
+        <Table aria-label="a dense table">
           <TableBody>
             {/* 각 Workspace에 대한 정보 표시 */}
             {currentRows.map((ws) => (
-              <Box>
+              <Box sx={{ borderTop: '1px solid #E0E1E3', height:'60px', display:'flex', padding:'10px 4px 10px 16px'}}>
                 {/* workspace 목록 클릭시 해당 workspace로 이동 */}
                 <ListItemButton
                   key={ws.id}
                   onClick={() => handleNavWorkspace(ws.id)}
-                  sx={{ display: 'flex' }}
+                  sx={{ display: 'flex', padding:0 }}
                 >
                   {/* workspace에 대한 avatar 표시 */}
-                  <ListItemAvatar>
+                  {/* <ListItemAvatar>
                     <Avatar>
                       <PersonOutlineIcon />
                     </Avatar>
-                  </ListItemAvatar>
+                  </ListItemAvatar> */}
 
                   {/* workspace title과 생성 날짜 표시 */}
                   <ListItemText
                     primary={ws.title}
-                    secondary={new Date(ws.created).toLocaleString()}
-                    sx={{ flexGrow: 1 }}
+                    // secondary={new Date(ws.created).toLocaleString()}
+                    // sx={{ flexGrow: 1 }}
+                    sx={{
+                      width:'50%'
+                    }}
                   />
 
                   {/* 아이콘 클릭 시, 해당 workspace 삭제 */}
@@ -114,11 +118,14 @@ export default function WorkspaceList() {
                     aria-label="delete"
                     onClick={(e) => handleDeleteClick(e, ws)}
                     href="/"
+                    sx={{
+                      width:'40px',
+                      marginRight:0,
+                    }}
                   >
                     <DeleteIcon />
                   </IconButton>
                 </ListItemButton>
-                <Divider />
               </Box>
             ))}
           </TableBody>
@@ -126,7 +133,7 @@ export default function WorkspaceList() {
       </Box>
 
       {/* Workspace 목록 Pagination 표시 (리스트 10개로 정렬)*/}
-      <Box sx={{ py: 1 }}>
+      <Box sx={{ mt: '36px', pt:'12px', pb:3 }}>
         <Pagination
           count={totalPages}
           shape="rounded"

@@ -24,7 +24,7 @@ const StyledMenu = styled((props: MenuProps) => (
   />
 ))(({ theme }) => ({
   '& .MuiPaper-root': {
-    borderRadius: 6,
+    borderRadius: 4,
     marginTop: theme.spacing(1),
     minWidth: 180,
     color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
@@ -69,7 +69,7 @@ export default function WorkspaceOptions() {
 
   return (
     /* Workspace Options 버튼 클릭 시, Workspace Options 메뉴가 나타나도록 설정 */
-    <Box>
+    <Box sx={{ margin: '0 12px 0 16px' }}>
       <Button
         id="demo-customized-button"
         aria-controls={open ? 'demo-customized-menu' : undefined}
@@ -79,7 +79,15 @@ export default function WorkspaceOptions() {
         disableElevation
         onClick={handleClick}
         endIcon={<KeyboardArrowRightIcon />}
-        sx={{ ml: 3.5, width: 240, height: 40, justifyContent: 'center' }}
+        sx={{
+          width: '100%',
+          backgroundColor: '#35363A',
+          color: '#fff !important',
+          fontSize: '13px !important',
+          '&:hover': {
+            backgroundColor: '#35363A'
+          }
+        }}
       >
         Workspace Options
       </Button>
@@ -100,15 +108,11 @@ export default function WorkspaceOptions() {
           Run History
         </MenuItem>
         {/* Workspace Options 메뉴의 Run Workspace 클릭 시, 해당 workspace의 run workspace로 이동 */}
-        <MenuItem onClick={handleClose} disableRipple sx={{ justifyContent: 'center' }}>
-          <RunWorkspaceOptionItem workspaceId={workspace.id} />
-        </MenuItem>
-
+        <RunWorkspaceOptionItem workspaceId={workspace.id} handleClose={() => handleClose} />
         <Box>
           <Divider sx={{ my: 0.5 }} />
         </Box>
         {/* Workspace Options 메뉴의 Environment 클릭 시, Dialog 창 노출 */}
-
         <SettingsVariable />
 
         {/* Workspace Options 메뉴의 Import Collection 클릭 시, 해당 workspace의 collection import */}

@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { MenuItem, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../../../app/hook'
 import { selectWorkspaceById } from '../service/workspaceSlice'
 import { useNavigate } from 'react-router-dom'
@@ -14,6 +14,7 @@ import requestService from '../../requests/service/requestService'
 
 type runWorkspaceOptionItemProps = {
   workspaceId: string
+  handleClose: () => void
 }
 
 interface ResponseType {
@@ -57,7 +58,7 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
   }
 
   const handleRunClick = () => {
-    // props.handleClose()
+    props.handleClose()
 
     const newRunResult = new runResultItem()
     newRunResult.title = workspace.title
@@ -93,11 +94,11 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
   }
 
   return (
-    <Box>
+    <MenuItem>
       {/* Run Workspace 버튼 클릭 시, 해당 workspace 내의 모든 request를 실행 */}
-      <Typography textAlign="center" onClick={handleRunClick}>
+      <Typography textAlign="center" sx={{ ml: 4 }} onClick={handleRunClick}>
         Run Workspace
       </Typography>
-    </Box>
+    </MenuItem>
   )
 }

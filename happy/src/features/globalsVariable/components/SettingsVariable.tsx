@@ -43,6 +43,8 @@ export default function SettingsVariable() {
   const [rowIdHover, setRowIdHover] = useState<GridRowId>(-1)
   const globalsRef = useGridApiRef()
 
+  console.log('rowIdHover', rowIdHover)
+
   const handleMouseEnter: GridEventListener<'rowMouseEnter'> = (variables) => {
     setRowIdHover(variables.id)
   }

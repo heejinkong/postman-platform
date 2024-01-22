@@ -25,6 +25,8 @@ export default function ImportCollectionItem() {
   const [open, setOpen] = React.useState(false)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
 
+  console.log('selectedFiles', selectedFiles)
+
   const { workspaceId } = useParams()
   const dispatch = useAppDispatch()
 
