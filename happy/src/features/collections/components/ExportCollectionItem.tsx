@@ -12,6 +12,12 @@ type ExportCollectionItemProps = {
   handleClose: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
 }
 
+interface ParsedUrl {
+  protocol: string
+  host: string
+  path: string[]
+}
+
 export default function ExportCollectionItem(props: ExportCollectionItemProps) {
   const collection = useAppSelector((state) => selectCollectionById(state, props.collectionId))
   const folders = useAppSelector(selectAllFolders) ?? []
@@ -60,40 +66,41 @@ export default function ExportCollectionItem(props: ExportCollectionItemProps) {
     URL.revokeObjectURL(url)
   }
 
-  const getSubFolderData = (folder: folderItem) => {
-    const subFolder = folders.filter((subFolder) => subFolder.parentId === folder.id)
-    const requestInSubFolder = requests.filter((request) => request.parentId === folder.id)
-
-    if (subFolder.length > 0) {
-      return subFolder.map((subFolder) => ({
-        name: subFolder.title,
-        item: getSubFolderData(subFolder)
-      }))
-    } else {
-      return requestInSubFolder.map((request) => ({
-        name: request.title,
-        item: getRequestData(request)
-      }))
-    }
-  }
-
   const getFolderData = (folder: folderItem) => {
     const requestInFolder = requests.filter((request) => request.parentId === folder.id)
     const subFolderInFolder = folders.filter((subFolder) => subFolder.parentId === folder.id)
 
-    return {
-      name: folder.title,
-      item: [
-        ...requestInFolder.map((request) => getRequestData(request)),
-        ...subFolderInFolder.map((subFolder) => getSubFolderData(subFolder))
-      ]
+    const subFolderData = subFolderInFolder.map((subFolder) => getSubFolderData(subFolder))
+    if (subFolderData.length > 0) {
+      return {
+        name: folder.title,
+        item: [...requestInFolder.map((request) => getRequestData(request)), ...subFolderData]
+      }
+    } else {
+      return {
+        name: folder.title,
+        item: requestInFolder.map((request) => getRequestData(request))
+      }
     }
   }
 
-  interface ParsedUrl {
-    protocol: string
-    host: string
-    path: string[]
+  const getSubFolderData = (folder: folderItem) => {
+    const requestInSubFolder = requests.filter((request) => request.parentId === folder.id)
+    const subFolderInSubFolder = folders.filter((subFolder) => subFolder.parentId === folder.id)
+
+    const subFolderData = subFolderInSubFolder.map((subFolder) => getSubFolderData(subFolder))
+
+    if (subFolderData.length > 0) {
+      return {
+        name: folder.title,
+        item: [...requestInSubFolder.map((request) => getRequestData(request)), ...subFolderData]
+      }
+    } else {
+      return {
+        name: folder.title,
+        item: requestInSubFolder.map((request) => getRequestData(request))
+      }
+    }
   }
 
   function parseUrl(url: string): ParsedUrl | undefined {

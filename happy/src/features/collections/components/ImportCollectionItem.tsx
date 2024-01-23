@@ -1,19 +1,20 @@
+import React, { useCallback, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
 import {
   Box,
+  Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   MenuItem,
   TextField,
   Typography
 } from '@mui/material'
-import React, { useCallback, useState } from 'react'
-import { useDropzone } from 'react-dropzone'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { useAppDispatch } from '../../../app/hook'
-
 import { folderItem } from '../../folders/domain/folderItem'
 import folderService from '../../folders/service/folderService'
 import collectionService from '../service/collectionService'
@@ -24,11 +25,12 @@ import requestService from '../../requests/service/requestService'
 export default function ImportCollectionItem() {
   const [open, setOpen] = React.useState(false)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-
-  console.log('selectedFiles', selectedFiles)
+  const [textFieldValue, setTextFieldValue] = useState('')
+  const [dialogReset, setDialogReset] = useState(0) // 추가된 부분
 
   const { workspaceId } = useParams()
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -38,12 +40,14 @@ export default function ImportCollectionItem() {
     setOpen(false)
   }
 
-  const navigate = useNavigate()
+  const handleCancel = () => {
+    setTextFieldValue('')
+    setDialogReset((prev) => prev + 1)
+  }
+
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    // Handle the dropped files here
     setSelectedFiles(acceptedFiles)
     readJsonFile(acceptedFiles[0])
-
     handleClose()
   }, [])
 
@@ -53,7 +57,6 @@ export default function ImportCollectionItem() {
     reader.onload = () => {
       const result = reader.result as string
       const jsonData = JSON.parse(result)
-      console.log(jsonData)
 
       const info = jsonData.info
       const newCollection = new collectionItem()
@@ -65,6 +68,7 @@ export default function ImportCollectionItem() {
       navigate(`/workspaces/${workspaceId}/collections/${newCollection.id}`)
 
       const item = jsonData.item
+      console.log(item)
 
       item.forEach((item: any) => {
         if (item.request) {
@@ -74,9 +78,6 @@ export default function ImportCollectionItem() {
           newRequest.workspaceId = workspaceId ?? ''
           newRequest.parentId = newCollection.id
           newRequest.method = item.request.method
-          //   newRequest.url = item.request.url
-          //   newRequest.body = item.request.body
-          //   newRequest.headers = item.request.header
           newRequest.response = item.response
           dispatch(requestService.new(newRequest))
         } else if (item) {
@@ -88,16 +89,13 @@ export default function ImportCollectionItem() {
           dispatch(folderService.new(newFolder))
 
           item.item.forEach((item: any) => {
-            if (item.item.request) {
+            if (item.request) {
               const newRequest = new requestItem()
               newRequest.title = item.name
               newRequest.id = item.id
               newRequest.workspaceId = workspaceId ?? ''
               newRequest.parentId = newFolder.id
               newRequest.method = item.request.method
-              //   newRequest.url = item.request.url
-              //   newRequest.body = item.request.body
-              //   newRequest.headers = item.request.header
               newRequest.response = item.response
               dispatch(requestService.new(newRequest))
             } else if (item.item) {
@@ -106,37 +104,24 @@ export default function ImportCollectionItem() {
               newFolderInFolder.id = item.item.id
               newFolderInFolder.workspaceId = workspaceId ?? ''
               newFolderInFolder.parentId = newFolder.id
-
               dispatch(folderService.new(newFolderInFolder))
             }
           })
         }
       })
-
-      //   const folderList: folderItem[] = []
-      //   const requestList: any[] = []
-
-      //   item.forEach((item: any) => {
-      //     if (item.item) {
-      //       const folder = new folderItem()
-      //       folder.title = item.name
-      //       folder.id = item.id
-      //         folder.workspaceId = workspaceId ?? ''
-      //         folder.parentId = newCollection.id
-      //         folderList.push(folder)
-      //         folderList.forEach((folder) => {
-      //           dispatch(folderService.new(folder))
-      //         })
-
-      //       console.log(item.item)
-      //     } else {
-      //       requestList.push(item)
-      //     }
-      //   })
     }
   }
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop, maxFiles: 1, accept: '.json' })
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    maxFiles: 1,
+    accept: '.json',
+    key: dialogReset // 추가된 부분
+  })
+
+  const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTextFieldValue(event.target.value)
+  }
 
   return (
     <Box>
@@ -146,7 +131,7 @@ export default function ImportCollectionItem() {
         </Typography>
       </MenuItem>
       <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title">
-        <Box sx={{ width: 600, height: 500 }}>
+        <Box sx={{ width: 600, height: textFieldValue.length > 10 ? 500 : 500 }}>
           <Box>
             <Box
               sx={{
@@ -167,31 +152,53 @@ export default function ImportCollectionItem() {
                 <TextField
                   id="outlined-password-input"
                   label="Paste cURL, Raw text or URL..."
-                  type="url
-                  "
+                  type="url"
                   fullWidth
                   autoComplete="current-password"
+                  value={textFieldValue}
+                  onChange={handleTextFieldChange}
+                  multiline
+                  rows={textFieldValue.length > 10 ? 13 : 1}
                 />
+                {textFieldValue.length > 10 && (
+                  <DialogActions sx={{ padding: '10px 2px', width: '100%' }}>
+                    <Button
+                      sx={{ padding: '8px 22px', fontSize: '15px !important' }}
+                      onClick={handleCancel}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      sx={{ padding: '8px 22px', fontSize: '15px !important' }}
+                      className="btnBlue"
+                      onClick={handleClose}
+                    >
+                      Import
+                    </Button>
+                  </DialogActions>
+                )}
               </Box>
               <Box>
                 {/* Dropzone area */}
-                <Box
-                  {...getRootProps()}
-                  sx={{
-                    height: '200%',
-                    color: '#B5B8BC',
-                    border: '2px dashed #ccc',
-                    padding: '60px',
-                    borderRadius: '4px',
-                    mt: 5
-                  }}
-                >
-                  <input {...getInputProps()} />
-                  <UploadFileIcon />
-                  <Typography variant="body2" textAlign="center">
-                    Drag anywhere to import, or click to select files
-                  </Typography>
-                </Box>
+                {textFieldValue.length <= 10 && (
+                  <Box
+                    {...getRootProps()}
+                    sx={{
+                      height: '200%',
+                      color: '#B5B8BC',
+                      border: '2px dashed #ccc',
+                      padding: '60px',
+                      borderRadius: '4px',
+                      mt: 5
+                    }}
+                  >
+                    <input {...getInputProps()} />
+                    <UploadFileIcon />
+                    <Typography variant="body2" textAlign="center">
+                      Drag anywhere to import, or click to select files
+                    </Typography>
+                  </Box>
+                )}
               </Box>
             </DialogContent>
           </Box>

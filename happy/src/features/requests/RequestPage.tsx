@@ -827,7 +827,7 @@ export default function RequestPage() {
         )}
         <Box sx={{ height: '60%', py: 2, display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ pb: 2 }}>
-            <Divider />
+            <Divider /> 
           </Box>
 
           {/* 하단 Response 영역 */}
