@@ -21,6 +21,7 @@ import collectionService from '../service/collectionService'
 import { collectionItem } from '../domain/collectionItem'
 import { requestItem } from '../../requests/domain/requestItem'
 import requestService from '../../requests/service/requestService'
+import { v4 as uuidv4 } from 'uuid'
 
 export default function ImportCollectionItem() {
   const [open, setOpen] = React.useState(false)
@@ -70,44 +71,70 @@ export default function ImportCollectionItem() {
       const item = jsonData.item
       console.log(item)
 
-      item.forEach((item: any) => {
+      const processItem = (item, parentId: string) => {
         if (item.request) {
           const newRequest = new requestItem()
           newRequest.title = item.name
           newRequest.id = item.id
           newRequest.workspaceId = workspaceId ?? ''
-          newRequest.parentId = newCollection.id
+          newRequest.parentId = parentId
           newRequest.method = item.request.method
+          newRequest.url = item.request.url.raw
+
+          if (item.request.header) {
+            newRequest.headers = item.request.header.map((header) => ({
+              id: uuidv4(),
+              _key: header.key,
+              _value: header.value,
+              _desc: ''
+            }))
+          }
+
+          if (item.request.url.query) {
+            newRequest.params = item.request.url.query.map((param: any) => ({
+              id: uuidv4(),
+              _key: param.key,
+              _value: param.value,
+              _desc: ''
+            }))
+          }
+
+          if (item.request.body) {
+            const body = item.request.body
+            newRequest.body.mode = body.mode
+
+            if (body.mode === 'formdata' && body.formdata) {
+              newRequest.body.formData = body.formdata.map((formData: any) => ({
+                id: uuidv4(),
+                _key: formData.key,
+                _dataType: formData.type,
+                _value: [formData.src || formData.value],
+                _desc: ''
+              }))
+            } else if (body.mode === 'raw' && body.raw) {
+              newRequest.body.rawType = body.raw.options.raw.language
+              newRequest.body.rawData = body.raw.raw.data
+            }
+          }
+
           newRequest.response = item.response
           dispatch(requestService.new(newRequest))
-        } else if (item) {
+        } else if (item.item) {
           const newFolder = new folderItem()
           newFolder.title = item.name
           newFolder.id = item.id
           newFolder.workspaceId = workspaceId ?? ''
-          newFolder.parentId = newCollection.id
+          newFolder.parentId = parentId
           dispatch(folderService.new(newFolder))
 
-          item.item.forEach((item: any) => {
-            if (item.request) {
-              const newRequest = new requestItem()
-              newRequest.title = item.name
-              newRequest.id = item.id
-              newRequest.workspaceId = workspaceId ?? ''
-              newRequest.parentId = newFolder.id
-              newRequest.method = item.request.method
-              newRequest.response = item.response
-              dispatch(requestService.new(newRequest))
-            } else if (item.item) {
-              const newFolderInFolder = new folderItem()
-              newFolderInFolder.title = item.name
-              newFolderInFolder.id = item.item.id
-              newFolderInFolder.workspaceId = workspaceId ?? ''
-              newFolderInFolder.parentId = newFolder.id
-              dispatch(folderService.new(newFolderInFolder))
-            }
+          item.item.forEach((subItem: any) => {
+            processItem(subItem, newFolder.id)
           })
         }
+      }
+
+      item.forEach((item: any) => {
+        processItem(item, newCollection.id)
       })
     }
   }
