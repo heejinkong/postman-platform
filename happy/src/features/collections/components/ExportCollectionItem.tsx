@@ -120,7 +120,6 @@ export default function ExportCollectionItem(props: ExportCollectionItemProps) {
 
   const getRequestData = (request: requestItem) => {
     const parsedUrl = parseUrl(request.url)
-
     const requestData = {
       method: request.method,
       header: [
@@ -137,7 +136,8 @@ export default function ExportCollectionItem(props: ExportCollectionItemProps) {
         path: parsedUrl?.path ?? [],
         query: request.params.map((params) => ({
           key: params._key,
-          value: params._value
+          value: params._value,
+          disabled: request.paramsSelection.includes(params.id) ? false : true
         }))
       },
       response: []
@@ -159,7 +159,8 @@ export default function ExportCollectionItem(props: ExportCollectionItemProps) {
         formdata: request.body.formData.map((formData) => ({
           key: formData._key,
           type: formData._dataType,
-          [formData._dataType === 'file' ? 'src' : 'value']: formData._value
+          [formData._dataType === 'file' ? 'src' : 'value']: formData._value,
+          disabled: request.body.formDataSelection.includes(formData.id) ? false : true
         }))
       }
     }
@@ -169,7 +170,6 @@ export default function ExportCollectionItem(props: ExportCollectionItemProps) {
       request: requestData
     }
   }
-
   const getCollectionData = (collection: collectionItem) => {
     return {
       info: {

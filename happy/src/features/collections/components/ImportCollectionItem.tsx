@@ -81,20 +81,27 @@ export default function ImportCollectionItem() {
           newRequest.method = item.request.method
           newRequest.url = item.request.url.raw
 
+          if (item.request.url.query) {
+            newRequest.params = item.request.url.query.map(
+              (param: any) => ({
+                id: uuidv4(),
+                _key: param.key,
+                _value: param.value,
+                _desc: ''
+              }),
+              (newRequest.paramsSelection = item.request.url.query
+                .filter((param: any) => !param.disabled)
+                .map((param: any) => param.id))
+            )
+
+            console.log(newRequest.paramsSelection)
+          }
+
           if (item.request.header) {
             newRequest.headers = item.request.header.map((header) => ({
               id: uuidv4(),
               _key: header.key,
               _value: header.value,
-              _desc: ''
-            }))
-          }
-
-          if (item.request.url.query) {
-            newRequest.params = item.request.url.query.map((param: any) => ({
-              id: uuidv4(),
-              _key: param.key,
-              _value: param.value,
               _desc: ''
             }))
           }
