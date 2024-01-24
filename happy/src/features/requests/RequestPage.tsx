@@ -155,7 +155,7 @@ export default function RequestPage() {
       return [json()]
     } else if (type === 'HTML') {
       return [html()]
-    } else if (type === 'xml') {
+    } else if (type === 'Xml') {
       return [xml()]
     } else {
       return []
@@ -348,7 +348,7 @@ export default function RequestPage() {
         body: {
           ...prevRequestClone.body,
           formData: prevRequestClone.body.formData.map((formItem) => {
-            if (formItem.id === id && formItem._dataType === 'File') {
+            if (formItem.id === id && formItem._dataType === 'file') {
               const updatedFiles = (formItem._value as string[]).filter(
                 (_: string, i: number) => i !== index
               )
@@ -388,8 +388,8 @@ export default function RequestPage() {
               value={params.row._dataType}
               onChange={(event) => handleChangeFormType(event, params.id)}
             >
-              <MenuItem value="Text">text</MenuItem>
-              <MenuItem value="File">file</MenuItem>
+              <MenuItem value="text">Text</MenuItem>
+              <MenuItem value="file">File</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -403,7 +403,7 @@ export default function RequestPage() {
       sortable: false,
       renderCell: (params: GridRenderCellParams) => {
         const handleClick = () => {
-          if (params.row._dataType === 'File') {
+          if (params.row._dataType === 'file') {
             handleClickFile(params.id)
           } else {
             params.api.getCellMode(params.id, params.field)
@@ -420,7 +420,7 @@ export default function RequestPage() {
               overflowX: 'auto'
             }}
           >
-            {params.row._dataType === 'File' ? (
+            {params.row._dataType === 'file' ? (
               // Body탭의 form-data의 dataType이 File일 경우
               params.value && (params.value as string[]).length > 0 ? (
                 // 파일이 선택되었을 경우, 파일 이름 표시
@@ -827,7 +827,7 @@ export default function RequestPage() {
         )}
         <Box sx={{ height: '60%', py: 2, display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ pb: 2 }}>
-            <Divider /> 
+            <Divider />
           </Box>
 
           {/* 하단 Response 영역 */}
