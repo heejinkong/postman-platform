@@ -159,6 +159,8 @@ export default function SettingsVariable() {
                     disableRowSelectionOnClick
                     hideFooter
                     disableColumnMenu
+                    /* DataGrid 반응형 조절 */
+                    sx={{ height: '98.5%', width: '98.5%' }}
                   />
                 </Box>
               </DialogContent>

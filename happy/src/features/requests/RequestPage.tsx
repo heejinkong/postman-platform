@@ -666,6 +666,8 @@ export default function RequestPage() {
                 return newRow
               }}
               onProcessRowUpdateError={(e) => console.log(e)}
+              /* DataGrid 반응형 조절 */
+              sx={{ height: '98.5%', width: '98.5%' }}
             />
           </Box>
         )}
@@ -701,6 +703,8 @@ export default function RequestPage() {
                 return newRow
               }}
               onProcessRowUpdateError={(e) => console.log(e)}
+              /* DataGrid 반응형 조절 */
+              sx={{ height: '98.5%', width: '98.5%' }}
             />
           </Box>
         )}
@@ -783,6 +787,8 @@ export default function RequestPage() {
                     return newRow
                   }}
                   onProcessRowUpdateError={(e) => console.log(e)}
+                  /* DataGrid 반응형 조절 */
+                  sx={{ height: '98.5%', width: '98.5%' }}
                 />
               </Box>
             ) : (

@@ -82,28 +82,53 @@ export default function ImportCollectionItem() {
           newRequest.url = item.request.url.raw
 
           if (item.request.url.query) {
-            newRequest.params = item.request.url.query.map(
-              (param: any) => ({
-                id: uuidv4(),
-                _key: param.key,
-                _value: param.value,
-                _desc: ''
-              }),
-              (newRequest.paramsSelection = item.request.url.query
-                .filter((param: any) => !param.disabled)
-                .map((param: any) => param.id))
-            )
+            const checkedParams = item.request.url.query.filter((param: any) => !param.disabled)
+            const nonCheckedParams = item.request.url.query.filter((param: any) => param.disabled)
+
+            if (checkedParams.length > 0) {
+              checkedParams.forEach((param: any) => {
+                const newParamId = uuidv4()
+                newRequest.paramsSelection.push(newParamId)
+
+                newRequest.params.push({
+                  id: newParamId,
+                  _key: param.key,
+                  _value: param.value,
+                  _desc: ''
+                })
+              })
+            }
+            if (nonCheckedParams.length > 0) {
+              nonCheckedParams.forEach((param: any) => {
+                // const newParamId = uuidv4()
+
+                if (!newRequest.paramsSelection.includes(uuidv4())) {
+                  newRequest.params.push({
+                    id: uuidv4(),
+                    _key: param.key,
+                    _value: param.value,
+                    _desc: ''
+                  })
+                }
+              })
+            }
 
             console.log(newRequest.paramsSelection)
           }
-
           if (item.request.header) {
-            newRequest.headers = item.request.header.map((header) => ({
-              id: uuidv4(),
-              _key: header.key,
-              _value: header.value,
-              _desc: ''
-            }))
+            const checkedHeaders = item.request.header.filter((header: any) => !header.disabled)
+
+            checkedHeaders.forEach((header: any) => {
+              const newHeaderId = uuidv4()
+              newRequest.headersSelection.push(newHeaderId)
+
+              newRequest.headers.push({
+                id: newHeaderId,
+                _key: header.key,
+                _value: header.value,
+                _desc: ''
+              })
+            })
           }
 
           if (item.request.body) {

@@ -137,7 +137,7 @@ export default function ExportCollectionItem(props: ExportCollectionItemProps) {
         query: request.params.map((params) => ({
           key: params._key,
           value: params._value,
-          disabled: request.paramsSelection.includes(params.id) ? false : true
+          ...(request.paramsSelection.includes(params.id) ? {} : { disabled: true })
         }))
       },
       response: []
@@ -160,7 +160,7 @@ export default function ExportCollectionItem(props: ExportCollectionItemProps) {
           key: formData._key,
           type: formData._dataType,
           [formData._dataType === 'file' ? 'src' : 'value']: formData._value,
-          disabled: request.body.formDataSelection.includes(formData.id) ? false : true
+          ...(request.body.formDataSelection.includes(formData.id) ? {} : { disabled: true })
         }))
       }
     }
