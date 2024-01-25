@@ -135,14 +135,37 @@ export default function ImportCollectionItem() {
             const body = item.request.body
             newRequest.body.mode = body.mode
 
+            const checkedBody = body[body.mode].filter((body: any) => !body.disabled)
+            const nonCheckedBody = body[body.mode].filter((body: any) => body.disabled)
+
             if (body.mode === 'formdata' && body.formdata) {
-              newRequest.body.formData = body.formdata.map((formData: any) => ({
-                id: uuidv4(),
-                _key: formData.key,
-                _dataType: formData.type,
-                _value: [formData.src || formData.value],
-                _desc: ''
-              }))
+              if (checkedBody.length > 0) {
+                checkedBody.forEach((formData: any) => {
+                  const newFormDataId = uuidv4()
+                  newRequest.body.formDataSelection.push(newFormDataId)
+
+                  newRequest.body.formData.push({
+                    id: newFormDataId,
+                    _key: formData.key,
+                    _dataType: formData.type,
+                    _value: [formData.src || formData.value],
+                    _desc: ''
+                  })
+                })
+              }
+              if (nonCheckedBody.length > 0) {
+                nonCheckedBody.forEach((formData: any) => {
+                  if (!newRequest.body.formDataSelection.includes(uuidv4())) {
+                    newRequest.body.formData.push({
+                      id: uuidv4(),
+                      _key: formData.key,
+                      _dataType: formData.type,
+                      _value: [formData.src || formData.value],
+                      _desc: ''
+                    })
+                  }
+                })
+              }
             } else if (body.mode === 'raw' && body.raw) {
               newRequest.body.rawType = body.raw.options.raw.language
               newRequest.body.rawData = body.raw.raw.data
