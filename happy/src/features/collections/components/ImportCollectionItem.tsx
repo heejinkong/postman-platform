@@ -27,7 +27,7 @@ export default function ImportCollectionItem() {
   const [open, setOpen] = React.useState(false)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [textFieldValue, setTextFieldValue] = useState('')
-  const [dialogReset, setDialogReset] = useState(0) // 추가된 부분
+  const [dialogReset, setDialogReset] = useState(0)
 
   const { workspaceId } = useParams()
   const dispatch = useAppDispatch()
@@ -112,8 +112,6 @@ export default function ImportCollectionItem() {
                 }
               })
             }
-
-            console.log(newRequest.paramsSelection)
           }
           if (item.request.header) {
             const checkedHeaders = item.request.header.filter((header: any) => !header.disabled)

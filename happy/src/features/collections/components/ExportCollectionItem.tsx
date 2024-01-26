@@ -122,12 +122,7 @@ export default function ExportCollectionItem(props: ExportCollectionItemProps) {
     const parsedUrl = parseUrl(request.url)
     const requestData = {
       method: request.method,
-      header: [
-        {
-          key: 'Content-Type',
-          value: 'application/json'
-        }
-      ],
+      header: [...request.headers.map((header) => ({ key: header._key, value: header._value }))],
       body: {},
       url: {
         raw: request.url,
