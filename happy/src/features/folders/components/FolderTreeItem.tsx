@@ -59,11 +59,11 @@ export default function FolderTreeItem(props: TreeItemProps) {
       /* label에 folder title 표시하고, label 클릭시 해당 folder로 이동 */
       label={
         <Box
-          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize:'14px', height:'32px' }}
           onClick={(e) => handleNav(e)}
         >
-          <FolderOpenIcon fontSize="inherit" />
-          <Box sx={{ flexGrow: 1, px: 1 }}>{folder.title}</Box>
+          <FolderOpenIcon sx={{fontSize:'18px'}} />
+          <Box sx={{ flexGrow: 1, marginLeft:'4px' }}>{folder.title}</Box>
           <IconButton
             size="small"
             onClick={(e) => handleOpenUserMenu(e)}

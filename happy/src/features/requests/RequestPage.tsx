@@ -48,6 +48,7 @@ import {
   GridRenderCellParams,
   GridRowId
 } from '@mui/x-data-grid'
+import CircleIcon from '@mui/icons-material/Circle'
 
 interface ResponseType {
   elapsed?: number
@@ -96,10 +97,36 @@ export default function RequestPage() {
   const handleChangeResTab = (_event: React.SyntheticEvent, index: number) => {
     setResTabIndex(index)
   }
+  const [isChanged, setIsChanged] = React.useState(false)
+
+  const isDataChanged = () => {
+    if (request) {
+      return JSON.stringify(request) !== JSON.stringify(requestClone)
+    }
+    return false
+  }
+
+  useEffect(() => {
+    setIsChanged(isDataChanged())
+  }, [requestClone])
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isChanged) {
+        e.preventDefault()
+        e.returnValue = ''
+      }
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [isChanged])
 
   const handleSave = () => {
     console.log(requestClone.body.formData)
     dispatch(requestService.update(requestClone))
+    setIsChanged(false)
   }
 
   const handleSend = async () => {
@@ -544,8 +571,21 @@ export default function RequestPage() {
     <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* RequestPage의 상단에는 WorkspaceNavBar를 통해 현재 path 표시 */}
       <Box>
-        <Box>
-          <WorkspaceNavBar _id={requestId ?? ''} />
+        <Box sx={{ display: 'flex' }}>
+          <Box>
+            <WorkspaceNavBar _id={requestId ?? ''} />
+          </Box>
+          {isChanged && (
+            <CircleIcon
+              sx={{
+                width: '13px',
+                height: '13px',
+                marginTop: '7px',
+                marginLeft: '5px',
+                color: '#F44336'
+              }}
+            />
+          )}
         </Box>
         <Box sx={{ pt: 1 }}>
           <Divider />
@@ -568,7 +608,12 @@ export default function RequestPage() {
         </Box>
         {/* RequestPage의 저장 버튼 */}
         <Box>
-          <Button variant="outlined" startIcon={<SaveIcon />} onClick={handleSave}>
+          <Button
+            variant="outlined"
+            startIcon={<SaveIcon />}
+            onClick={handleSave}
+            disabled={!isChanged}
+          >
             Save
           </Button>
         </Box>
@@ -703,8 +748,6 @@ export default function RequestPage() {
                 return newRow
               }}
               onProcessRowUpdateError={(e) => console.log(e)}
-              /* DataGrid 반응형 조절 */
-              sx={{ height: '98.5%', width: '98.5%' }}
             />
           </Box>
         )}
@@ -787,8 +830,6 @@ export default function RequestPage() {
                     return newRow
                   }}
                   onProcessRowUpdateError={(e) => console.log(e)}
-                  /* DataGrid 반응형 조절 */
-                  sx={{ height: '98.5%', width: '98.5%' }}
                 />
               </Box>
             ) : (

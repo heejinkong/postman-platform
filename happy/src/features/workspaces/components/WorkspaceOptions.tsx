@@ -13,20 +13,28 @@ const StyledMenu = styled((props: MenuProps) => (
   <Menu
     elevation={0}
     anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'right'
+      vertical: 'top',
+      horizontal: 'left'
     }}
     transformOrigin={{
       vertical: 'top',
       horizontal: 'right'
     }}
     {...props}
+    sx={{
+      width:'166px',
+      height:'248px'
+    }}
   />
 ))(({ theme }) => ({
   '& .MuiPaper-root': {
     borderRadius: 4,
+    left:'291px !important',
+    top:'148px !important',
+    width:'166px !important',
+    maxWidth: 166,
+    maxHeight: 248,
     marginTop: theme.spacing(1),
-    minWidth: 180,
     color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
     boxShadow:
       'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
@@ -44,8 +52,26 @@ const StyledMenu = styled((props: MenuProps) => (
       }
     }
   }
-}))
+ }))
+ const StyledNewWorkspace = styled(Box)({
+  // 원하는 스타일을 여기에 지정
+  // width: '170px',
+  '& .workspaceOptions button' :{
+    width:'100%',
+    fontSize:'16px',
+    color:'inherit !important',
+    fontWeight:'inherit !important',
+    backgroundColor:'#fff !important',
+    border:'0 !important',
+    justifyContent: 'flex-start',
+    '&:hover':{
+      backgroundColor: 'rgba(0, 0, 0, 0.04) !important'
+    }
+  }
+  // 추가적인 스타일...
+});
 
+ 
 export default function WorkspaceOptions() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -101,31 +127,41 @@ export default function WorkspaceOptions() {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        sx={{ mt: -5, ml: 23 }}
+        className='workspaceOptions'
       >
-        {/* Workspace Options 메뉴의 Run History 클릭 시, 해당 workspace의 run history로 이동 */}
-        <MenuItem onClick={handleHistoryClick} disableRipple sx={{ justifyContent: 'center' }}>
-          Run History
-        </MenuItem>
-        {/* Workspace Options 메뉴의 Run Workspace 클릭 시, 해당 workspace의 run workspace로 이동 */}
-        <RunWorkspaceOptionItem workspaceId={workspace.id} handleClose={() => handleClose} />
         <Box>
-          <Divider sx={{ my: 0.5 }} />
-        </Box>
-        {/* Workspace Options 메뉴의 Environment 클릭 시, Dialog 창 노출 */}
-        <SettingsVariable />
+          {/* Workspace Options 메뉴의 Run History 클릭 시, 해당 workspace의 run history로 이동 */}
+          <MenuItem onClick={handleHistoryClick} disableRipple>
+            Run History
+          </MenuItem>
 
-        {/* Workspace Options 메뉴의 Import Collection 클릭 시, 해당 workspace의 collection import */}
-        <ImportCollectionItem />
-        {/* Workspace Options 메뉴의 Export Collection 클릭 시, 해당 workspace의 collection export */}
-        <MenuItem onClick={handleClose} disableRipple sx={{ justifyContent: 'center' }}>
-          Export Collection
-        </MenuItem>
+          {/* Workspace Options 메뉴의 Run Workspace 클릭 시, 해당 workspace의 run workspace로 이동 */}
+          <RunWorkspaceOptionItem workspaceId={workspace.id} handleClose={() => handleClose} />
+         
+          <Box>
+            <Divider sx={{ my: 0.5 }} />
+          </Box>
+         
+          {/* Workspace Options 메뉴의 Environment 클릭 시, Dialog 창 노출 */}
+          <SettingsVariable />
 
-        {/* 새로운 Workspace 생성 버튼 */}
-        <Box sx={{ p: 1, ml: 2 }}>
-          <NewWorkspace />
+          {/* Workspace Options 메뉴의 Import Collection 클릭 시, 해당 workspace의 collection import */}
+          <ImportCollectionItem />
+         
+          {/* Workspace Options 메뉴의 Export Collection 클릭 시, 해당 workspace의 collection export */}
+          <MenuItem onClick={handleClose} disableRipple >
+            Export Collection
+          </MenuItem>
+
+          {/* 새로운 Workspace 생성 버튼 */}
+          <StyledNewWorkspace>
+            <Box className='workspaceOptions'>
+              <NewWorkspace />
+            </Box>
+          </StyledNewWorkspace>
+          
         </Box>
+        
       </StyledMenu>
     </Box>
   )

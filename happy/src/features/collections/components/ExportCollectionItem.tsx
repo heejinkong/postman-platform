@@ -23,28 +23,9 @@ export default function ExportCollectionItem(props: ExportCollectionItemProps) {
   const folders = useAppSelector(selectAllFolders) ?? []
   const requests = useAppSelector(selectAllRequests) ?? []
 
-  // const requestList: requestItem[] = []
-  // const subFolderList: folderItem[] = []
-
   const folderInCollection = folders.filter((folder) => folder.parentId === props.collectionId)
 
   const requestInCollection = requests.filter((request) => request.parentId === props.collectionId)
-
-  // const dfs = (folderId: string): { requestList: requestItem[]; subFolderList: folderItem[] } => {
-  //   const requestInFolder = requests.filter((request) => request.parentId === folderId)
-  //   requestList.push(...requestInFolder)
-
-  //   const subFolder = folders.filter((folder) => folder.parentId === folderId)
-  //   if (subFolder.length > 0) {
-  //     subFolder.forEach((folder) => {
-  //       const { requestList: subFolderRequests, subFolderList: nestedSubFolders } = dfs(folder.id)
-  //       requestList.push(...subFolderRequests)
-  //       subFolderList.push(...nestedSubFolders, folder)
-  //     })
-  //   }
-
-  //   return { requestList, subFolderList }
-  // }
 
   const handleExport = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     exportCollectionToJson(props.collectionId, collection)
@@ -104,13 +85,17 @@ export default function ExportCollectionItem(props: ExportCollectionItemProps) {
   }
 
   function parseUrl(url: string): ParsedUrl | undefined {
-    const regex = /^(https?:\/\/)?([^\/]+)(\/.*)?$/
+    const regex = /^(https?:\/\/)?([^/\s]+)\/([^?]+)/
+
     const match = url.match(regex)
+
     if (!match) {
       return undefined
     }
+
     const [, protocol, host, path] = match
     const pathArray = path ? path.split('/').filter((item) => item) : []
+
     return {
       protocol: protocol || 'http://',
       host,

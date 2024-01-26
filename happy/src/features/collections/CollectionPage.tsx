@@ -39,6 +39,9 @@ export default function CollectionPage() {
   const NavBarBox = styled(Box)({
     '&.NavBarBox': {
       padding: '12px 16px 0 16px',
+      '& nav':{
+        height:'22px'
+      },
       '& a': {
         fontSize: '14px'
       },
@@ -88,7 +91,7 @@ export default function CollectionPage() {
             Save
           </Button>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: '54px' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: '54px'}}>
           <Box
             sx={{
               maxWidth: '868px',

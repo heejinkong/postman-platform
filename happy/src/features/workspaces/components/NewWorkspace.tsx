@@ -154,7 +154,6 @@ export default function NewWorkspace() {
             </Button>
           </DialogActions>
         </Box>
-        'xcsa'
       </Dialog>
     </Box>
   )

@@ -71,7 +71,7 @@ export default function ImportCollectionItem() {
       const item = jsonData.item
       console.log(item)
 
-      const processItem = (item, parentId: string) => {
+      const itemData = (item, parentId: string) => {
         if (item.request) {
           const newRequest = new requestItem()
           newRequest.title = item.name
@@ -181,13 +181,13 @@ export default function ImportCollectionItem() {
           dispatch(folderService.new(newFolder))
 
           item.item.forEach((subItem: any) => {
-            processItem(subItem, newFolder.id)
+            itemData(subItem, newFolder.id)
           })
         }
       }
 
       item.forEach((item: any) => {
-        processItem(item, newCollection.id)
+        itemData(item, newCollection.id)
       })
     }
   }
@@ -196,7 +196,7 @@ export default function ImportCollectionItem() {
     onDrop,
     maxFiles: 1,
     accept: '.json',
-    key: dialogReset // 추가된 부분
+    key: dialogReset
   })
 
   const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {

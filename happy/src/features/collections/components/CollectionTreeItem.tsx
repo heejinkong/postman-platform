@@ -60,18 +60,18 @@ export default function CollectionTreeItem(props: TreeItemProps) {
         nodeId={collection.id}
         /* label에 collection title을 표시하고, label 클릭시 해당 collection으로 이동 */
         label={
-          <Box sx={{ display: 'flex', alignItems: 'center' }} onClick={(e) => handleNav(e)}>
-            <Box sx={{ flexGrow: 1 }}>{collection.title}</Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', height:'38px',fontSize:'40px' }} onClick={(e) => handleNav(e)}>
+            <Box sx={{ flexGrow: 1, fontSize:'14px'}}>{collection.title}</Box>
             <IconButton
               size="small"
               onClick={(e) => handleOpenUserMenu(e)}
-              sx={{ opacity: hover ? 1 : 0 }}
+              sx={{ opacity: hover ? 1 : 0}}
             >
               <MoreVertIcon fontSize="inherit" />
             </IconButton>
             {/* collection label에 마우스 호버 시, 메뉴가 나타나도록 설정 */}
             <Menu
-              sx={{ mt: '45px' }}
+              sx={{ mt: '45px', fontSize:'40px'}}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{

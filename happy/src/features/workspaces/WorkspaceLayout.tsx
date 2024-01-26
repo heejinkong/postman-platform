@@ -100,7 +100,7 @@ export default function WorkspacesLayout() {
 
           {/*Sidebar영역, 'collections' 문구 표시 */}
           <Box
-            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding:'8px 12px 8px 16px'}}
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding:'8px 12px 8px 16px', fontSize:'14px', fontWeight:500}}
           >
             Collections
             <NewCollection />
@@ -108,7 +108,7 @@ export default function WorkspacesLayout() {
           <Divider />
 
           {/*Sidebar영역, WorkspaceNavTree 컴포넌트 표시 */}
-          <Box sx={{ p: 1 }}>
+          <Box>
             <WorkspaceNavTree />
           </Box>
         </Box>
@@ -122,7 +122,7 @@ export default function WorkspacesLayout() {
             sx={{
               zIndex: (theme) => theme.zIndex.drawer + 1,
               display: 'flex',
-              height: '100%'
+              height: '100%',
             }}
           >
             <Box
