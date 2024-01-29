@@ -75,7 +75,7 @@ export default function RequestTreeItem(props: TreeItemProps) {
           {/* request title 표시 */}
           <Tooltip title={request.title} arrow>
             <Box sx={{ flexGrow: 1, marginLeft: '4px' }}>
-              {request.title.length > 10 ? `${request.title.slice(0, 10)}...` : request.title}{' '}
+              {request.title.length > 10 ? `${request.title.slice(0, 17)}...` : request.title}{' '}
             </Box>
           </Tooltip>
 

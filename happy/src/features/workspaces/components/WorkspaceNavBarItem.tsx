@@ -23,6 +23,7 @@ export default function WorkspaceNavBarItem(props: { _id: string }) {
       <Link
         underline="hover"
         color="inherit"
+        fontSize="inherit"
         href={`/workspaces/${collection.workspaceId}/collections/${collection.id}`}
       >
         {collection.title}
@@ -34,6 +35,7 @@ export default function WorkspaceNavBarItem(props: { _id: string }) {
       <Link
         underline="hover"
         color="inherit"
+        fontSize="inherit"
         href={`/workspaces/${folder.workspaceId}/folders/${folder.id}`}
       >
         {folder.title}
@@ -45,6 +47,7 @@ export default function WorkspaceNavBarItem(props: { _id: string }) {
       <Link
         underline="hover"
         color="inherit"
+        fontSize="inherit"
         href={`/workspaces/${request.workspaceId}/requests/${request.id}`}
       >
         {request.title}

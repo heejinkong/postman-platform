@@ -48,3 +48,9 @@
 .MuiInputBase-root.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline{
     border-color: #1877F2;
 }
+.MuiButtonBase-root.MuiRadio-root:hover{
+    background-color: rgba(0,0,0,.06)
+}
+.MuiButtonBase-root.MuiRadio-root:active{
+    background-color: rgba(0,0,0,.12)
+}

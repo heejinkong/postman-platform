@@ -39,8 +39,8 @@ export default function CollectionPage() {
   const NavBarBox = styled(Box)({
     '&.NavBarBox': {
       padding: '12px 16px 0 16px',
-      '& nav':{
-        height:'22px'
+      '& nav': {
+        height: '22px'
       },
       '& a': {
         fontSize: '14px'
@@ -91,20 +91,13 @@ export default function CollectionPage() {
             Save
           </Button>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: '54px'}}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: '54px' }}>
           <Box
             sx={{
               maxWidth: '868px',
               width: '100%'
             }}
           >
-            {/* CollectionPage의 title 
-            <Box sx={{ mt: 5 }}>
-              <Typography variant="h3" gutterBottom>
-                Collection
-              </Typography>
-            </Box>
-            */}
             {/* CollectionPage의 title을 수정할 수 있는 TextField */}
             <Box sx={{ mt: 3 }}>
               <TextField

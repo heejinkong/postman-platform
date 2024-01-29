@@ -568,7 +568,7 @@ export default function RequestPage() {
 
   return (
     //RequestPage에서는 해당 request의 정보를 생성, 수정하는 페이지
-    <Box sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ padding: '0 16px' }} className="12333333">
       {/* RequestPage의 상단에는 WorkspaceNavBar를 통해 현재 path 표시 */}
       <Box>
         <Box sx={{ display: 'flex' }}>
@@ -594,12 +594,13 @@ export default function RequestPage() {
 
       <Box sx={{ pt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         {/* RequestPage의 title */}
-        <Box>
+        <Box sx={{ flexGrow: 1, mr: '20px' }}>
           <TextField
             id="outlined-basic"
             label="Title"
             variant="outlined"
             size="small"
+            fullWidth
             value={requestClone.title}
             onChange={(e) => {
               setRequestClone({ ...requestClone, title: e.target.value as string })
@@ -630,6 +631,12 @@ export default function RequestPage() {
               value={requestClone.method}
               onChange={(e) => {
                 setRequestClone({ ...requestClone, method: e.target.value as string })
+              }}
+              MenuProps={{
+                sx: {
+                  '& .MuiMenu-list': { padding: '10px 0' },
+                  '& .MuiMenuItem-root': { paddingLeft: '12px', paddingRight: '12px' }
+                }
               }}
             >
               {/* method 종류 */}
@@ -718,7 +725,7 @@ export default function RequestPage() {
         )}
         {/*Headers Tab일 경우*/}
         {reqTabIndex === 1 && (
-          <Box sx={{ height: '40%', overflow: 'auto' }}>
+          <Box sx={{ maxHeight: '268px', margin: '8px 0', overflow: 'auto' }}>
             {/* DataGrid를 통해 headers 표시 */}
             <DataGrid
               apiRef={headersRef}
@@ -748,12 +755,13 @@ export default function RequestPage() {
                 return newRow
               }}
               onProcessRowUpdateError={(e) => console.log(e)}
+              sx={{ width: '98.5%', borderRadius: 0, borderBottom: 0 }}
             />
           </Box>
         )}
         {/*Body Tab일 경우*/}
         {reqTabIndex === 2 && (
-          <Box sx={{ height: '40%', width: `100%` }}>
+          <Box sx={{ maxHeight: '268px', margin: '8px 0', overflow: 'auto' }}>
             <Box>
               {/* RadioGroup을 통해 Body 타입 선택 (form-data or raw)*/}
               <FormControl sx={{ height: `10%`, pl: 1.5 }}>
@@ -795,7 +803,7 @@ export default function RequestPage() {
 
             {selectedBodyType === 'form-data' ? (
               // Body 타입이 form-data일 경우, DataGrid를 통해 form-data 표시
-              <Box sx={{ height: '85%', overflow: 'auto' }}>
+              <Box sx={{ maxHeight: '268px', margin: '8px 0', overflow: 'auto' }}>
                 <DataGrid
                   apiRef={bodyRef}
                   rows={requestClone.body.formData}
@@ -830,11 +838,12 @@ export default function RequestPage() {
                     return newRow
                   }}
                   onProcessRowUpdateError={(e) => console.log(e)}
+                  sx={{ width: '98.5%', borderRadius: 0, borderBottom: 0 }}
                 />
               </Box>
             ) : (
               // Body 타입이 raw일 경우, CodeMirror를 통해 raw 표시
-              <Box sx={{ height: `85%`, overflow: `auto` }}>
+              <Box sx={{ maxHeight: '268px', margin: '8px 0', overflow: 'auto' }}>
                 <Box ref={codeBoxRef} sx={{ flexGrow: 1 }}>
                   {/* 선택한 raw 타입에 따라 CodeMirror의 확장자 설정 */}
                   <CodeMirror
@@ -854,7 +863,7 @@ export default function RequestPage() {
         )}
         {/*Expected Result Tab일 경우*/}
         {reqTabIndex === 3 && (
-          <Box sx={{ height: '40%', overflow: 'auto' }}>
+          <Box sx={{ maxHeight: '268px', margin: '8px 0', overflow: 'auto' }}>
             <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <Box ref={codeBoxRef} sx={{ flexGrow: 1 }}>
                 {/* CodeMirror를 통해 expected result 표시 */}
@@ -882,14 +891,14 @@ export default function RequestPage() {
             {/* Response 문구 표시 */}
             <Box>Response</Box>
             {/* Response의 status와 elapsed time 표시 */}
-            <Stack direction="row" spacing={1}>
+            {/* <Stack direction="row" spacing={1}>
               <Chip
                 label={`${request.response.status} status`}
                 variant="outlined"
                 color="primary"
               />
               <Chip label={`${request.response.elapsed} ms`} variant="outlined" color="primary" />
-            </Stack>
+            </Stack> */}
           </Box>
           {/* Response의 Body, Headers, Result Diff Tab 선택 */}
           <Box sx={{ pt: 2 }}>

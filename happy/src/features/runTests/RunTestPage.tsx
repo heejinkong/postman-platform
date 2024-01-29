@@ -24,10 +24,10 @@ export default function RunTestPage(props: runResultPageProps) {
 
   return (
     //RunResultPage에 뿌려줄 데이터들을 RunResultPage에 렌더링
-    <Container sx={{ pb: 5 }}>
-      <Box sx={{ pl: 9 }}>
+    <Container sx={{ padding: '0 !important ' }}>
+      <Box>
         {/* 해당 runTest들을 list로 뿌려줌 */}
-        <List sx={{ width: '100%', maxWidth: 900 }}>
+        <List sx={{ width: '100%', padding: 0, borderColor: 'rgba(224, 225, 227, 1)' }}>
           <Box sx={{ maxHeight: 620, overflowY: 'auto' }}>
             {allRunTests.map((runTest) => (
               <Box>
@@ -41,7 +41,11 @@ export default function RunTestPage(props: runResultPageProps) {
                         runTest.expectedResult === runTest.responseResult) ? (
                         // runTest의 status가 200이거나 201이고, expected와 response가 같으면 success
                         <Box>
-                          <Typography variant="h5" gutterBottom sx={{ color: `#2E7D32` }}>
+                          <Typography
+                            variant="h5"
+                            gutterBottom
+                            sx={{ color: `#2E7D32`, fontSize: '16px', mb: '8px' }}
+                          >
                             Success
                           </Typography>
                         </Box>
@@ -49,7 +53,11 @@ export default function RunTestPage(props: runResultPageProps) {
                         // 그렇지 않으면 fail
                         <Box>
                           {' '}
-                          <Typography variant="h5" gutterBottom sx={{ color: `#C62828` }}>
+                          <Typography
+                            variant="h5"
+                            gutterBottom
+                            sx={{ color: `#C62828`, fontSize: '16px', mb: '8px' }}
+                          >
                             Fail
                           </Typography>
                         </Box>

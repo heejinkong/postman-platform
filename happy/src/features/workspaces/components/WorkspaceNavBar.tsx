@@ -34,7 +34,7 @@ export default function WorkspaceNavBar(props: WorkspaceNavBarProps) {
   return (
     <Box>
       {/* Breadcrumbs 컴포넌트는 현재 페이지의 위치를 보여줌 */}
-      <Breadcrumbs separator="/" aria-label="breadcrumb">
+      <Breadcrumbs separator="/" aria-label="breadcrumb" sx={{ fontSize: '14px' }}>
         {[...navBarItem.itemIdList].reverse().map((_id) => (
           // WorkspaceNavBarItem 컴포넌트는 현재 페이지의 itemId를 props로 받아서 렌더링
           <WorkspaceNavBarItem key={_id} _id={_id} />
