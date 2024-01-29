@@ -11,4 +11,5 @@ export class runResultItem implements Item {
   Iteration: number = 0
   Duration: number = 0
   runTestList: string[] = []
+  runResult: number = 0
 }

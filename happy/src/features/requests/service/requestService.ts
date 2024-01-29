@@ -5,6 +5,7 @@ import { selectCollectionById } from '../../collections/service/collectionSlice'
 import { selectFolderById } from '../../folders/service/folderSlice'
 import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
+import { selectAllGlobals } from '../../globalsVariable/service/globalsSlice'
 
 type FormFileType = {
   id: string
@@ -101,31 +102,36 @@ class requestService {
           }
         })
 
-        // const workspaceId = request.workspaceId
-        // const gloabals = useAppSelector(selectAllGlobals)
-        // const global = gloabals.find((item) => item.workspaceId === workspaceId)
+        const workspaceId = request.workspaceId
+        const state = thunkAPI.getState() as RootState
+        const globals = selectAllGlobals(state)
+        const global = globals.find((item) => item.workspaceId === workspaceId)
 
-        // const variablesSelection = global?.variablesSelection
-        // const variables =
-        //   global?.variables.filter((variable) => variablesSelection?.includes(variable.id)) || []
+        console.log(global)
 
-        // const regex = /{{(.*?)}}/g
-        // const match = request.url.match(regex)
-        // if (match) {
-        //   match.forEach((m) => {
-        //     const variable = m.replace('{{', '').replace('}}', '')
-        //     const item = variables.find((i) => i._variable === variable)
-        //     if (item) {
-        //       request.url = request.url.replace(m, item._currentValue)
-        //     }
-        //   })
-        // }
+        const variablesSelection = global?.variablesSelection
+        const variables =
+          global?.variables.filter((variable) => variablesSelection?.includes(variable.id)) || []
 
-        // console.log(request.url)
+        const regex = /{{(.*?)}}/g
+        const match = request.url.match(regex)
+        let modifiedUrl = request.url // Store the modified URL
+
+        if (match) {
+          match.forEach((m) => {
+            const variable = m.replace('{{', '').replace('}}', '')
+            const item = variables.find((i) => i._variable === variable)
+            if (item) {
+              modifiedUrl = modifiedUrl.replace(m, item._initialValue)
+            }
+          })
+        }
+
+        console.log(modifiedUrl)
 
         const axiosConfig = {
           method: request.method,
-          url: request.url,
+          url: modifiedUrl, // Use the modified URL for the request
           headers: headers,
           params: params,
           data: body
@@ -155,34 +161,6 @@ class requestService {
           })
         })
         thunkAPI.dispatch({ type: 'requests/updateRequest', payload: newRequest })
-        // const resUrl = response.config.url
-        // const resMethod = response.config.method
-        // const resDuration =  elapsed
-        // const resBody = JSON.stringify(response.data, null, 2)
-        // const resStatus = response.status
-        // const resExpectedResult = request.expectedResult
-
-        // const newRunResult = new runResultItem()
-        // newRunResult.workspaceId =  request.workspaceId
-        // newRunResult.parentId = request.parentId
-        // newRunResult.method = resMethod || ''
-        // newRunResult.url = resUrl || ''
-        // newRunResult.created = Date.now()
-        // newRunResult.Duration = resDuration ?? 0
-
-        // const newRunTest = new runTestItem()
-        // newRunTest.title = request.title || ''
-        // newRunTest.parentId = request.parentId
-        // newRunTest.requestId = request.id
-        // newRunTest.created = Date.now()
-        // newRunTest.status = resStatus || 0
-        // newRunTest.responseResult = resBody || ''
-        // newRunTest.expectedResult = resExpectedResult || ''
-
-        // thunkAPI.dispatch({type: 'runTest/createRunTest', payload: newRunTest})
-
-        // newRunResult.runTestList?.push(newRunTest.id)
-        // thunkAPI.dispatch({ type: 'runResult/createRunResult', payload: newRunResult })
 
         return newRequest
       } catch (error) {

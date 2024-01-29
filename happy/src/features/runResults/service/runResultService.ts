@@ -93,6 +93,16 @@ class runResultService {
         thunkAPI.dispatch({ type: 'runTest/createRunTest', payload: newRunTest })
 
         newRunResult.runTestList?.push(newRunTest.id)
+
+        // const resultInRunTest = useAppSelector(allRunTests => allRunTests.runTests.data.find((runTest) => runTest.id === newRunTest.id))
+
+        // if(resultInRunTest?.status === 0){
+        //   newRunResult.runResult = 0
+        // }
+        // else{
+        //   newRunResult.runResult = 1
+        // }
+
         thunkAPI.dispatch({ type: 'runResult/newRunResult', payload: newRunResult })
 
         return newRequest
