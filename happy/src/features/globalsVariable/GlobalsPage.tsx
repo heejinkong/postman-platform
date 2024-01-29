@@ -32,8 +32,35 @@ export default function GlobalsPage() {
 
   const [open, setOpen] = React.useState(false)
 
+  const [isChanged, setIsChanged] = React.useState(false)
+
+  const isDataChanged = () => {
+    if (global) {
+      return JSON.stringify(global) !== JSON.stringify(globalsClone)
+    }
+    return false
+  }
+
+  useEffect(() => {
+    setIsChanged(isDataChanged())
+  }, [globalsClone])
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isChanged) {
+        e.preventDefault()
+        e.returnValue = ''
+      }
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [isChanged])
+
   const handleSave = () => {
     dispatch(globalsService.update(globalsClone))
+    setIsChanged(false)
   }
 
   const handleDeletePage = () => {
@@ -164,38 +191,40 @@ export default function GlobalsPage() {
       <Box>
         <Box sx={{ pt: 1 }}>
           Globals
-          {/* <IconButton onClick={handleDeletePage}>
-            <DeleteIcon />
-          </IconButton> */}
-          <IconButton onClick={handleClickOpen}>
-            <DeleteIcon />
-          </IconButton>
-          <Dialog open={open} onClose={handleClose}>
-            {/* Dialog의 문구*/}
-
-            <DialogContent>
-              <Typography variant="h6" gutterBottom>
-                삭제하시겠습니까 ?
-              </Typography>
-            </DialogContent>
-
-            {/* Dialog의 버튼 */}
-            <DialogActions>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={handleDeletePage}>Delete</Button>
-            </DialogActions>
-          </Dialog>
           <Divider />
         </Box>
         <Box sx={{ pt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box>
+          <Box sx={{ display: 'flex' }}>
             <Typography variant="h6" gutterBottom>
               Globals
             </Typography>
+            <IconButton onClick={handleClickOpen}>
+              <DeleteIcon />
+            </IconButton>
+            <Dialog open={open} onClose={handleClose}>
+              {/* Dialog의 문구*/}
+
+              <DialogContent>
+                <Typography variant="h6" gutterBottom>
+                  삭제하시겠습니까 ?
+                </Typography>
+              </DialogContent>
+
+              {/* Dialog의 버튼 */}
+              <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleDeletePage}>Delete</Button>
+              </DialogActions>
+            </Dialog>
           </Box>
           {/* EnvironmentPage의 저장버튼 */}
           <Box>
-            <Button variant="outlined" startIcon={<SaveIcon />} onClick={handleSave}>
+            <Button
+              variant="outlined"
+              startIcon={<SaveIcon />}
+              onClick={handleSave}
+              disabled={!isChanged}
+            >
               Save
             </Button>
           </Box>
