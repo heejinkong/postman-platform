@@ -8,6 +8,7 @@ import {
   ListItemButton,
   ListItemText,
   Pagination,
+  Tooltip,
   Typography
 } from '@mui/material'
 import { selectAllRunResult } from '../runResults/service/runResultSlice'
@@ -175,32 +176,38 @@ export default function RunHistoryPage() {
                           <ListItemText secondary={new Date(runResult.created).toLocaleString()} />
 
                           {runResult.runResult === -1 ? (
-                            <CircleIcon
-                              sx={{
-                                width: '16px',
-                                height: '16px',
-                                marginRight: '1px',
-                                color: '#F44336'
-                              }}
-                            />
+                            <Tooltip title={`Fail`} arrow>
+                              <CircleIcon
+                                sx={{
+                                  width: '16px',
+                                  height: '16px',
+                                  marginRight: '1px',
+                                  color: '#F44336'
+                                }}
+                              />
+                            </Tooltip>
                           ) : runResult.runResult === 0 ? (
-                            <CircleIcon
-                              sx={{
-                                width: '16px',
-                                height: '16px',
-                                marginRight: '1px',
-                                color: '#FF9800'
-                              }}
-                            />
+                            <Tooltip title={`inconsistent with comparison data`} arrow>
+                              <CircleIcon
+                                sx={{
+                                  width: '16px',
+                                  height: '16px',
+                                  marginRight: '1px',
+                                  color: '#FF9800'
+                                }}
+                              />
+                            </Tooltip>
                           ) : runResult.runResult === 1 ? (
-                            <CircleIcon
-                              sx={{
-                                width: '16px',
-                                height: '16px',
-                                marginRight: '1px',
-                                color: '#4CAF50'
-                              }}
-                            />
+                            <Tooltip title={`Success`} arrow>
+                              <CircleIcon
+                                sx={{
+                                  width: '16px',
+                                  height: '16px',
+                                  marginRight: '1px',
+                                  color: '#4CAF50'
+                                }}
+                              />
+                            </Tooltip>
                           ) : null}
                         </ListItemDecorator>
 
