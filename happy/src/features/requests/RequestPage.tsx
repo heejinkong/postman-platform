@@ -151,8 +151,6 @@ export default function RequestPage() {
     newRunResult.created = Date.now()
     newRunResult.Duration = resDuration ?? 0
 
-    console.log(resExpectedResult, ':resExpectedResult')
-
     if (
       (resStatus === 200 || resStatus === 201) &&
       (resExpectedResult == '' || resExpectedResult == resBody)
@@ -599,9 +597,9 @@ export default function RequestPage() {
               sx={{
                 width: '13px',
                 height: '13px',
-                marginTop: '7px',
+                marginTop: '5.5px',
                 marginLeft: '5px',
-                color: '#F44336'
+                color: '#1877F2'
               }}
             />
           )}
@@ -707,7 +705,7 @@ export default function RequestPage() {
       <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
         {/*Params Tab일 경우*/}
         {reqTabIndex === 0 && (
-          <Box sx={{ height: '40%', overflow: 'auto' }}>
+          <Box sx={{ maxHeight: '268px', margin: '8px 0', overflow: 'auto', minHeight: '268px' }}>
             {/* DataGrid를 통해 params 표시 */}
             <DataGrid
               apiRef={paramsRef}
@@ -744,7 +742,7 @@ export default function RequestPage() {
         )}
         {/*Headers Tab일 경우*/}
         {reqTabIndex === 1 && (
-          <Box sx={{ maxHeight: '268px', margin: '8px 0', overflow: 'auto' }}>
+          <Box sx={{ margin: '8px 0', overflow: 'auto' }}>
             {/* DataGrid를 통해 headers 표시 */}
             <DataGrid
               apiRef={headersRef}
@@ -900,11 +898,19 @@ export default function RequestPage() {
             </Box>
           </Box>
         )}
-        <Box sx={{ height: '60%', py: 2, display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ pb: 2 }}>
+        <Box
+          sx={{
+            height: '60%',
+            pt: 1,
+            pl: '12px',
+            display: 'flex',
+            flexDirection: 'column',
+            borderTop: '1px solid #C3C6C9'
+          }}
+        >
+          {/* <Box sx={{ pb: 2 }}>
             <Divider />
           </Box>
-
           {/* 하단 Response 영역 */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             {/* Response 문구 표시 */}
@@ -949,6 +955,7 @@ export default function RequestPage() {
                   disableRowSelectionOnClick
                   hideFooter
                   disableColumnMenu
+                  sx={{ width: '90%', height: '100px' }}
                 />
               </Box>
             )}

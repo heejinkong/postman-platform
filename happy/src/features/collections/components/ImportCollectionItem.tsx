@@ -1,16 +1,14 @@
 import React, { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import {
-  Alert,
   Box,
-  Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   MenuItem,
-  TextField,
-  Typography
+  Typography,
+  Button,
+  Alert
 } from '@mui/material'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -27,8 +25,7 @@ import { v4 as uuidv4 } from 'uuid'
 export default function ImportCollectionItem() {
   const [open, setOpen] = React.useState(false)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-  const [textFieldValue, setTextFieldValue] = useState('')
-  const [dialogReset, setDialogReset] = useState(0)
+
   const [invalidFileAlert, setInvalidFileAlert] = useState(false)
 
   const { workspaceId } = useParams()
@@ -41,11 +38,6 @@ export default function ImportCollectionItem() {
 
   const handleClose = () => {
     setOpen(false)
-  }
-
-  const handleCancel = () => {
-    setTextFieldValue('')
-    setDialogReset((prev) => prev + 1)
   }
 
   const onDrop = useCallback(
@@ -205,65 +197,8 @@ export default function ImportCollectionItem() {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     maxFiles: 1,
-    accept: '.json',
-    key: dialogReset
+    accept: '.json'
   })
-
-  const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTextFieldValue(event.target.value)
-  }
-
-  const handleImport = () => {
-    const textData = textFieldValue
-
-    // Uncomment the code block for the import action you want
-
-    // Example: Import based on URL
-    // if (textData.startsWith('http://') || textData.startsWith('https://')) {
-    //   const newRequest = new requestItem();
-    //   newRequest.title = textData;
-    //   newRequest.id = uuidv4();
-    //   newRequest.workspaceId = workspaceId ?? '';
-    //   dispatch(requestService.new(newRequest));
-    //   navigate(`/workspaces/${workspaceId}/requests/${newRequest.id}`);
-    //   handleClose();
-    //   setTextFieldValue('');
-    // }
-
-    if (textData.startsWith('curl')) {
-      const requestParts = textData.split(' ')
-      const newRequest = new requestItem()
-      const url = requestParts[3].replace(/"/g, '')
-      newRequest.title = url
-      newRequest.url = url
-      newRequest.id = uuidv4()
-      newRequest.method = requestParts[2]
-      newRequest.workspaceId = workspaceId ?? ''
-      dispatch(requestService.new(newRequest))
-      navigate(`/workspaces/${workspaceId}/requests/${newRequest.id}`)
-      handleClose()
-      setTextFieldValue('')
-    }
-
-    //curl -X GET "https://api.example.com/users" -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
-
-    // Example: Import based on raw text
-    // if (
-    //   textData.startsWith('GET') ||
-    //   textData.startsWith('POST') ||
-    //   textData.startsWith('PUT') ||
-    //   textData.startsWith('DELETE')
-    // ) {
-    //   const newRequest = new requestItem();
-    //   newRequest.title = textData;
-    //   newRequest.id = uuidv4();
-    //   newRequest.workspaceId = workspaceId ?? '';
-    //   dispatch(requestService.new(newRequest));
-    //   navigate(`/workspaces/${workspaceId}/requests/${newRequest.id}`);
-    //   handleClose();
-    //   setTextFieldValue('');
-    // }
-  }
 
   return (
     <Box>
@@ -273,7 +208,7 @@ export default function ImportCollectionItem() {
         </Typography>
       </MenuItem>
       <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title">
-        <Box sx={{ width: 600, height: textFieldValue.length > 10 ? 500 : 500 }}>
+        <Box sx={{ width: 600, height: 451 }}>
           <Box>
             <Box
               sx={{
@@ -284,63 +219,78 @@ export default function ImportCollectionItem() {
               }}
             >
               <DialogTitle>
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h6" sx={{ fontSize: '20px' }}>
                   Upload Files
                 </Typography>
               </DialogTitle>
             </Box>
-            <DialogContent>
-              <Box>
-                <TextField
-                  id="outlined-password-input"
-                  label="Paste cURL, Raw text or URL..."
-                  type="url"
-                  fullWidth
-                  autoComplete="current-password"
-                  value={textFieldValue}
-                  onChange={handleTextFieldChange}
-                  multiline
-                  rows={textFieldValue.length > 10 ? 13 : 1}
-                />
-                {textFieldValue.length > 10 && (
-                  <DialogActions sx={{ padding: '10px 2px', width: '100%' }}>
-                    <Button
-                      sx={{ padding: '8px 22px', fontSize: '15px !important' }}
-                      onClick={handleCancel}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      sx={{ padding: '8px 22px', fontSize: '15px !important' }}
-                      className="btnBlue"
-                      onClick={handleImport}
-                    >
-                      Import
-                    </Button>
-                  </DialogActions>
-                )}
-              </Box>
-              <Box>
-                {/* Dropzone area */}
-                {textFieldValue.length <= 10 && (
-                  <Box
-                    {...getRootProps()}
-                    sx={{
-                      height: '200%',
-                      color: '#B5B8BC',
-                      border: '2px dashed #ccc',
-                      padding: '60px',
-                      borderRadius: '4px',
-                      mt: 5
-                    }}
-                  >
+            <DialogContent sx={{ padding: '8px 24px 0' }}>
+              <Box
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    height: '40px',
+                    '& .MuiInputLabel-root': {
+                      top: '-8px'
+                    },
+                    '& .MuiOutlinedInput-input': {
+                      padding: '8px 12px'
+                    }
+                  }
+                }}
+              >
+                <Box
+                  sx={{
+                    height: '237px',
+                    color: '#B5B8BC',
+                    border: '2px dashed #ccc',
+                    mt: '20px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    borderRadius: '5px'
+                  }}
+                >
+                  {/* Dropzone area */}
+                  <Box {...getRootProps()}>
                     <input {...getInputProps()} />
                     <UploadFileIcon />
-                    <Typography variant="body2" textAlign="center">
+                    <Typography sx={{ color: 'rgba(0, 0, 0, 0.87)' }}>File Upload</Typography>
+                    <Typography variant="body2" sx={{ fontSize: '14px' }}>
                       Drag anywhere to import, or click to select files
                     </Typography>
+                    <Button
+                      className="btnWhite"
+                      variant="contained"
+                      size="small"
+                      sx={{
+                        fontSize: '14px',
+                        color: '#1877F2 !important',
+                        borderColor: 'rgba(195, 198, 201, 1) !important',
+                        mt: '20px'
+                      }}
+                    >
+                      Select Files
+                    </Button>
                   </Box>
-                )}
+                </Box>
+                <Box
+                  sx={{
+                    marginTop: '24px',
+                    display: 'flex',
+                    justifyContent: 'flex-end'
+                  }}
+                >
+                  <Button
+                    className="btnWhite"
+                    variant="contained"
+                    size="small"
+                    sx={{ marginRight: '12px' }}
+                    onClick={handleClose}
+                  >
+                    Cancle
+                  </Button>
+                </Box>
               </Box>
             </DialogContent>
           </Box>

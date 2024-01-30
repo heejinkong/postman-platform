@@ -19,6 +19,8 @@ import { globalsItem } from './domain/globalsItem'
 import { useNavigate, useParams } from 'react-router-dom'
 import { selectAllGlobals } from './service/globalsSlice'
 
+import CircleIcon from '@mui/icons-material/Circle'
+
 export default function GlobalsPage() {
   const dispatch = useAppDispatch()
   const { workspaceId } = useParams()
@@ -191,6 +193,17 @@ export default function GlobalsPage() {
       <Box>
         <Box sx={{ pt: 1 }}>
           Globals
+          {isChanged && (
+            <CircleIcon
+              sx={{
+                width: '13px',
+                height: '13px',
+                marginTop: '7px',
+                marginLeft: '5px',
+                color: '#1877F2'
+              }}
+            />
+          )}
           <Divider />
         </Box>
         <Box sx={{ pt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
