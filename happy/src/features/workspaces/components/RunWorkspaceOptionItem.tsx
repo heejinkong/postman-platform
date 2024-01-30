@@ -69,7 +69,7 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
     collection.forEach((collection) => {
       dfs(collection.id)
     })
-
+    let runNum = 0
     requestList.forEach(async (request) => {
       const response = await dispatch(requestService.send({ request: request, formFiles: [] }))
       const resBody = (response.payload as PayloadType)?.response?.body
@@ -87,8 +87,21 @@ export default function RunWorkspaceOptionItem(props: runWorkspaceOptionItemProp
       newRunTest.expectedResult = resExpectedResult || ''
       dispatch(runTestService.new(newRunTest))
       newRunResult.runTestList?.push(newRunTest.id)
-    })
 
+      if (
+        (resStatus === 200 || resStatus === 201) &&
+        (resExpectedResult === '' || resExpectedResult === resBody)
+      ) {
+        runNum++
+      } else {
+        runNum--
+      }
+    })
+    if (runNum === requestList.length) {
+      newRunResult.runResult = 1
+    } else {
+      newRunResult.runResult = -1
+    }
     navigate(`/workspaces/${workspace.id}/runHistory`)
     dispatch(runResultService.new(newRunResult))
   }

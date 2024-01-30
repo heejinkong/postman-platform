@@ -21,6 +21,7 @@ import { styled } from '@mui/system'
 import { useAppDispatch } from '../../app/hook'
 import { ListItemDecorator } from '@mui/joy'
 // import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
+import CircleIcon from '@mui/icons-material/Circle'
 
 export default function RunHistoryPage() {
   const { workspaceId } = useParams()
@@ -134,6 +135,7 @@ export default function RunHistoryPage() {
                           secondaryTypographyProps={{ style: { fontSize: '12px' } }}
                         />
                       </ListItemDecorator>
+
                       {/* 실행결과의 title 표시 */}
                       <ListItemText
                         secondary="Run Target"
@@ -171,7 +173,37 @@ export default function RunHistoryPage() {
                       >
                         <ListItemDecorator sx={{ width: '10.5rem', mr: '24px' }}>
                           <ListItemText secondary={new Date(runResult.created).toLocaleString()} />
+
+                          {runResult.runResult === -1 ? (
+                            <CircleIcon
+                              sx={{
+                                width: '16px',
+                                height: '16px',
+                                marginRight: '1px',
+                                color: '#F44336'
+                              }}
+                            />
+                          ) : runResult.runResult === 0 ? (
+                            <CircleIcon
+                              sx={{
+                                width: '16px',
+                                height: '16px',
+                                marginRight: '1px',
+                                color: '#FF9800'
+                              }}
+                            />
+                          ) : runResult.runResult === 1 ? (
+                            <CircleIcon
+                              sx={{
+                                width: '16px',
+                                height: '16px',
+                                marginRight: '1px',
+                                color: '#4CAF50'
+                              }}
+                            />
+                          ) : null}
                         </ListItemDecorator>
+
                         <ListItemText primary={runResult.title} />
                       </ListItemButton>
                     </ListItem>

@@ -151,6 +151,25 @@ export default function RequestPage() {
     newRunResult.created = Date.now()
     newRunResult.Duration = resDuration ?? 0
 
+    console.log(resExpectedResult, ':resExpectedResult')
+
+    if (
+      (resStatus === 200 || resStatus === 201) &&
+      (resExpectedResult == '' || resExpectedResult == resBody)
+    ) {
+      newRunResult.runResult = 1
+    }
+    if (
+      (resStatus === 200 || resStatus === 201) &&
+      resExpectedResult !== '' &&
+      resExpectedResult !== resBody
+    ) {
+      newRunResult.runResult = 0
+    }
+    if (resStatus !== 200 && resStatus !== 201) {
+      newRunResult.runResult = -1
+    }
+
     dispatch(runResultService.new(newRunResult))
 
     const newRunTest = new runTestItem()

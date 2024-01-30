@@ -47,4 +47,5 @@ export class requestItem implements Item {
     elapsed: 0
   }
   expectedResult: string = ''
+  result: number = 0
 }

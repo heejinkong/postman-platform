@@ -6,7 +6,7 @@ import { selectRequestById } from '../service/requestSlice'
 import { useState } from 'react'
 import requestService from '../service/requestService'
 import DeleteIcon from '@mui/icons-material/Delete'
-import CircleIcon from '@mui/icons-material/Circle'
+// import CircleIcon from '@mui/icons-material/Circle'
 
 type TreeItemProps = {
   _id: string
@@ -75,13 +75,13 @@ export default function RequestTreeItem(props: TreeItemProps) {
           {/* request title 표시 */}
           <Tooltip title={request.title} arrow>
             <Box sx={{ flexGrow: 1, marginLeft: '4px' }}>
-              {request.title.length > 10 ? `${request.title.slice(0, 17)}...` : request.title}{' '}
+              {request.title.length > 13 ? `${request.title.slice(0, 13)}...` : request.title}{' '}
             </Box>
           </Tooltip>
 
-          <CircleIcon
+          {/* <CircleIcon
             sx={{ width: '16px', height: '16px', marginRight: '4px', color: '#F44336' }}
-          />
+          /> */}
           {/* request label에 마우스 호버 시, request 삭제 버튼 노출 */}
           <IconButton size="small" sx={{ opacity: hover ? 1 : 0 }} onClick={(e) => handleDelete(e)}>
             <DeleteIcon fontSize="inherit" />

@@ -73,6 +73,8 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
       }
     })
 
+    let runNum = 0
+
     requestList.forEach(async (request) => {
       const response = await dispatch(requestService.send({ request: request, formFiles: [] }))
       const resBody = (response.payload as PayloadType)?.response?.body
@@ -90,7 +92,21 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
       newRunTest.expectedResult = resExpectedResult || ''
       dispatch(runTestService.new(newRunTest))
       newRunResult.runTestList?.push(newRunTest.id)
+
+      if (
+        (resStatus === 200 || resStatus === 201) &&
+        (resExpectedResult === '' || resExpectedResult === resBody)
+      ) {
+        runNum++
+      } else {
+        runNum--
+      }
     })
+    if (runNum === requestList.length) {
+      newRunResult.runResult = 1
+    } else {
+      newRunResult.runResult = -1
+    }
     dispatch(runResultService.new(newRunResult))
 
     navigate(`/workspaces/${collection.workspaceId}/runHistory`)

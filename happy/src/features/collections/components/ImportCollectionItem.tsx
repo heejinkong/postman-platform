@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import {
+  Alert,
   Box,
   Button,
   Dialog,
@@ -28,6 +29,7 @@ export default function ImportCollectionItem() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [textFieldValue, setTextFieldValue] = useState('')
   const [dialogReset, setDialogReset] = useState(0)
+  const [invalidFileAlert, setInvalidFileAlert] = useState(false)
 
   const { workspaceId } = useParams()
   const dispatch = useAppDispatch()
@@ -46,150 +48,157 @@ export default function ImportCollectionItem() {
     setDialogReset((prev) => prev + 1)
   }
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setSelectedFiles(acceptedFiles)
-    readJsonFile(acceptedFiles[0])
-    handleClose()
-  }, [])
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      setSelectedFiles(acceptedFiles)
+      readJsonFile(acceptedFiles[0])
+      if (acceptedFiles[0].name.toLowerCase().endsWith('.json')) {
+        handleClose()
+      }
+    },
+    [selectedFiles]
+  )
 
   const readJsonFile = (file: File) => {
-    const reader = new FileReader()
-    reader.readAsText(file)
-    reader.onload = () => {
-      const result = reader.result as string
-      const jsonData = JSON.parse(result)
+    if (file.name.toLowerCase().endsWith('.json')) {
+      const reader = new FileReader()
+      reader.readAsText(file)
+      reader.onload = () => {
+        const result = reader.result as string
+        const jsonData = JSON.parse(result)
 
-      const info = jsonData.info
-      const newCollection = new collectionItem()
-      newCollection.title = info.name
-      newCollection.id = info._postman_id
-      newCollection.workspaceId = workspaceId ?? ''
-      dispatch(collectionService.new(newCollection))
+        const info = jsonData.info
+        const newCollection = new collectionItem()
+        newCollection.title = info.name
+        newCollection.id = info._postman_id
+        newCollection.workspaceId = workspaceId ?? ''
+        dispatch(collectionService.new(newCollection))
 
-      navigate(`/workspaces/${workspaceId}/collections/${newCollection.id}`)
+        navigate(`/workspaces/${workspaceId}/collections/${newCollection.id}`)
 
-      const item = jsonData.item
-      console.log(item)
+        const item = jsonData.item
+        console.log(item)
 
-      const itemData = (item: any, parentId: string) => {
-        if (item.request) {
-          const newRequest = new requestItem()
-          newRequest.title = item.name
-          newRequest.id = item.id
-          newRequest.workspaceId = workspaceId ?? ''
-          newRequest.parentId = parentId
-          newRequest.method = item.request.method
-          newRequest.url = item.request.url.raw
+        const itemData = (item: any, parentId: string) => {
+          if (item.request) {
+            const newRequest = new requestItem()
+            newRequest.title = item.name
+            newRequest.id = item.id
+            newRequest.workspaceId = workspaceId ?? ''
+            newRequest.parentId = parentId
+            newRequest.method = item.request.method
+            newRequest.url = item.request.url.raw
 
-          if (item.request.url.query) {
-            const checkedParams = item.request.url.query.filter((param: any) => !param.disabled)
-            const nonCheckedParams = item.request.url.query.filter((param: any) => param.disabled)
+            if (item.request.url.query) {
+              const checkedParams = item.request.url.query.filter((param: any) => !param.disabled)
+              const nonCheckedParams = item.request.url.query.filter((param: any) => param.disabled)
 
-            if (checkedParams.length > 0) {
-              checkedParams.forEach((param: any) => {
-                const newParamId = uuidv4()
-                newRequest.paramsSelection.push(newParamId)
+              if (checkedParams.length > 0) {
+                checkedParams.forEach((param: any) => {
+                  const newParamId = uuidv4()
+                  newRequest.paramsSelection.push(newParamId)
 
-                newRequest.params.push({
-                  id: newParamId,
-                  _key: param.key,
-                  _value: param.value,
-                  _desc: ''
-                })
-              })
-            }
-            if (nonCheckedParams.length > 0) {
-              nonCheckedParams.forEach((param: any) => {
-                if (!newRequest.paramsSelection.includes(uuidv4())) {
                   newRequest.params.push({
-                    id: uuidv4(),
+                    id: newParamId,
                     _key: param.key,
                     _value: param.value,
                     _desc: ''
                   })
-                }
-              })
-            }
-          }
-          if (item.request.header) {
-            const checkedHeaders = item.request.header.filter((header: any) => !header.disabled)
-
-            checkedHeaders.forEach((header: any) => {
-              const newHeaderId = uuidv4()
-              newRequest.headersSelection.push(newHeaderId)
-
-              newRequest.headers.push({
-                id: newHeaderId,
-                _key: header.key,
-                _value: header.value,
-                _desc: ''
-              })
-            })
-          }
-
-          if (item.request.body) {
-            const body = item.request.body
-            newRequest.body.mode = body.mode
-
-            const checkedBody = body[body.mode].filter((body: any) => !body.disabled)
-            const nonCheckedBody = body[body.mode].filter((body: any) => body.disabled)
-
-            if (body.mode === 'formdata' && body.formdata) {
-              if (checkedBody.length > 0) {
-                checkedBody.forEach((formData: any) => {
-                  const newFormDataId = uuidv4()
-                  newRequest.body.formDataSelection.push(newFormDataId)
-
-                  newRequest.body.formData.push({
-                    id: newFormDataId,
-                    _key: formData.key,
-                    _dataType: formData.type,
-                    _value: [formData.src || formData.value],
-                    _desc: ''
-                  })
                 })
               }
-              if (nonCheckedBody.length > 0) {
-                nonCheckedBody.forEach((formData: any) => {
-                  if (!newRequest.body.formDataSelection.includes(uuidv4())) {
-                    newRequest.body.formData.push({
+              if (nonCheckedParams.length > 0) {
+                nonCheckedParams.forEach((param: any) => {
+                  if (!newRequest.paramsSelection.includes(uuidv4())) {
+                    newRequest.params.push({
                       id: uuidv4(),
-                      _key: formData.key,
-                      _dataType: formData.type,
-                      _value: [formData.src || formData.value],
+                      _key: param.key,
+                      _value: param.value,
                       _desc: ''
                     })
                   }
                 })
               }
-            } else if (body.mode === 'raw' && body.raw) {
-              newRequest.body.rawType = body.raw.options.raw.language
-              newRequest.body.rawData = body.raw.raw.data
             }
+            if (item.request.header) {
+              const checkedHeaders = item.request.header.filter((header: any) => !header.disabled)
+
+              checkedHeaders.forEach((header: any) => {
+                const newHeaderId = uuidv4()
+                newRequest.headersSelection.push(newHeaderId)
+
+                newRequest.headers.push({
+                  id: newHeaderId,
+                  _key: header.key,
+                  _value: header.value,
+                  _desc: ''
+                })
+              })
+            }
+
+            if (item.request.body) {
+              const body = item.request.body
+              newRequest.body.mode = body.mode
+
+              const checkedBody = body[body.mode].filter((body: any) => !body.disabled)
+              const nonCheckedBody = body[body.mode].filter((body: any) => body.disabled)
+
+              if (body.mode === 'formdata' && body.formdata) {
+                if (checkedBody.length > 0) {
+                  checkedBody.forEach((formData: any) => {
+                    const newFormDataId = uuidv4()
+                    newRequest.body.formDataSelection.push(newFormDataId)
+
+                    newRequest.body.formData.push({
+                      id: newFormDataId,
+                      _key: formData.key,
+                      _dataType: formData.type,
+                      _value: [formData.src || formData.value],
+                      _desc: ''
+                    })
+                  })
+                }
+                if (nonCheckedBody.length > 0) {
+                  nonCheckedBody.forEach((formData: any) => {
+                    if (!newRequest.body.formDataSelection.includes(uuidv4())) {
+                      newRequest.body.formData.push({
+                        id: uuidv4(),
+                        _key: formData.key,
+                        _dataType: formData.type,
+                        _value: [formData.src || formData.value],
+                        _desc: ''
+                      })
+                    }
+                  })
+                }
+              } else if (body.mode === 'raw' && body.raw) {
+                newRequest.body.rawType = body.raw.options.raw.language
+                newRequest.body.rawData = body.raw.raw.data
+              }
+            }
+
+            newRequest.parentId = parentId
+
+            dispatch(requestService.new(newRequest))
+          } else if (item.item) {
+            const newFolder = new folderItem()
+            newFolder.title = item.name
+            newFolder.id = item.id
+            newFolder.workspaceId = workspaceId ?? ''
+            newFolder.parentId = parentId
+            dispatch(folderService.new(newFolder))
+
+            item.item.forEach((subItem: any) => {
+              itemData(subItem, newFolder.id)
+            })
           }
-
-          // Set the parentId for the request
-          newRequest.parentId = parentId
-
-          // Dispatch the new request
-          dispatch(requestService.new(newRequest))
-        } else if (item.item) {
-          const newFolder = new folderItem()
-          newFolder.title = item.name
-          newFolder.id = item.id
-          newFolder.workspaceId = workspaceId ?? ''
-          newFolder.parentId = parentId
-          dispatch(folderService.new(newFolder))
-
-          item.item.forEach((subItem: any) => {
-            itemData(subItem, newFolder.id)
-          })
         }
-      }
 
-      item.forEach((item: any) => {
-        itemData(item, newCollection.id)
-      })
+        item.forEach((item: any) => {
+          itemData(item, newCollection.id)
+        })
+      }
+    } else {
+      setInvalidFileAlert(true)
     }
   }
 
@@ -202,6 +211,58 @@ export default function ImportCollectionItem() {
 
   const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextFieldValue(event.target.value)
+  }
+
+  const handleImport = () => {
+    const textData = textFieldValue
+
+    // Uncomment the code block for the import action you want
+
+    // Example: Import based on URL
+    // if (textData.startsWith('http://') || textData.startsWith('https://')) {
+    //   const newRequest = new requestItem();
+    //   newRequest.title = textData;
+    //   newRequest.id = uuidv4();
+    //   newRequest.workspaceId = workspaceId ?? '';
+    //   dispatch(requestService.new(newRequest));
+    //   navigate(`/workspaces/${workspaceId}/requests/${newRequest.id}`);
+    //   handleClose();
+    //   setTextFieldValue('');
+    // }
+
+    if (textData.startsWith('curl')) {
+      const requestParts = textData.split(' ')
+      const newRequest = new requestItem()
+      const url = requestParts[3].replace(/"/g, '')
+      newRequest.title = url
+      newRequest.url = url
+      newRequest.id = uuidv4()
+      newRequest.method = requestParts[2]
+      newRequest.workspaceId = workspaceId ?? ''
+      dispatch(requestService.new(newRequest))
+      navigate(`/workspaces/${workspaceId}/requests/${newRequest.id}`)
+      handleClose()
+      setTextFieldValue('')
+    }
+
+    //curl -X GET "https://api.example.com/users" -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+    // Example: Import based on raw text
+    // if (
+    //   textData.startsWith('GET') ||
+    //   textData.startsWith('POST') ||
+    //   textData.startsWith('PUT') ||
+    //   textData.startsWith('DELETE')
+    // ) {
+    //   const newRequest = new requestItem();
+    //   newRequest.title = textData;
+    //   newRequest.id = uuidv4();
+    //   newRequest.workspaceId = workspaceId ?? '';
+    //   dispatch(requestService.new(newRequest));
+    //   navigate(`/workspaces/${workspaceId}/requests/${newRequest.id}`);
+    //   handleClose();
+    //   setTextFieldValue('');
+    // }
   }
 
   return (
@@ -252,7 +313,7 @@ export default function ImportCollectionItem() {
                     <Button
                       sx={{ padding: '8px 22px', fontSize: '15px !important' }}
                       className="btnBlue"
-                      onClick={handleClose}
+                      onClick={handleImport}
                     >
                       Import
                     </Button>
@@ -284,6 +345,16 @@ export default function ImportCollectionItem() {
             </DialogContent>
           </Box>
         </Box>
+        {invalidFileAlert && (
+          <Alert
+            variant="filled"
+            severity="error"
+            onClose={() => setInvalidFileAlert(false)}
+            sx={{ position: 'fixed', bottom: 16, right: '60px' }}
+          >
+            Incorrect format.
+          </Alert>
+        )}
       </Dialog>
     </Box>
   )
