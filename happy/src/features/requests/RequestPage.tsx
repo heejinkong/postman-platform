@@ -97,6 +97,28 @@ export default function RequestPage() {
   const handleChangeResTab = (_event: React.SyntheticEvent, index: number) => {
     setResTabIndex(index)
   }
+
+  const [updatedUrl, setUpdatedUrl] = useState(requestClone.url)
+
+  const generateUrlFromSelectedParams = () => {
+    const baseURL = requestClone.url
+    const selectedParams = requestClone.params.filter((param) =>
+      requestClone.paramsSelection.includes(param.id)
+    )
+
+    const queryParams = selectedParams.map((param) => `${param._key}=${param._value}`).join('&')
+
+    const udateUrl = queryParams ? `${baseURL}?${queryParams}` : requestClone.url
+
+    return udateUrl
+  }
+
+  useEffect(() => {
+    const updatedUrl = generateUrlFromSelectedParams()
+
+    setUpdatedUrl(updatedUrl)
+  }, [requestClone.paramsSelection, requestClone.params, requestClone.url])
+
   const [isChanged, setIsChanged] = React.useState(false)
 
   const isDataChanged = () => {
@@ -672,7 +694,7 @@ export default function RequestPage() {
             variant="outlined"
             size="small"
             fullWidth
-            value={requestClone.url}
+            value={updatedUrl}
             onChange={(e) => {
               setRequestClone({ ...requestClone, url: e.target.value as string })
             }}
