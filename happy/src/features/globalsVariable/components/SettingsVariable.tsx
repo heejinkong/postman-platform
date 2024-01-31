@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  Divider,
   MenuItem,
   Typography
 } from '@mui/material'
@@ -144,9 +145,6 @@ export default function SettingsVariable() {
                     Globals
                   </Typography>
                 </DialogTitle>
-                <Button variant="text" onClick={handleEditGlobals}>
-                  Edit
-                </Button>
               </Box>
               <DialogContent>
                 <Box sx={{ maxHeight: 350, overflowY: 'auto' }}>
@@ -162,6 +160,24 @@ export default function SettingsVariable() {
                     /* DataGrid 반응형 조절 */
                     sx={{ height: '98.5%', width: '98.5%' }}
                   />
+                </Box>
+                <Box sx={{ mt: 25 }}>
+                  <Divider />
+                </Box>
+                <Box sx={{ mt: 2, ml: 50 }}>
+                  <Button
+                    sx={{ padding: '8px 22px', fontSize: '15px !important' }}
+                    onClick={handleClose}
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    sx={{ padding: '8px 22px', fontSize: '15px !important' }}
+                    className="btnBlue"
+                    onClick={handleEditGlobals}
+                  >
+                    Edit
+                  </Button>
                 </Box>
               </DialogContent>
             </Box>
@@ -181,9 +197,6 @@ export default function SettingsVariable() {
                     Globals
                   </Typography>
                 </DialogTitle>
-                <Button variant="text" onClick={handleAddGlobals}>
-                  Add
-                </Button>
               </Box>
               <DialogContent>
                 <Box>
@@ -194,6 +207,17 @@ export default function SettingsVariable() {
                     Global variables are a set of variables that are always available in a
                     workspace.
                   </Typography>
+                </Box>
+                <Box>
+                  <Button className="btnBlue" onClick={handleAddGlobals}>
+                    Add
+                  </Button>
+                </Box>
+                <Box sx={{ mt: 25 }}>
+                  <Divider />
+                  <Button variant="text" sx={{ mt: 2, ml: 60 }} onClick={handleClose}>
+                    Close
+                  </Button>
                 </Box>
               </DialogContent>
             </Box>
