@@ -101,18 +101,21 @@ export default function RequestPage() {
   const [updatedUrl, setUpdatedUrl] = useState(requestClone.url)
 
   const generateUrlFromSelectedParams = () => {
-    const baseURL = requestClone.url
     const selectedParams = requestClone.params.filter((param) =>
       requestClone.paramsSelection.includes(param.id)
     )
 
     const queryParams = selectedParams.map((param) => `${param._key}=${param._value}`).join('&')
 
-    const udateUrl = queryParams ? `${baseURL}?${queryParams}` : requestClone.url
+    const udateUrl = queryParams ? `${updatedUrl}?${queryParams}` : requestClone.url
 
+    setUpdatedUrl(udateUrl)
     return udateUrl
   }
 
+  const handleChangeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUpdatedUrl(e.target.value)
+  }
   useEffect(() => {
     const updatedUrl = generateUrlFromSelectedParams()
 
@@ -695,9 +698,10 @@ export default function RequestPage() {
             size="small"
             fullWidth
             value={updatedUrl}
-            onChange={(e) => {
-              setRequestClone({ ...requestClone, url: e.target.value as string })
-            }}
+            onChange={handleChangeUrl}
+            // onChange={(e) => {
+            //   setRequestClone({ ...requestClone, url: e.target.value as string })
+            // }}
           />
         </Box>
         {/* Send 버튼을 통해 request 전송 */}

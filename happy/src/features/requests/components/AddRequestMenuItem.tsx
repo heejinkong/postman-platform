@@ -27,6 +27,9 @@ export default function AddRequestMenuItem(props: addRequestMenuItemProps) {
   const handleClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     props.handleClose(e)
 
+    console.log(parent.id)
+    console.log(parent.workspaceId)
+
     const newItem = new requestItem()
     newItem.title = 'New Request'
     newItem.parentId = parent.id
