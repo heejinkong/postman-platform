@@ -100,27 +100,26 @@ export default function RequestPage() {
 
   const [updatedUrl, setUpdatedUrl] = useState(requestClone.url)
 
-  const generateUrlFromSelectedParams = () => {
-    const selectedParams = requestClone.params.filter((param) =>
-      requestClone.paramsSelection.includes(param.id)
-    )
-
-    const queryParams = selectedParams.map((param) => `${param._key}=${param._value}`).join('&')
-
-    const udateUrl = queryParams ? `${updatedUrl}?${queryParams}` : requestClone.url
-
-    setUpdatedUrl(udateUrl)
-    return udateUrl
-  }
-
   const handleChangeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUpdatedUrl(e.target.value)
-  }
-  useEffect(() => {
-    const updatedUrl = generateUrlFromSelectedParams()
+    const url = e.target.value
+    setUpdatedUrl(url)
 
-    setUpdatedUrl(updatedUrl)
-  }, [requestClone.paramsSelection, requestClone.params, requestClone.url])
+    const urlParams = new URLSearchParams(url.split('?')[1])
+
+    const newParams = Array.from(urlParams).map(([key, value]) => {
+      return { id: uuidv4(), _key: key, _value: value, _desc: '' }
+    })
+
+    const newParamsSelection = newParams.map((param) => param.id)
+    newParams.push({ id: uuidv4(), _key: '', _value: '', _desc: '' })
+
+    setRequestClone({
+      ...requestClone,
+      url: url,
+      params: newParams,
+      paramsSelection: newParamsSelection
+    })
+  }
 
   const [isChanged, setIsChanged] = React.useState(false)
 
