@@ -115,11 +115,37 @@ export default function RequestPage() {
 
     setRequestClone({
       ...requestClone,
-      url: url,
+      url: e.target.value as string,
       params: newParams,
       paramsSelection: newParamsSelection
     })
   }
+
+  // useEffect(() => {
+  //   const getSelectedParams = () => {
+  //     return requestClone.params.filter((param) => requestClone.paramsSelection.includes(param.id))
+  //   }
+  //   const url = updatedUrl
+  //   // setUpdatedUrl(url)
+
+  //   const urlParams = new URLSearchParams(url.split('?')[1])
+  //   const selectedParams = getSelectedParams()
+  //   selectedParams.forEach((param) => {
+  //     if (!urlParams.has(param._key)) {
+  //       urlParams.append(param._key, param._value)
+  //     }
+  //   })
+
+  //   setUpdatedUrl(url.split('?')[0] + '?' + urlParams.toString())
+
+  //   return () => {
+  //     setUpdatedUrl(requestClone.url)
+  //   }
+  // }, [requestClone.params, requestClone.paramsSelection])
+
+  useEffect(() => {
+    requestClone.url = updatedUrl
+  }, [requestClone.url])
 
   const [isChanged, setIsChanged] = React.useState(false)
 

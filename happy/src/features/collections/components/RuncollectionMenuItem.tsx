@@ -73,43 +73,52 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
       }
     })
 
-    let runNum = 0
+    async function processRequests() {
+      let runNum = 0
 
-    requestList.forEach(async (request) => {
-      const response = await dispatch(requestService.send({ request: request, formFiles: [] }))
-      const resBody = (response.payload as PayloadType)?.response?.body
-      const resTitle = (response.payload as PayloadType)?.title
-      const resStatus = (response.payload as PayloadType)?.response?.status
-      const resExpectedResult = (response.payload as PayloadType)?.expectedResult
+      for (const request of requestList) {
+        const response = await dispatch(requestService.send({ request: request, formFiles: [] }))
+        const resBody = (response.payload as PayloadType)?.response?.body
+        const resTitle = (response.payload as PayloadType)?.title
+        const resStatus = (response.payload as PayloadType)?.response?.status
+        const resExpectedResult = (response.payload as PayloadType)?.expectedResult
 
-      const newRunTest = new runTestItem()
-      newRunTest.title = resTitle || ''
-      newRunTest.parentId = collection?.id ?? ''
-      newRunTest.requestId = request.id
-      newRunTest.created = Date.now()
-      newRunTest.status = resStatus || 0
-      newRunTest.responseResult = resBody || ''
-      newRunTest.expectedResult = resExpectedResult || ''
-      dispatch(runTestService.new(newRunTest))
-      newRunResult.runTestList?.push(newRunTest.id)
+        const newRunTest = new runTestItem()
+        newRunTest.title = resTitle || ''
+        newRunTest.parentId = collection?.id ?? ''
+        newRunTest.requestId = request.id
+        newRunTest.created = Date.now()
+        newRunTest.status = resStatus || 0
+        newRunTest.responseResult = resBody || ''
+        newRunTest.expectedResult = resExpectedResult || ''
+        dispatch(runTestService.new(newRunTest))
+        newRunResult.runTestList?.push(newRunTest.id)
 
-      if (
-        (resStatus === 200 || resStatus === 201) &&
-        (resExpectedResult === '' || resExpectedResult === resBody)
-      ) {
-        runNum++
-      } else {
-        runNum--
+        if (
+          (resStatus === 200 || resStatus === 201) &&
+          (resExpectedResult === '' || resExpectedResult === resBody)
+        ) {
+          runNum++
+        } else {
+          runNum--
+        }
       }
-    })
-    if (runNum === requestList.length) {
-      newRunResult.runResult = 1
-    } else {
-      newRunResult.runResult = -1
-    }
-    dispatch(runResultService.new(newRunResult))
 
-    navigate(`/workspaces/${collection.workspaceId}/runHistory`)
+      console.log(runNum)
+
+      if (runNum === requestList.length) {
+        newRunResult.runResult = 1
+      } else {
+        newRunResult.runResult = -1
+      }
+
+      dispatch(runResultService.new(newRunResult))
+      console.log(requestList.length)
+
+      navigate(`/workspaces/${collection.workspaceId}/runHistory`)
+    }
+
+    processRequests()
   }
 
   return (
