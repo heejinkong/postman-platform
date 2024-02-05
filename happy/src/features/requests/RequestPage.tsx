@@ -101,26 +101,35 @@ export default function RequestPage() {
   const [updatedUrl, setUpdatedUrl] = useState('')
 
   const handleChangeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const url = e.target.value
-    setUpdatedUrl(url)
-
-    const urlParams = new URLSearchParams(url.split('?')[1])
-
+    const url = e.target.value;
+    setUpdatedUrl(url);
+  
+    const urlParams = new URLSearchParams(url.split('?')[1]);
+  
     const newParams = Array.from(urlParams).map(([key, value]) => {
-      return { id: uuidv4(), _key: key, _value: value, _desc: '' }
-    })
-
-    const newParamsSelection = newParams.map((param) => param.id)
-    newParams.push({ id: uuidv4(), _key: '', _value: '', _desc: '' })
-
+      const existingParam = requestClone.params.find((param) => param._key === key);
+  
+      if (existingParam) {
+     
+        return { ...existingParam,_key: key, _value: value };
+      }
+  
+      return { id: uuidv4(), _key: key, _value: value, _desc: '' };
+    });
+  
+    const newParamsSelection = newParams.map((param) => param.id);
+  
+    newParams.push({ id: uuidv4(), _key: '', _value: '', _desc: '' });
+  
     setRequestClone({
       ...requestClone,
       url: e.target.value as string,
       params: newParams,
-      paramsSelection: newParamsSelection
-    })
-  }
-
+      paramsSelection: newParamsSelection,
+    });
+  };
+  
+  
   // useEffect(() => {
   //   const getSelectedParams = () => {
   //     return requestClone.params.filter((param) => requestClone.paramsSelection.includes(param.id))
