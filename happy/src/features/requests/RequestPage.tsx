@@ -110,8 +110,7 @@ export default function RequestPage() {
       const existingParam = requestClone.params.find((param) => param._key === key);
   
       if (existingParam) {
-     
-        return { ...existingParam,_key: key, _value: value };
+        return { ...existingParam, _key: key, _value: value };
       }
   
       return { id: uuidv4(), _key: key, _value: value, _desc: '' };
@@ -753,9 +752,7 @@ export default function RequestPage() {
             fullWidth
             value={updatedUrl}
             onChange={handleChangeUrl}
-            // onChange={(e) => {
-            //   setRequestClone({ ...requestClone, url: e.target.value as string })
-            // }}
+           
           />
         </Box>
         {/* Send 버튼을 통해 request 전송 */}
@@ -805,22 +802,25 @@ export default function RequestPage() {
                 })
               }}
               processRowUpdate={(newRow) => {
-                // row 수정 시, requestClone에 반영
-                const newRows = handleProcessNewRows(newRow, requestClone.params)
+                const newRows = handleProcessNewRows(newRow, requestClone.params);
+              
                 setRequestClone({
                   ...requestClone,
                   params: newRows,
-                  paramsSelection: [...requestClone.paramsSelection, newRow.id] // 수정한 row 선택
-                })
-
-                // TODO : 뭔가 여기를 수정하면 될거 같은데
-                console.log('변경된 param : ', newRow)
+                  paramsSelection: [...requestClone.paramsSelection, newRow.id]
+                });
+              
+                const updatedParams = newRows
+                  .filter((row) => row._key && row._value) 
+                  .map((row) => `${row._key}=${row._value}`)
+                  .join('&');
+              
+               
                 setUpdatedUrl(
-                  requestClone.url +
-                    '?' +
-                    newRows.map((row) => row._key + '=' + row._value).join('&')
-                )
-                return newRow
+                  requestClone.url + (updatedParams ? '?' + updatedParams : '')
+                );
+              
+                return newRow;
               }}
               onProcessRowUpdateError={(e) => console.log(e)}
               /* DataGrid 반응형 조절 */
