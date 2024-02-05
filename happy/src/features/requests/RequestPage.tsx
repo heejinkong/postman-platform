@@ -98,7 +98,7 @@ export default function RequestPage() {
     setResTabIndex(index)
   }
 
-  const [updatedUrl, setUpdatedUrl] = useState(requestClone.url)
+  const [updatedUrl, setUpdatedUrl] = useState('')
 
   const handleChangeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value
@@ -156,8 +156,28 @@ export default function RequestPage() {
     return false
   }
 
+  const isMounted = useRef(false)
+  useEffect(() => {
+    if (!isMounted.current) {
+      // 페이지 로드(onMount)하고 request를 처음 읽을 때 한 번만 실행될 코드
+      isMounted.current = true
+      console.log('onMount', request)
+
+      // TODO : url을 그대로 updateURL에 넣지 말고 param이랑 조합해서 넣기
+
+      setUpdatedUrl(request.url)
+    }
+  }, [request])
+
   useEffect(() => {
     setIsChanged(isDataChanged())
+
+    if (!isMounted.current) {
+      // onMount 시 한 번만 실행될 코드
+      isMounted.current = true
+      console.log('onMount', requestClone)
+      setUpdatedUrl(requestClone.url)
+    }
   }, [requestClone])
 
   useEffect(() => {
@@ -783,6 +803,14 @@ export default function RequestPage() {
                   params: newRows,
                   paramsSelection: [...requestClone.paramsSelection, newRow.id] // 수정한 row 선택
                 })
+
+                // TODO : 뭔가 여기를 수정하면 될거 같은데
+                console.log('변경된 param : ', newRow)
+                setUpdatedUrl(
+                  requestClone.url +
+                    '?' +
+                    newRows.map((row) => row._key + '=' + row._value).join('&')
+                )
                 return newRow
               }}
               onProcessRowUpdateError={(e) => console.log(e)}
