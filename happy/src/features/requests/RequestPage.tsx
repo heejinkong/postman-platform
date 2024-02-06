@@ -839,19 +839,7 @@ export default function RequestPage() {
 
                 const basedUrl = requestClone.url.split('?')[0]
 
-                // const updatedParams = newRows
-                // .filter((row) => row._key && row._value)
-                // .map((row) => `${encodeURIComponent(row._key)}=${encodeURIComponent(row._value)}`)
-                // .join('&')
-
-                // setUpdatedUrl(basedUrl + (updatedParams ? `?${updatedParams}` : ''))
-
-                // return newRow
-                const filteredRows = newRows.filter((row) =>
-                  requestClone.paramsSelection.includes(row.id)
-                )
-
-                const updatedParams = filteredRows
+                const updatedParams = newRows
                   .filter((row) => row._key && row._value)
                   .map((row) => `${encodeURIComponent(row._key)}=${encodeURIComponent(row._value)}`)
                   .join('&')
@@ -859,6 +847,18 @@ export default function RequestPage() {
                 setUpdatedUrl(basedUrl + (updatedParams ? `?${updatedParams}` : ''))
 
                 return newRow
+                // const filteredRows = newRows.filter((row) =>
+                //   requestClone.paramsSelection.includes(row.id)
+                // )
+
+                // const updatedParams = filteredRows
+                //   .filter((row) => row._key && row._value)
+                //   .map((row) => `${encodeURIComponent(row._key)}=${encodeURIComponent(row._value)}`)
+                //   .join('&')
+
+                // setUpdatedUrl(basedUrl + (updatedParams ? `?${updatedParams}` : ''))
+
+                // return newRow
               }}
               onProcessRowUpdateError={(e) => console.log(e)}
               /* DataGrid 반응형 조절 */
