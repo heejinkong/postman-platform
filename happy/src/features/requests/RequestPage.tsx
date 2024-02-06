@@ -16,7 +16,7 @@ import {
   Tabs,
   TextField
 } from '@mui/material'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useNavigate, useParams } from 'react-router-dom'
 import React, { useEffect, useRef, useState } from 'react'
 import { Divider } from '@mui/joy'
 import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
@@ -70,6 +70,7 @@ type FormFileType = {
 
 export default function RequestPage() {
   const { requestId } = useParams()
+  const { workspaceId } = useParams()
   const codeBoxRef = useRef<HTMLDivElement>(null)
 
   const [rowIdHover, setRowIdHover] = useState<GridRowId>(-1)
@@ -121,42 +122,11 @@ export default function RequestPage() {
     })
   }
   console.log(requestClone.paramsSelection)
-  // useEffect(() => {
-  //   const getSelectedParams = () => {
-  //     return requestClone.params.filter((param) => requestClone.paramsSelection.includes(param.id))
-  //   }
-  //   const url = updatedUrl
-  //   // setUpdatedUrl(url)
-
-  //   const urlParams = new URLSearchParams(url.split('?')[1])
-  //   const selectedParams = getSelectedParams()
-  //   selectedParams.forEach((param) => {
-  //     if (!urlParams.has(param._key)) {
-  //       urlParams.append(param._key, param._value)
-  //     }
-  //   })
-
-  //   setUpdatedUrl(url.split('?')[0] + '?' + urlParams.toString())
-
-  //   return () => {
-  //     setUpdatedUrl(requestClone.url)
-  //   }
-  // }, [requestClone.params, requestClone.paramsSelection])
 
   useEffect(() => {
     requestClone.url = updatedUrl
   }, [requestClone.url])
 
-  const [isChanged, setIsChanged] = React.useState(false)
-
-  const isDataChanged = () => {
-    if (request) {
-      return JSON.stringify(request) !== JSON.stringify(requestClone)
-    }
-    return false
-  }
-
-  //paramsSelection변경되는경우 확인
   const paramsSelectionRef = useRef(requestClone.paramsSelection)
   useEffect(() => {
     if (paramsSelectionRef.current !== requestClone.paramsSelection) {
@@ -173,7 +143,7 @@ export default function RequestPage() {
 
       setUpdatedUrl(basedUrl + (updatedParams ? `?${updatedParams}` : ''))
     }
-  }, [requestClone.paramsSelection])
+  }, [requestClone.paramsSelection, requestClone.params, requestClone.url])
 
   const isMounted = useRef(false)
   useEffect(() => {
@@ -187,6 +157,33 @@ export default function RequestPage() {
       setUpdatedUrl(request.url)
     }
   }, [request])
+  const [isChanged, setIsChanged] = React.useState(false)
+
+  const isDataChanged = () => {
+    if (request) {
+      return JSON.stringify(request) !== JSON.stringify(requestClone)
+    }
+    return false
+  }
+
+  // 페이지를 벗어나기 전에 prompt 띄워주기
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      const shouldBlockNavigation = `workspaces/${workspaceId}/requests/${requestId}` && isChanged
+      if (shouldBlockNavigation) {
+        console.log('변경사항이 있습니다. 정말 이동하시겠습니까?')
+        const message = '변경사항이 있습니다. 정말 이동하시겠습니까?'
+        event.returnValue = message
+        return message
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [isChanged])
 
   useEffect(() => {
     setIsChanged(isDataChanged())
@@ -671,6 +668,23 @@ export default function RequestPage() {
       /* empty */
     }
   }, [headersRef, reqTabIndex])
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      const shouldBlockNavigation = isChanged
+      if (shouldBlockNavigation) {
+        const message = '변경사항이 있습니다. 정말 이동하시겠습니까?'
+        event.returnValue = message // Standard for most browsers
+        return message // For some older browsers
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [])
 
   return (
     //RequestPage에서는 해당 request의 정보를 생성, 수정하는 페이지

@@ -12,6 +12,7 @@ class workspaceService {
       workspace.collections.map((collectionId) => {
         thunkAPI.dispatch({ type: 'collections/deleteCollectionById', payload: collectionId })
       })
+      
 
       thunkAPI.dispatch({ type: 'workspaces/deleteWorkspaceById', payload: workspace.id })
     }
