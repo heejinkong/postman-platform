@@ -156,6 +156,25 @@ export default function RequestPage() {
     return false
   }
 
+  //paramsSelection변경되는경우 확인
+  const paramsSelectionRef = useRef(requestClone.paramsSelection)
+  useEffect(() => {
+    if (paramsSelectionRef.current !== requestClone.paramsSelection) {
+      paramsSelectionRef.current = requestClone.paramsSelection
+      const filteredRows = requestClone.params.filter((row) =>
+        requestClone.paramsSelection.includes(row.id)
+      )
+
+      const updatedParams = filteredRows
+        .filter((row) => row._key && row._value)
+        .map((row) => `${encodeURIComponent(row._key)}=${encodeURIComponent(row._value)}`)
+        .join('&')
+      const basedUrl = requestClone.url.split('?')[0]
+
+      setUpdatedUrl(basedUrl + (updatedParams ? `?${updatedParams}` : ''))
+    }
+  }, [requestClone.paramsSelection])
+
   const isMounted = useRef(false)
   useEffect(() => {
     if (!isMounted.current) {
@@ -806,10 +825,23 @@ export default function RequestPage() {
 
                 const basedUrl = requestClone.url.split('?')[0]
 
-                const updatedParams = newRows
+                // const updatedParams = newRows
+                // .filter((row) => row._key && row._value)
+                // .map((row) => `${encodeURIComponent(row._key)}=${encodeURIComponent(row._value)}`)
+                // .join('&')
+
+                // setUpdatedUrl(basedUrl + (updatedParams ? `?${updatedParams}` : ''))
+
+                // return newRow
+                const filteredRows = newRows.filter((row) =>
+                  requestClone.paramsSelection.includes(row.id)
+                )
+
+                const updatedParams = filteredRows
                   .filter((row) => row._key && row._value)
                   .map((row) => `${encodeURIComponent(row._key)}=${encodeURIComponent(row._value)}`)
                   .join('&')
+
                 setUpdatedUrl(basedUrl + (updatedParams ? `?${updatedParams}` : ''))
 
                 return newRow
