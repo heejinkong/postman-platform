@@ -127,23 +127,23 @@ export default function RequestPage() {
     requestClone.url = updatedUrl
   }, [requestClone.url])
 
-  const paramsSelectionRef = useRef(requestClone.paramsSelection)
-  useEffect(() => {
-    if (paramsSelectionRef.current !== requestClone.paramsSelection) {
-      paramsSelectionRef.current = requestClone.paramsSelection
-      const filteredRows = requestClone.params.filter((row) =>
-        requestClone.paramsSelection.includes(row.id)
-      )
+  // const paramsSelectionRef = useRef(requestClone.paramsSelection)
+  // useEffect(() => {
+  //   if (paramsSelectionRef.current !== requestClone.paramsSelection) {
+  //     paramsSelectionRef.current = requestClone.paramsSelection
+  //     const filteredRows = requestClone.params.filter((row) =>
+  //       requestClone.paramsSelection.includes(row.id)
+  //     )
 
-      const updatedParams = filteredRows
-        .filter((row) => row._key && row._value)
-        .map((row) => `${encodeURIComponent(row._key)}=${encodeURIComponent(row._value)}`)
-        .join('&')
-      const basedUrl = requestClone.url.split('?')[0]
+  //     const updatedParams = filteredRows
+  //       .filter((row) => row._key && row._value)
+  //       .map((row) => `${encodeURIComponent(row._key)}=${encodeURIComponent(row._value)}`)
+  //       .join('&')
+  //     const basedUrl = requestClone.url.split('?')[0]
 
-      setUpdatedUrl(basedUrl + (updatedParams ? `?${updatedParams}` : ''))
-    }
-  }, [requestClone.paramsSelection, requestClone.params, requestClone.url])
+  //     setUpdatedUrl(basedUrl + (updatedParams ? `?${updatedParams}` : ''))
+  //   }
+  // }, [requestClone.paramsSelection, requestClone.params, requestClone.url])
 
   const isMounted = useRef(false)
   useEffect(() => {
