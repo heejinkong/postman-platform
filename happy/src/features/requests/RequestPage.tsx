@@ -101,34 +101,26 @@ export default function RequestPage() {
   const [updatedUrl, setUpdatedUrl] = useState('')
 
   const handleChangeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const url = e.target.value;
-    setUpdatedUrl(url);
-  
-    const urlParams = new URLSearchParams(url.split('?')[1]);
-  
+    const url = e.target.value
+    setUpdatedUrl(url)
+
+    const urlParams = new URLSearchParams(url.split('?')[1])
+
     const newParams = Array.from(urlParams).map(([key, value]) => {
-      const existingParam = requestClone.params.find((param) => param._key === key);
-  
-      if (existingParam) {
-        return { ...existingParam, _key: key, _value: value };
-      }
-  
-      return { id: uuidv4(), _key: key, _value: value, _desc: '' };
-    });
-  
-    const newParamsSelection = newParams.map((param) => param.id);
-  
-    newParams.push({ id: uuidv4(), _key: '', _value: '', _desc: '' });
-  
+      return { id: uuidv4(), _key: key, _value: value, _desc: '' }
+    })
+
+    const newParamsSelection = newParams.map((param) => param.id)
+    newParams.push({ id: uuidv4(), _key: '', _value: '', _desc: '' })
+
     setRequestClone({
       ...requestClone,
       url: e.target.value as string,
       params: newParams,
-      paramsSelection: newParamsSelection,
-    });
-  };
-  
-  
+      paramsSelection: newParamsSelection
+    })
+  }
+  console.log(requestClone.paramsSelection)
   // useEffect(() => {
   //   const getSelectedParams = () => {
   //     return requestClone.params.filter((param) => requestClone.paramsSelection.includes(param.id))
@@ -752,7 +744,6 @@ export default function RequestPage() {
             fullWidth
             value={updatedUrl}
             onChange={handleChangeUrl}
-           
           />
         </Box>
         {/* Send 버튼을 통해 request 전송 */}
@@ -802,25 +793,26 @@ export default function RequestPage() {
                 })
               }}
               processRowUpdate={(newRow) => {
-                const newRows = handleProcessNewRows(newRow, requestClone.params);
-              
+                // row 수정 시, requestClone에 반영
+                const newRows = handleProcessNewRows(newRow, requestClone.params)
                 setRequestClone({
                   ...requestClone,
                   params: newRows,
-                  paramsSelection: [...requestClone.paramsSelection, newRow.id]
-                });
-              
+                  paramsSelection: [...requestClone.paramsSelection, newRow.id] // 수정한 row 선택
+                })
+
+                // TODO : 뭔가 여기를 수정하면 될거 같은데
+                console.log('변경된 param : ', newRow)
+
+                const basedUrl = requestClone.url.split('?')[0]
+
                 const updatedParams = newRows
-                  .filter((row) => row._key && row._value) 
-                  .map((row) => `${row._key}=${row._value}`)
-                  .join('&');
-              
-               
-                setUpdatedUrl(
-                  requestClone.url + (updatedParams ? '?' + updatedParams : '')
-                );
-              
-                return newRow;
+                  .filter((row) => row._key && row._value)
+                  .map((row) => `${encodeURIComponent(row._key)}=${encodeURIComponent(row._value)}`)
+                  .join('&')
+                setUpdatedUrl(basedUrl + (updatedParams ? `?${updatedParams}` : ''))
+
+                return newRow
               }}
               onProcessRowUpdateError={(e) => console.log(e)}
               /* DataGrid 반응형 조절 */
