@@ -127,23 +127,18 @@ export default function RequestPage() {
     requestClone.url = updatedUrl
   }, [requestClone.url])
 
-  // const paramsSelectionRef = useRef(requestClone.paramsSelection)
-  // useEffect(() => {
-  //   if (paramsSelectionRef.current !== requestClone.paramsSelection) {
-  //     paramsSelectionRef.current = requestClone.paramsSelection
-  //     const filteredRows = requestClone.params.filter((row) =>
-  //       requestClone.paramsSelection.includes(row.id)
-  //     )
+  useEffect(() => {
+    const updatedParams = requestClone.params.filter((param) =>
+      requestClone.paramsSelection.includes(param.id)
+    )
+    const basedUrl = requestClone.url.split('?')[0]
+    const updatedParamsString = updatedParams
+      .filter((param) => param._key && param._value)
+      .map((param) => `${encodeURIComponent(param._key)}=${encodeURIComponent(param._value)}`)
+      .join('&')
 
-  //     const updatedParams = filteredRows
-  //       .filter((row) => row._key && row._value)
-  //       .map((row) => `${encodeURIComponent(row._key)}=${encodeURIComponent(row._value)}`)
-  //       .join('&')
-  //     const basedUrl = requestClone.url.split('?')[0]
-
-  //     setUpdatedUrl(basedUrl + (updatedParams ? `?${updatedParams}` : ''))
-  //   }
-  // }, [requestClone.paramsSelection, requestClone.params, requestClone.url])
+    setUpdatedUrl(basedUrl + (updatedParamsString ? `?${updatedParamsString}` : ''))
+  }, [requestClone.params, requestClone.paramsSelection])
 
   const isMounted = useRef(false)
   useEffect(() => {
