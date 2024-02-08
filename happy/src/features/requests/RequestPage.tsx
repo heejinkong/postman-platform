@@ -16,7 +16,7 @@ import {
   Tabs,
   TextField
 } from '@mui/material'
-import { useNavigate, useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import React, { useEffect, useRef, useState } from 'react'
 import { Divider } from '@mui/joy'
 import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
@@ -99,6 +99,7 @@ export default function RequestPage() {
     setResTabIndex(index)
   }
 
+  //
   const [updatedUrl, setUpdatedUrl] = useState('')
 
   const handleChangeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,8 +122,9 @@ export default function RequestPage() {
       paramsSelection: newParamsSelection
     })
   }
-  console.log(requestClone.paramsSelection)
+  // console.log(requestClone.paramsSelection)
 
+  //parmasSelection이 변경될 때마다 url을 업데이트
   useEffect(() => {
     requestClone.url = updatedUrl
   }, [requestClone.url])
@@ -840,20 +842,7 @@ export default function RequestPage() {
                   .join('&')
 
                 setUpdatedUrl(basedUrl + (updatedParams ? `?${updatedParams}` : ''))
-
                 return newRow
-                // const filteredRows = newRows.filter((row) =>
-                //   requestClone.paramsSelection.includes(row.id)
-                // )
-
-                // const updatedParams = filteredRows
-                //   .filter((row) => row._key && row._value)
-                //   .map((row) => `${encodeURIComponent(row._key)}=${encodeURIComponent(row._value)}`)
-                //   .join('&')
-
-                // setUpdatedUrl(basedUrl + (updatedParams ? `?${updatedParams}` : ''))
-
-                // return newRow
               }}
               onProcessRowUpdateError={(e) => console.log(e)}
               /* DataGrid 반응형 조절 */
