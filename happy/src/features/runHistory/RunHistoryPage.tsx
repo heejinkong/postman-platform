@@ -9,98 +9,98 @@ import {
   ListItemText,
   Pagination,
   Tooltip,
-  Typography
-} from '@mui/material'
-import { selectAllRunResult } from '../runResults/service/runResultSlice'
-import { useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { runResultItem } from '../runResults/domain/runResultItem'
-import runResultService from '../runResults/service/runResultService'
-import { useState } from 'react'
-import { styled } from '@mui/system'
-import { useAppDispatch } from '../../app/hook'
-import { ListItemDecorator } from '@mui/joy'
+  Typography,
+} from '@mui/material';
+import { selectAllRunResult } from '../runResults/service/runResultSlice';
+import { useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { runResultItem } from '../runResults/domain/runResultItem';
+import runResultService from '../runResults/service/runResultService';
+import { useState } from 'react';
+import { styled } from '@mui/system';
+import { useAppDispatch } from '../../app/hook';
+import { ListItemDecorator } from '@mui/joy';
 // import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
-import CircleIcon from '@mui/icons-material/Circle'
+import CircleIcon from '@mui/icons-material/Circle';
 
 export default function RunHistoryPage() {
-  const { workspaceId } = useParams()
+  const { workspaceId } = useParams();
   const allRunResults = useSelector(selectAllRunResult).filter((runResult) => {
-    return runResult.workspaceId === workspaceId
-  })
+    return runResult.workspaceId === workspaceId;
+  });
   allRunResults.sort((a, b) => {
-    return b.created - a.created
-  })
-  const navigate = useNavigate()
-  const dispatch = useAppDispatch()
+    return b.created - a.created;
+  });
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const rowsPerPage = 10
-  const [currentPage, setCurrentPage] = useState(1)
-  const indexOfLastRow = currentPage * rowsPerPage
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage
-  const currentRows = allRunResults.slice(indexOfFirstRow, indexOfLastRow)
-  const totalPages = Math.ceil(allRunResults.length / rowsPerPage)
+  const rowsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = allRunResults.slice(indexOfFirstRow, indexOfLastRow);
+  const totalPages = Math.ceil(allRunResults.length / rowsPerPage);
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
-    setCurrentPage(page)
-  }
+    setCurrentPage(page);
+  };
 
   const handleRunResult = (runResultId: string) => {
-    navigate(`/workspaces/${workspaceId}/runResult/${runResultId}`)
-  }
+    navigate(`/workspaces/${workspaceId}/runResult/${runResultId}`);
+  };
 
   const handleDeleteClick = (e: { stopPropagation: () => void }, runResult: runResultItem) => {
-    e.stopPropagation()
-    dispatch(runResultService.delete(runResult))
-  }
+    e.stopPropagation();
+    dispatch(runResultService.delete(runResult));
+  };
 
   const NavBarBox = styled(Box)({
     '&.NavBarBox': {
       padding: '12px 16px 0 16px',
       '& nav': {
-        height: '22px'
+        height: '22px',
       },
       '& a': {
-        fontSize: '14px'
+        fontSize: '14px',
       },
       '& > .NavBarBoxDivider': {
-        marginTop: '12px'
-      }
-    }
-  })
+        marginTop: '12px',
+      },
+    },
+  });
 
   const StyledContainer = styled(Container)({
     '&.StyledContainer': {
       padding: '0 16px',
-      maxWidth: '100%'
-    }
-  })
+      maxWidth: '100%',
+    },
+  });
 
   return (
     /* Workspace option에서 run history 클릭 시, 해당 workspace의 run history를 보여줌 */
     <Box>
       {/* RunHistoryPage의 상단에는 WorkspaceNavBar를 통해 현재 path 표시 */}
-      <NavBarBox className="NavBarBox">
+      <NavBarBox className='NavBarBox'>
         Run History
-        <Box className="NavBarBoxDivider">
+        <Box className='NavBarBoxDivider'>
           <Divider />
         </Box>
       </NavBarBox>
-      <StyledContainer className="StyledContainer">
+      <StyledContainer className='StyledContainer'>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: '54px' }}>
           <Box
             sx={{
               maxWidth: '868px',
-              width: '100%'
+              width: '100%',
             }}
           >
             {/* RunHistoryPage의 문구 */}
             <Box sx={{ pb: '60px' }}>
-              <Typography variant="h4" sx={{ pb: '12px', fontSize: '24px', fontWeight: 700 }}>
+              <Typography variant='h4' sx={{ pb: '12px', fontSize: '24px', fontWeight: 700 }}>
                 Run History
               </Typography>
-              <Typography variant="subtitle1" color="rgba(rgba(0, 0, 0, 0.6)">
+              <Typography variant='subtitle1' color='rgba(rgba(0, 0, 0, 0.6)'>
                 Please click on one item to check its run details.
               </Typography>
             </Box>
@@ -108,7 +108,7 @@ export default function RunHistoryPage() {
             <Box
               sx={{
                 maxHeight: '704px',
-                height: '704px'
+                height: '704px',
               }}
             >
               {allRunResults.length > 0 && (
@@ -117,7 +117,7 @@ export default function RunHistoryPage() {
                   sx={{ pb: 0 }}
                   subheader={
                     <ListItem
-                      alignItems="flex-start"
+                      alignItems='flex-start'
                       sx={{
                         backgroundColor: '#FAFAFB',
                         borderColor: '#E0E1E3',
@@ -126,36 +126,34 @@ export default function RunHistoryPage() {
                         borderTopWidth: '1px',
                         borderBottomWidth: '1px',
                         height: '54px',
-                        alignItems: 'center'
+                        alignItems: 'center',
                       }}
                     >
                       {/* 실행결과의 날짜와 시간을 표시 */}
-                      <ListItemDecorator sx={{ width: '10.5rem', mr: '24px' }}>
+                      <ListItemDecorator sx={{ width: '168px', mr: '24px' }}>
                         <ListItemText
-                          secondary="Date/Time"
+                          secondary='Date/Time'
                           secondaryTypographyProps={{ style: { fontSize: '12px' } }}
                         />
                       </ListItemDecorator>
 
                       {/* 실행결과의 title 표시 */}
-                      <ListItemText
-                        secondary="Run Target"
-                        secondaryTypographyProps={{ style: { fontSize: '12px' } }}
-                      />
+                      <ListItemText secondary='Run Target' secondaryTypographyProps={{ style: { fontSize: '12px' } }} />
                     </ListItem>
                   }
                 >
                   {currentRows.map((runResult) => (
                     <ListItem
                       key={runResult.id}
-                      alignItems="flex-start"
+                      alignItems='flex-start'
                       disablePadding
                       secondaryAction={
                         // 실행결과의 삭제 버튼 표시
                         <IconButton
-                          edge="end"
-                          aria-label="delete"
+                          edge='end'
+                          aria-label='delete'
                           onClick={(e) => handleDeleteClick(e, runResult)}
+                          sx={{ padding: '12px' }}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -167,22 +165,26 @@ export default function RunHistoryPage() {
                         onClick={() => handleRunResult(runResult.id)}
                         sx={{
                           padding: '16px',
+                          paddingRight: '64px !important',
                           borderBottom: '1px solid #E0E1E3',
                           '&:hover': { background: 'rgba(0, 0, 0, .06) !important' },
-                          '&:active': { background: 'rgba(0, 0, 0, 0.12)' }
+                          '&:active': { background: 'rgba(0, 0, 0, 0.12)' },
                         }}
                       >
-                        <ListItemDecorator sx={{ width: '10.5rem', mr: '24px' }}>
-                          <ListItemText secondary={new Date(runResult.created).toLocaleString()} />
+                        <ListItemDecorator>
+                          <ListItemText
+                            secondary={new Date(runResult.created).toLocaleString()}
+                            sx={{ width: '168px', mr: '24px' }}
+                          />
 
                           {runResult.runResult === -1 ? (
                             <Tooltip title={`Fail`} arrow>
                               <CircleIcon
                                 sx={{
-                                  width: '16px',
-                                  height: '16px',
-                                  marginRight: '1px',
-                                  color: '#F44336'
+                                  width: '8px',
+                                  height: '8px',
+                                  margin: '8px',
+                                  color: '#F44336',
                                 }}
                               />
                             </Tooltip>
@@ -190,10 +192,10 @@ export default function RunHistoryPage() {
                             <Tooltip title={`inconsistent with comparison data`} arrow>
                               <CircleIcon
                                 sx={{
-                                  width: '16px',
-                                  height: '16px',
-                                  marginRight: '1px',
-                                  color: '#FF9800'
+                                  width: '8px',
+                                  height: '8px',
+                                  margin: '8px',
+                                  color: '#FF9800',
                                 }}
                               />
                             </Tooltip>
@@ -201,17 +203,19 @@ export default function RunHistoryPage() {
                             <Tooltip title={`Success`} arrow>
                               <CircleIcon
                                 sx={{
-                                  width: '16px',
-                                  height: '16px',
-                                  marginRight: '1px',
-                                  color: '#4CAF50'
+                                  width: '8px',
+                                  height: '8px',
+                                  margin: '8px',
+                                  color: '#4CAF50',
                                 }}
                               />
                             </Tooltip>
                           ) : null}
                         </ListItemDecorator>
-
-                        <ListItemText primary={runResult.title} />
+                        <ListItemText
+                          primary={runResult.title}
+                          sx={{ marginLeft: '8px', maxWidth: '592px', width: '100%' }}
+                        />
                       </ListItemButton>
                     </ListItem>
                   ))}
@@ -226,15 +230,15 @@ export default function RunHistoryPage() {
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    pb: 5
+                    pb: 5,
                   }}
                 >
-                  <Typography variant="h5" sx={{ fontSize: '20px' }}>
+                  <Typography variant='h5' sx={{ fontSize: '20px' }}>
                     Run History does not exist
                   </Typography>
                   <Typography
-                    variant="subtitle1"
-                    color="text.secondary"
+                    variant='subtitle1'
+                    color='text.secondary'
                     gutterBottom
                     sx={{ fontSize: '14px', marginTop: '8px' }}
                   >
@@ -250,12 +254,12 @@ export default function RunHistoryPage() {
       <Box>
         <Pagination
           count={totalPages}
-          shape="rounded"
+          shape='rounded'
           page={currentPage}
           onChange={(e, page) => handlePageChange(e, page)}
           sx={{ display: 'flex', justifyContent: 'center', pb: 1.5, pt: 0.75, mt: '36px' }}
         />
       </Box>
     </Box>
-  )
+  );
 }

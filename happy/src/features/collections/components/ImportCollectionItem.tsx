@@ -1,102 +1,93 @@
-import React, { useCallback, useState } from 'react'
-import { useDropzone } from 'react-dropzone'
-import {
-  Box,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  MenuItem,
-  Typography,
-  Button,
-  Alert
-} from '@mui/material'
-import UploadFileIcon from '@mui/icons-material/UploadFile'
-import { useNavigate, useParams } from 'react-router-dom'
+import React, { useCallback, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { Box, Dialog, DialogContent, DialogTitle, MenuItem, TextField, Typography, Button, Alert } from '@mui/material';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { useAppDispatch } from '../../../app/hook'
-import { folderItem } from '../../folders/domain/folderItem'
-import folderService from '../../folders/service/folderService'
-import collectionService from '../service/collectionService'
-import { collectionItem } from '../domain/collectionItem'
-import { requestItem } from '../../requests/domain/requestItem'
-import requestService from '../../requests/service/requestService'
-import { v4 as uuidv4 } from 'uuid'
+import { useAppDispatch } from '../../../app/hook';
+import { folderItem } from '../../folders/domain/folderItem';
+import folderService from '../../folders/service/folderService';
+import collectionService from '../service/collectionService';
+import { collectionItem } from '../domain/collectionItem';
+import { requestItem } from '../../requests/domain/requestItem';
+import requestService from '../../requests/service/requestService';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function ImportCollectionItem() {
-  const [open, setOpen] = React.useState(false)
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+  const [open, setOpen] = React.useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
-  const [invalidFileAlert, setInvalidFileAlert] = useState(false)
+  const [invalidFileAlert, setInvalidFileAlert] = useState(false);
 
-  const { workspaceId } = useParams()
-  const dispatch = useAppDispatch()
-  const navigate = useNavigate()
+  const { workspaceId } = useParams();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleClickOpen = () => {
-    setOpen(true)
-  }
+    setOpen(true);
+  };
 
   const handleClose = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      setSelectedFiles(acceptedFiles)
-      readJsonFile(acceptedFiles[0])
+      setSelectedFiles(acceptedFiles);
+      readJsonFile(acceptedFiles[0]);
       if (acceptedFiles[0].name.toLowerCase().endsWith('.json')) {
-        handleClose()
+        handleClose();
       }
     },
-    [selectedFiles]
-  )
+    [selectedFiles],
+  );
 
   const readJsonFile = (file: File) => {
     if (file.name.toLowerCase().endsWith('.json')) {
-      const reader = new FileReader()
-      reader.readAsText(file)
+      const reader = new FileReader();
+      reader.readAsText(file);
       reader.onload = () => {
-        const result = reader.result as string
-        const jsonData = JSON.parse(result)
+        const result = reader.result as string;
+        const jsonData = JSON.parse(result);
 
-        const info = jsonData.info
-        const newCollection = new collectionItem()
-        newCollection.title = info.name
-        newCollection.id = info._postman_id
-        newCollection.workspaceId = workspaceId ?? ''
-        dispatch(collectionService.new(newCollection))
+        const info = jsonData.info;
+        const newCollection = new collectionItem();
+        newCollection.title = info.name;
+        newCollection.id = info._postman_id;
+        newCollection.workspaceId = workspaceId ?? '';
+        dispatch(collectionService.new(newCollection));
 
-        navigate(`/workspaces/${workspaceId}/collections/${newCollection.id}`)
+        navigate(`/workspaces/${workspaceId}/collections/${newCollection.id}`);
 
-        const item = jsonData.item
-        console.log(item)
+        const item = jsonData.item;
+        console.log(item);
 
         const itemData = (item: any, parentId: string) => {
           if (item.request) {
-            const newRequest = new requestItem()
-            newRequest.title = item.name
-            newRequest.id = item.id
-            newRequest.workspaceId = workspaceId ?? ''
-            newRequest.parentId = parentId
-            newRequest.method = item.request.method
-            newRequest.url = item.request.url.raw
+            const newRequest = new requestItem();
+            newRequest.title = item.name;
+            newRequest.id = item.id;
+            newRequest.workspaceId = workspaceId ?? '';
+            newRequest.parentId = parentId;
+            newRequest.method = item.request.method;
+            newRequest.url = item.request.url.raw;
 
             if (item.request.url.query) {
-              const checkedParams = item.request.url.query.filter((param: any) => !param.disabled)
-              const nonCheckedParams = item.request.url.query.filter((param: any) => param.disabled)
+              const checkedParams = item.request.url.query.filter((param: any) => !param.disabled);
+              const nonCheckedParams = item.request.url.query.filter((param: any) => param.disabled);
 
               if (checkedParams.length > 0) {
                 checkedParams.forEach((param: any) => {
-                  const newParamId = uuidv4()
-                  newRequest.paramsSelection.push(newParamId)
+                  const newParamId = uuidv4();
+                  newRequest.paramsSelection.push(newParamId);
 
                   newRequest.params.push({
                     id: newParamId,
                     _key: param.key,
                     _value: param.value,
-                    _desc: ''
-                  })
-                })
+                    _desc: '',
+                  });
+                });
               }
               if (nonCheckedParams.length > 0) {
                 nonCheckedParams.forEach((param: any) => {
@@ -105,49 +96,49 @@ export default function ImportCollectionItem() {
                       id: uuidv4(),
                       _key: param.key,
                       _value: param.value,
-                      _desc: ''
-                    })
+                      _desc: '',
+                    });
                   }
-                })
+                });
               }
             }
             if (item.request.header) {
-              const checkedHeaders = item.request.header.filter((header: any) => !header.disabled)
+              const checkedHeaders = item.request.header.filter((header: any) => !header.disabled);
 
               checkedHeaders.forEach((header: any) => {
-                const newHeaderId = uuidv4()
-                newRequest.headersSelection.push(newHeaderId)
+                const newHeaderId = uuidv4();
+                newRequest.headersSelection.push(newHeaderId);
 
                 newRequest.headers.push({
                   id: newHeaderId,
                   _key: header.key,
                   _value: header.value,
-                  _desc: ''
-                })
-              })
+                  _desc: '',
+                });
+              });
             }
 
             if (item.request.body) {
-              const body = item.request.body
-              newRequest.body.mode = body.mode
+              const body = item.request.body;
+              newRequest.body.mode = body.mode;
 
-              const checkedBody = body[body.mode].filter((body: any) => !body.disabled)
-              const nonCheckedBody = body[body.mode].filter((body: any) => body.disabled)
+              const checkedBody = body[body.mode].filter((body: any) => !body.disabled);
+              const nonCheckedBody = body[body.mode].filter((body: any) => body.disabled);
 
               if (body.mode === 'formdata' && body.formdata) {
                 if (checkedBody.length > 0) {
                   checkedBody.forEach((formData: any) => {
-                    const newFormDataId = uuidv4()
-                    newRequest.body.formDataSelection.push(newFormDataId)
+                    const newFormDataId = uuidv4();
+                    newRequest.body.formDataSelection.push(newFormDataId);
 
                     newRequest.body.formData.push({
                       id: newFormDataId,
                       _key: formData.key,
                       _dataType: formData.type,
                       _value: [formData.src || formData.value],
-                      _desc: ''
-                    })
-                  })
+                      _desc: '',
+                    });
+                  });
                 }
                 if (nonCheckedBody.length > 0) {
                   nonCheckedBody.forEach((formData: any) => {
@@ -157,57 +148,57 @@ export default function ImportCollectionItem() {
                         _key: formData.key,
                         _dataType: formData.type,
                         _value: [formData.src || formData.value],
-                        _desc: ''
-                      })
+                        _desc: '',
+                      });
                     }
-                  })
+                  });
                 }
               } else if (body.mode === 'raw' && body.raw) {
-                newRequest.body.rawType = body.raw.options.raw.language
-                newRequest.body.rawData = body.raw.raw.data
+                newRequest.body.rawType = body.raw.options.raw.language;
+                newRequest.body.rawData = body.raw.raw.data;
               }
             }
 
-            newRequest.parentId = parentId
+            newRequest.parentId = parentId;
 
-            dispatch(requestService.new(newRequest))
+            dispatch(requestService.new(newRequest));
           } else if (item.item) {
-            const newFolder = new folderItem()
-            newFolder.title = item.name
-            newFolder.id = item.id
-            newFolder.workspaceId = workspaceId ?? ''
-            newFolder.parentId = parentId
-            dispatch(folderService.new(newFolder))
+            const newFolder = new folderItem();
+            newFolder.title = item.name;
+            newFolder.id = item.id;
+            newFolder.workspaceId = workspaceId ?? '';
+            newFolder.parentId = parentId;
+            dispatch(folderService.new(newFolder));
 
             item.item.forEach((subItem: any) => {
-              itemData(subItem, newFolder.id)
-            })
+              itemData(subItem, newFolder.id);
+            });
           }
-        }
+        };
 
         item.forEach((item: any) => {
-          itemData(item, newCollection.id)
-        })
-      }
+          itemData(item, newCollection.id);
+        });
+      };
     } else {
-      setInvalidFileAlert(true)
+      setInvalidFileAlert(true);
     }
-  }
+  };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     maxFiles: 1,
-    accept: '.json'
-  })
+    accept: '.json',
+  });
 
   return (
     <Box>
       <MenuItem>
-        <Typography textAlign="center" sx={{ ml: 3 }} onClick={handleClickOpen}>
+        <Typography textAlign='center' onClick={handleClickOpen}>
           Import Collection
         </Typography>
       </MenuItem>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title">
+      <Dialog open={open} onClose={handleClose} aria-labelledby='alert-dialog-title'>
         <Box sx={{ width: 600, height: 451 }}>
           <Box>
             <Box
@@ -215,90 +206,79 @@ export default function ImportCollectionItem() {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                pr: 2
+                pr: 2,
               }}
             >
               <DialogTitle>
-                <Typography variant="h6" sx={{ fontSize: '20px' }}>
+                <Typography variant='h6' sx={{ fontSize: '20px' }}>
                   Upload Files
                 </Typography>
               </DialogTitle>
             </Box>
             <DialogContent sx={{ padding: '8px 24px 0' }}>
+              <Box>
+                <TextField
+                  id='outlined-password-input'
+                  label='Enter URL or Paste text.'
+                  type='url'
+                  fullWidth
+                  autoComplete='current-password'
+                />
+              </Box>
               <Box
                 sx={{
-                  '& .MuiOutlinedInput-root': {
-                    height: '40px',
-                    '& .MuiInputLabel-root': {
-                      top: '-8px'
-                    },
-                    '& .MuiOutlinedInput-input': {
-                      padding: '8px 12px'
-                    }
-                  }
+                  height: '237px',
+                  color: '#B5B8BC',
+                  border: '2px dashed #ccc',
+                  mt: '20px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  borderRadius: '5px',
                 }}
               >
-                <Box
-                  sx={{
-                    height: '237px',
-                    color: '#B5B8BC',
-                    border: '2px dashed #ccc',
-                    mt: '20px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    textAlign: 'center',
-                    borderRadius: '5px'
-                  }}
-                >
-                  {/* Dropzone area */}
-                  <Box {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    <UploadFileIcon />
-                    <Typography sx={{ color: 'rgba(0, 0, 0, 0.87)' }}>File Upload</Typography>
-                    <Typography variant="body2" sx={{ fontSize: '14px' }}>
-                      Drag anywhere to import, or click to select files
-                    </Typography>
-                    <Button
-                      className="btnWhite"
-                      variant="contained"
-                      size="small"
-                      sx={{
-                        fontSize: '14px',
-                        color: '#1877F2 !important',
-                        borderColor: 'rgba(195, 198, 201, 1) !important',
-                        mt: '20px'
-                      }}
-                    >
-                      Select Files
-                    </Button>
-                  </Box>
-                </Box>
-                <Box
-                  sx={{
-                    marginTop: '24px',
-                    display: 'flex',
-                    justifyContent: 'flex-end'
-                  }}
-                >
+                {/* Dropzone area */}
+                <Box {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  <UploadFileIcon sx={{ width: '32px', height: '32px' }} />
+                  <Typography sx={{ color: 'rgba(0, 0, 0, 0.87)' }}>File Upload</Typography>
+                  <Typography variant='body2' sx={{ fontSize: '14px' }}>
+                    Drag anywhere to import, or click to select files
+                  </Typography>
                   <Button
-                    className="btnWhite"
-                    variant="contained"
-                    size="small"
-                    sx={{ marginRight: '12px' }}
-                    onClick={handleClose}
+                    className='btnWhite'
+                    variant='contained'
+                    size='small'
+                    sx={{
+                      fontSize: '14px',
+                      color: '#1877F2 !important',
+                      borderColor: 'rgba(195, 198, 201, 1) !important',
+                      mt: '20px',
+                    }}
                   >
-                    Cancle
+                    Select Files
                   </Button>
                 </Box>
+              </Box>
+              <Box
+                sx={{
+                  marginTop: '16px',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                <Button className='btnWhite' variant='contained' size='small' onClick={handleClose}>
+                  Cancle
+                </Button>
               </Box>
             </DialogContent>
           </Box>
         </Box>
         {invalidFileAlert && (
           <Alert
-            variant="filled"
-            severity="error"
+            variant='filled'
+            severity='error'
             onClose={() => setInvalidFileAlert(false)}
             sx={{ position: 'fixed', bottom: 16, right: '60px' }}
           >
@@ -307,5 +287,5 @@ export default function ImportCollectionItem() {
         )}
       </Dialog>
     </Box>
-  )
+  );
 }

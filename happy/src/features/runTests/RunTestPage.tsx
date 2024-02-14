@@ -1,25 +1,23 @@
-import { Box, Container, Divider, Grid, List, Typography } from '@mui/material'
-import { selectAllRunTests } from './service/runTestSlice'
-import ViewResult from './component/ViewResult'
-import { runResultItem } from '../runResults/domain/runResultItem'
-import { useAppSelector } from '../../app/hook'
-import { selectWorkspaceById } from '../workspaces/service/workspaceSlice'
-import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar'
+import { Box, Container, Divider, Grid, List, Typography } from '@mui/material';
+import { selectAllRunTests } from './service/runTestSlice';
+import ViewResult from './component/ViewResult';
+import { runResultItem } from '../runResults/domain/runResultItem';
+import { useAppSelector } from '../../app/hook';
+import { selectWorkspaceById } from '../workspaces/service/workspaceSlice';
+import WorkspaceNavBar from '../workspaces/components/WorkspaceNavBar';
 
 type runResultPageProps = {
-  parent: runResultItem
-}
+  parent: runResultItem;
+};
 
 export default function RunTestPage(props: runResultPageProps) {
   const allRunTests = useAppSelector(selectAllRunTests).filter((runTest) => {
-    return props.parent.runTestList?.includes(runTest.id) ?? false
-  })
+    return props.parent.runTestList?.includes(runTest.id) ?? false;
+  });
 
-  const workspace = useAppSelector((state) =>
-    selectWorkspaceById(state, props.parent.workspaceId ?? '')
-  )
+  const workspace = useAppSelector((state) => selectWorkspaceById(state, props.parent.workspaceId ?? ''));
   if (!workspace) {
-    return <></>
+    return <></>;
   }
 
   return (
@@ -37,15 +35,10 @@ export default function RunTestPage(props: runResultPageProps) {
                     <Grid item xs={9}>
                       {/* runTest의 title과 status를 보여줌 */}
                       {(runTest.status === 200 || runTest.status === 201) &&
-                      (runTest.expectedResult === '' ||
-                        runTest.expectedResult === runTest.responseResult) ? (
+                      (runTest.expectedResult === '' || runTest.expectedResult === runTest.responseResult) ? (
                         // runTest의 status가 200이거나 201이고, expected와 response가 같으면 success
                         <Box>
-                          <Typography
-                            variant="h5"
-                            gutterBottom
-                            sx={{ color: `#2E7D32`, fontSize: '16px', mb: '8px' }}
-                          >
+                          <Typography variant='h5' gutterBottom sx={{ color: `#2E7D32`, fontSize: '16px', mb: '8px' }}>
                             Success
                           </Typography>
                         </Box>
@@ -53,18 +46,14 @@ export default function RunTestPage(props: runResultPageProps) {
                         // 그렇지 않으면 fail
                         <Box>
                           {' '}
-                          <Typography
-                            variant="h5"
-                            gutterBottom
-                            sx={{ color: `#C62828`, fontSize: '16px', mb: '8px' }}
-                          >
+                          <Typography variant='h5' gutterBottom sx={{ color: `#C62828`, fontSize: '16px', mb: '8px' }}>
                             Fail
                           </Typography>
                         </Box>
                       )}
 
                       {/* 실행된 request의 path 표시 */}
-                      <div role="presentation">
+                      <div role='presentation'>
                         <WorkspaceNavBar _id={runTest.requestId ?? ''} />
                       </div>
                     </Grid>
@@ -86,5 +75,5 @@ export default function RunTestPage(props: runResultPageProps) {
         </List>
       </Box>
     </Container>
-  )
+  );
 }

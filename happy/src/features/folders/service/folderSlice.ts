@@ -1,33 +1,32 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { memoryRepository } from '../../../repository/memoryRepository'
-import { RootState } from '../../../app/store'
-import { folderItem } from '../domain/folderItem'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { memoryRepository } from '../../../repository/memoryRepository';
+import { RootState } from '../../../app/store';
+import { folderItem } from '../domain/folderItem';
 
-const repo = new memoryRepository()
+const repo = new memoryRepository();
 
 const folderSlice = createSlice({
   name: 'folders',
   initialState: {
-    data: repo._data
+    data: repo._data,
   },
   reducers: {
     createFolder: (state, action: PayloadAction<folderItem>) => {
-      repo.data(state.data).save(action.payload)
+      repo.data(state.data).save(action.payload);
     },
     updateFolder: (state, action: PayloadAction<folderItem>) => {
-      repo.data(state.data).save(action.payload)
+      repo.data(state.data).save(action.payload);
     },
     deleteFolderById: (state, action: PayloadAction<string>) => {
-      repo.data(state.data).deleteById(action.payload)
-    }
-  }
-})
+      repo.data(state.data).deleteById(action.payload);
+    },
+  },
+});
 
-export const { createFolder, updateFolder, deleteFolderById } = folderSlice.actions
+export const { createFolder, updateFolder, deleteFolderById } = folderSlice.actions;
 
-export const selectAllFolders = (state: RootState) =>
-  repo.data(state.folders.data).findAll() as folderItem[]
+export const selectAllFolders = (state: RootState) => repo.data(state.folders.data).findAll() as folderItem[];
 export const selectFolderById = (state: RootState, id: string) =>
-  repo.data(state.folders.data).findById(id) as folderItem
+  repo.data(state.folders.data).findById(id) as folderItem;
 
-export default folderSlice.reducer
+export default folderSlice.reducer;
