@@ -142,7 +142,6 @@ export default function RequestPage() {
   }, [isChanged]);
 
   const handleSave = () => {
-    console.log(requestClone.body.formData);
     dispatch(requestService.update(requestClone));
     setIsChanged(false);
   };
@@ -622,8 +621,22 @@ export default function RequestPage() {
     );
   };
 
+  const getSearchFromUrl = (url: string) => {
+    if (!url || url === '') {
+      return '';
+    }
+
+    const searchIndex = url.indexOf('?');
+    if (searchIndex === -1) {
+      return '';
+    }
+
+    const search = url.substring(searchIndex + 1);
+    return search;
+  };
+
   const setUrlParams = (url: string) => {
-    const newUrl = new URL(url);
+    const newUrl = url;
     const newParamsSelection: string[] = [];
     const newParams: { id: string; _key: string; _value: string; _desc: string }[] = [];
 
@@ -635,20 +648,23 @@ export default function RequestPage() {
       }
     }
 
-    const newUrlParamsEntries = newUrl.searchParams.entries();
-    for (const [key, value] of newUrlParamsEntries) {
-      const equalParam = requestClone.params.find((param) => {
-        if (param._key === key && param._value === value) {
-          return param;
+    const newSearch = getSearchFromUrl(newUrl);
+    if (newSearch && newSearch !== '') {
+      const newUrlParamsEntries = new URLSearchParams(newSearch).entries();
+      for (const [key, value] of newUrlParamsEntries) {
+        const equalParam = requestClone.params.find((param) => {
+          if (param._key === key && param._value === value) {
+            return param;
+          }
+        });
+        if (equalParam) {
+          newParams.push(equalParam);
+          newParamsSelection.push(equalParam.id);
+        } else {
+          const newParam = { id: uuidv4(), _key: key, _value: value, _desc: '' };
+          newParams.push(newParam);
+          newParamsSelection.push(newParam.id);
         }
-      });
-      if (equalParam) {
-        newParams.push(equalParam);
-        newParamsSelection.push(equalParam.id);
-      } else {
-        const newParam = { id: uuidv4(), _key: key, _value: value, _desc: '' };
-        newParams.push(newParam);
-        newParamsSelection.push(newParam.id);
       }
     }
 
@@ -658,7 +674,7 @@ export default function RequestPage() {
 
     setRequestClone({
       ...requestClone,
-      url: url,
+      url: newUrl,
       paramsSelection: newParamsSelection,
       params: newParams,
     });

@@ -99,8 +99,6 @@ class requestService {
         const globals = selectAllGlobals(state);
         const global = globals.find((item) => item.workspaceId === workspaceId);
 
-        console.log(global);
-
         const variablesSelection = global?.variablesSelection;
         const variables = global?.variables.filter((variable) => variablesSelection?.includes(variable.id)) || [];
 
@@ -117,8 +115,6 @@ class requestService {
             }
           });
         }
-
-        console.log(modifiedUrl);
 
         const axiosConfig = {
           method: request.method,
