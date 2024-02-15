@@ -49,14 +49,7 @@ export default function WorkspacesPage() {
       },
     },
   });
-
-  const StyledContainer = styled(Container)({
-    '&.StyledContainer': {
-      padding: '0 16px',
-      maxWidth: '100%',
-    },
-  });
-
+  
   return (
     //WorkspacePage
     <Box>
@@ -67,7 +60,7 @@ export default function WorkspacesPage() {
           <Divider />
         </Box>
       </NavBarBox>
-      <StyledContainer className='StyledContainer'>
+      <Container sx={{ padding: '0 16px', maxWidth: '100%' }}>
         {/* WorkspacePage의 수정 버튼 */}
         <Box sx={{ padding: '12px 0', display: 'flex', justifyContent: 'flex-end' }}>
           <Button
@@ -139,7 +132,7 @@ export default function WorkspacesPage() {
             </Box>
           </Box>
         </Box>
-      </StyledContainer>
+      </Container>
     </Box>
   );
 }

@@ -49,13 +49,7 @@ export default function FolderPage() {
       },
     },
   });
-  const StyledContainer = styled(Container)({
-    '&.StyledContainer': {
-      padding: '0 16px',
-      maxWidth: '100%',
-    },
-  });
-  return (
+    return (
     /* FolderPage에서는 해당 folder의 title과 description을 수정하는 페이지 */
     <Box>
       {/* FolderPage의 상단에는 WorkspaceNavBar를 통해 현재 path 표시 */}
@@ -65,7 +59,7 @@ export default function FolderPage() {
           <Divider />
         </Box>
       </NavBarBox>
-      <StyledContainer className='StyledContainer'>
+      <Container sx={{ padding: '0 16px', maxWidth: '100%' }}>
         {/* FolderPage의 수정 버튼 */}
         <Box sx={{ padding: '12px 0', display: 'flex', justifyContent: 'flex-end' }}>
           <Button
@@ -114,7 +108,7 @@ export default function FolderPage() {
             </Box>
           </Box>
         </Box>
-      </StyledContainer>
+      </Container>
     </Box>
   );
 }

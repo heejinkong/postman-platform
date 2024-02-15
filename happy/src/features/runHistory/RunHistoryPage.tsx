@@ -70,13 +70,6 @@ export default function RunHistoryPage() {
     },
   });
 
-  const StyledContainer = styled(Container)({
-    '&.StyledContainer': {
-      padding: '0 16px',
-      maxWidth: '100%',
-    },
-  });
-
   return (
     /* Workspace option에서 run history 클릭 시, 해당 workspace의 run history를 보여줌 */
     <Box>
@@ -87,7 +80,7 @@ export default function RunHistoryPage() {
           <Divider />
         </Box>
       </NavBarBox>
-      <StyledContainer className='StyledContainer'>
+      <Container sx={{ padding: '0 16px', maxWidth: '100%' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: '54px' }}>
           <Box
             sx={{
@@ -249,7 +242,7 @@ export default function RunHistoryPage() {
             </Box>
           </Box>
         </Box>
-      </StyledContainer>
+      </Container>
       {/* RunHistoryPage 하단에 Pagination 표시 (리스트 10개로 정렬) */}
       <Box>
         <Pagination

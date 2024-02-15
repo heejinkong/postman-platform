@@ -126,7 +126,7 @@ export default function RequestPage() {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [isChanged]);
+  }, [isChanged, requestId, workspaceId]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -664,13 +664,6 @@ export default function RequestPage() {
     });
   };
 
-  const StyledContainer = styled(Container)({
-    '&.StyledContainer': {
-      padding: '0 16px',
-      maxWidth: '100%',
-    },
-  });
-
   return (
     //RequestPage에서는 해당 request의 정보를 생성, 수정하는 페이지
     <Box>
@@ -696,7 +689,7 @@ export default function RequestPage() {
           <Divider />
         </Box>
       </NavBarBox>
-      <StyledContainer className='StyledContainer'>
+      <Container sx={{ padding: '0 16px', maxWidth: '100%' }}>
         <Box sx={{ pt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           {/* RequestPage의 title */}
           <Box sx={{ flexGrow: 1, mr: '20px' }}>
@@ -1091,7 +1084,7 @@ export default function RequestPage() {
             </Box>
           </Box>
         </Box>
-      </StyledContainer>
+      </Container>
     </Box>
   );
 }

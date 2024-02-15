@@ -37,16 +37,16 @@ export default function GlobalsPage() {
 
   const [isChanged, setIsChanged] = React.useState(false);
 
-  const isDataChanged = () => {
-    if (global) {
-      return JSON.stringify(global) !== JSON.stringify(globalsClone);
-    }
-    return false;
-  };
-
   useEffect(() => {
+    const isDataChanged = () => {
+      if (global) {
+        return JSON.stringify(global) !== JSON.stringify(globalsClone);
+      }
+      return false;
+    };
+
     setIsChanged(isDataChanged());
-  }, [globalsClone]);
+  }, [global, globalsClone]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -204,13 +204,6 @@ export default function GlobalsPage() {
     },
   });
 
-  const StyledContainer = styled(Container)({
-    '&.StyledContainer': {
-      padding: '0 16px 16px',
-      maxWidth: '100%',
-    },
-  });
-
   return (
     <Box>
       <NavBarBox className='NavBarBox'>
@@ -230,7 +223,7 @@ export default function GlobalsPage() {
           <Divider />
         </Box>
       </NavBarBox>
-      <StyledContainer className='StyledContainer'>
+      <Container sx={{ padding: '0 16px', maxWidth: '100%' }}>
         <Box sx={{ display: 'flex', padding: '16px 0' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Typography variant='h6'>Globals</Typography>
@@ -319,7 +312,7 @@ export default function GlobalsPage() {
             />
           </Box>
         </Box>
-      </StyledContainer>
+      </Container>
     </Box>
   );
 }

@@ -51,13 +51,7 @@ export default function CollectionPage() {
     },
   });
 
-  const StyledContainer = styled(Container)({
-    '&.StyledContainer': {
-      padding: '0 16px',
-      maxWidth: '100%',
-    },
-  });
-  return (
+    return (
     /* CollectionPage에서는 해당 collection의 title과 description을 수정하는 페이지 */
     <Box>
       {/* CollectionPage의 상단에는 WorkspaceNavBar를 통해 현재 path 표시 */}
@@ -67,7 +61,7 @@ export default function CollectionPage() {
           <Divider />
         </Box>
       </NavBarBox>
-      <StyledContainer className='StyledContainer'>
+      <Container sx={{ padding: '0 16px', maxWidth: '100%' }}>
         {/* 수정한 title과 description을 update하는 버튼 */}
         <Box sx={{ padding: '12px 0', display: 'flex', justifyContent: 'flex-end' }}>
           <Button
@@ -129,6 +123,7 @@ export default function CollectionPage() {
                 value={desc}
                 sx={{
                   mb: '16px',
+                  width:'100%',
                   '& .MuiInputBase-input': {
                     padding: '16px 14px',
                   },
@@ -138,7 +133,7 @@ export default function CollectionPage() {
             </Box>
           </Box>
         </Box>
-      </StyledContainer>
+      </Container>
     </Box>
   );
 }

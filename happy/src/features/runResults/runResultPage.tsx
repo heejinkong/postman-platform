@@ -23,15 +23,7 @@ export default function RunResultPage() {
         marginTop: '12px',
       },
     },
-  });
-
-  const StyledContainer = styled(Container)({
-    '&.StyledContainer': {
-      padding: '0 16px',
-      maxWidth: '100%',
-    },
-  });
-
+  });  
   return (
     // run을 실행한 결과를 상세히 보여주는 페이지
     <Box>
@@ -42,7 +34,7 @@ export default function RunResultPage() {
           <Divider />
         </Box>
       </NavBarBox>
-      <StyledContainer className='StyledContainer'>
+      <Container sx={{ padding: '0 16px', maxWidth: '100%' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: '54px' }}>
           <Box
             sx={{
@@ -66,7 +58,7 @@ export default function RunResultPage() {
             </Box>
           </Box>
         </Box>
-      </StyledContainer>
+      </Container>
     </Box>
   );
 }
