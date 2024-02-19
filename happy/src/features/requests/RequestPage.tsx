@@ -367,8 +367,6 @@ export default function RequestPage() {
           name: files[0].name,
         };
 
-        console.log(formFile.name);
-
         const cloneFormFiles = [...formFiles];
         const item = cloneFormFiles.find((i) => i.id === id);
         if (item) {

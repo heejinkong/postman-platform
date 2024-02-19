@@ -107,7 +107,6 @@ export default function ImportCollectionItem() {
             navigate(`/workspaces/${workspaceId}/collections/${newCollection.id}`);
 
             const item = jsonData.item;
-            console.log(item);
 
             const itemData = (item: ExportedItem, parentId: string) => {
               if (item.request) {

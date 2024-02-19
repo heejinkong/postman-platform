@@ -8,6 +8,7 @@ import { selectWorkspaceById } from '../service/workspaceSlice';
 import { useAppSelector } from '../../../app/hook';
 import SettingsVariable from '../../globalsVariable/components/SettingsVariable';
 import ImportCollectionItem from '../../collections/components/ImportCollectionItem';
+import ExportAllCollectionItem from '../../collections/components/ExportAllCollectionItem';
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -84,6 +85,7 @@ export default function WorkspaceOptions() {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
+    console.log('close');
     setAnchorEl(null);
   };
 
@@ -135,7 +137,7 @@ export default function WorkspaceOptions() {
           </MenuItem>
 
           {/* Workspace Options 메뉴의 Run Workspace 클릭 시, 해당 workspace의 run workspace로 이동 */}
-          <RunWorkspaceOptionItem workspaceId={workspace.id} handleClose={() => handleClose} />
+          <RunWorkspaceOptionItem workspaceId={workspace.id} handleClose={handleClose} />
 
           <Box>
             <Divider sx={{ my: 0.5 }} />
@@ -148,9 +150,7 @@ export default function WorkspaceOptions() {
           <ImportCollectionItem />
 
           {/* Workspace Options 메뉴의 Export Collection 클릭 시, 해당 workspace의 collection export */}
-          <MenuItem onClick={handleClose} disableRipple>
-            Export Collection
-          </MenuItem>
+          <ExportAllCollectionItem workspaceId={workspace.id} handleClose={handleClose} />
 
           {/* 새로운 Workspace 생성 버튼 */}
           <StyledNewWorkspace>

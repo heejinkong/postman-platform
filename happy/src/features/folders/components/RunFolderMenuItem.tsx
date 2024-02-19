@@ -90,8 +90,6 @@ export default function RunFolderMenuItem(props: runFolderMenuItemProps) {
         }
       }
 
-      console.log(runNum);
-
       if (runNum === requestList.length) {
         newRunResult.runResult = 1;
       } else {

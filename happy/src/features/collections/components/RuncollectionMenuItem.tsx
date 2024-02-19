@@ -101,8 +101,6 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
         }
       }
 
-      console.log(runNum);
-
       if (runNum === requestList.length) {
         newRunResult.runResult = 1;
       } else {
@@ -110,7 +108,6 @@ export default function RunCollectionMenuItem(props: runCollectionMenuItemProps)
       }
 
       dispatch(runResultService.new(newRunResult));
-      console.log(requestList.length);
 
       navigate(`/workspaces/${collection.workspaceId}/runHistory`);
     }

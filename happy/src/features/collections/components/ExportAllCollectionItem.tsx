@@ -1,14 +1,14 @@
 import { MenuItem, Typography } from '@mui/material';
-import { selectCollectionById } from '../service/collectionSlice';
 import { useAppSelector } from '../../../app/hook';
+import { selectAllCollections } from '../service/collectionSlice';
 import { collectionItem } from '../domain/collectionItem';
 import { selectAllFolders } from '../../folders/service/folderSlice';
+import { selectAllRequests } from '../../requests/service/requestSlice';
 import { folderItem } from '../../folders/domain/folderItem';
 import { requestItem } from '../../requests/domain/requestItem';
-import { selectAllRequests } from '../../requests/service/requestSlice';
 
-type ExportCollectionItemProps = {
-  collectionId: string;
+type ExportAllCollectionItemProps = {
+  workspaceId: string;
   handleClose: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 };
 
@@ -18,23 +18,23 @@ interface ParsedUrl {
   path: string[];
 }
 
-export default function ExportCollectionItem(props: ExportCollectionItemProps) {
-  const collection = useAppSelector((state) => selectCollectionById(state, props.collectionId));
+//workspaceId 가진 모든 collection을 export하는 기능
+export default function ExportAllCollectionItem(props: ExportAllCollectionItemProps) {
+  const allCollection = useAppSelector(selectAllCollections).filter((collection) => {
+    return collection.workspaceId === props.workspaceId;
+  });
+
   const folders = useAppSelector(selectAllFolders) ?? [];
   const requests = useAppSelector(selectAllRequests) ?? [];
 
-  const folderInCollection = folders.filter((folder) => folder.parentId === props.collectionId);
-
-  const requestInCollection = requests.filter((request) => request.parentId === props.collectionId);
-
   const handleExport = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    exportCollectionToJson(props.collectionId, collection);
+    exportCollectionToJson(props.workspaceId, allCollection);
 
     props.handleClose(e);
   };
 
-  const exportCollectionToJson = (collectionId: string, collection: collectionItem) => {
-    const collectionData = getCollectionData(collection);
+  const exportCollectionToJson = (collectionId: string, allCollection: collectionItem[]) => {
+    const collectionData = getCollectionData(allCollection);
     const jsonData = JSON.stringify(collectionData, null, 2);
     const blob = new Blob([jsonData], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -109,20 +109,17 @@ export default function ExportCollectionItem(props: ExportCollectionItemProps) {
       method: request.method,
       header: [...request.headers.map((header) => ({ key: header._key, value: header._value }))],
       body: {},
-
-      url: parsedUrl
-        ? {
-            raw: request.url,
-            protocol: parsedUrl?.protocol.split(':')[0] ?? '',
-            host: parsedUrl?.host ?? '',
-            path: parsedUrl?.path ?? [],
-            query: request.params.map((params) => ({
-              key: params._key,
-              value: params._value,
-              ...(request.paramsSelection.includes(params.id) ? {} : { disabled: true }),
-            })),
-          }
-        : {},
+      url: {
+        raw: request.url,
+        protocol: parsedUrl?.protocol.split(':')[0] ?? '',
+        host: parsedUrl?.host ?? '',
+        path: parsedUrl?.path ?? [],
+        query: request.params.map((params) => ({
+          key: params._key,
+          value: params._value,
+          ...(request.paramsSelection.includes(params.id) ? {} : { disabled: true }),
+        })),
+      },
       response: [],
     };
 
@@ -153,23 +150,28 @@ export default function ExportCollectionItem(props: ExportCollectionItemProps) {
       request: requestData,
     };
   };
-  const getCollectionData = (collection: collectionItem) => {
-    return {
-      info: {
-        type: 'collection',
-        name: collection.title,
-        schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
-      },
-      item: [
-        ...folderInCollection.map((folder) => getFolderData(folder)),
-        ...requestInCollection.map((request) => getRequestData(request)),
-      ],
-    };
+
+  const getCollectionData = (collections: collectionItem[]) => {
+    return collections.map((collection) => {
+      const filteredFolders = folders.filter((folder) => folder.parentId === collection.id);
+      const filteredRequests = requests.filter((request) => request.parentId === collection.id);
+      return {
+        info: {
+          type: 'collection',
+          name: collection.title,
+          schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+        },
+        item: [
+          ...filteredFolders.map((folder) => getFolderData(folder)),
+          ...filteredRequests.map((request) => getRequestData(request)),
+        ],
+      };
+    });
   };
 
   return (
     <MenuItem onClick={(e) => handleExport(e)}>
-      <Typography textAlign='center'>Export</Typography>
+      <Typography textAlign='center'>Export Collection</Typography>
     </MenuItem>
   );
 }
