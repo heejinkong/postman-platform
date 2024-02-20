@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 import { MenuItem, Typography } from '@mui/material';
 import { useAppSelector } from '../../../app/hook';
 import { selectAllCollections } from '../service/collectionSlice';

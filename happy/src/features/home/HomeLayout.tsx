@@ -136,7 +136,8 @@ export default function HomeLayout() {
                 noWrap
                 component='a'
                 href='/'
-                letterSpacing='-0.1rem'
+                // letterSpacing='-0.1rem'
+                letterSpacing='0.1rem'
                 fontWeight='bold'
                 color='#35363A'
                 sx={{
@@ -147,7 +148,7 @@ export default function HomeLayout() {
                   },
                 }}
               >
-                통합문서뷰어
+                RAP
               </Typography>
               {/* AppBar의 WORKSPACE Button 표시 */}
               <Box sx={{ flexGrow: 1, display: 'flex' }}>

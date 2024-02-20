@@ -4,7 +4,7 @@ import { Item } from './Item';
 class testItem implements Item {
   id: string = '';
   title: string = '';
-  type: string = 'test';
+  parentId: string = '';
   constructor(title: string) {
     this.title = title;
   }
