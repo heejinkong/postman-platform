@@ -1,11 +1,11 @@
 # REST API Platform 
 
 #### 💡 Postman 대체용 내부 테스트 도구 💡
+<img width="100%" alt="REST API Platform1" src="https://github.com/user-attachments/assets/a7ea6994-5f38-4e5b-b89d-0f6bec470f0a">
 
 ## 📝 Project Overview (프로젝트 개요)
 - 프로젝트 이름: REST API Platform - 통합문서뷰어 통합 테스트 개선
 - 프로젝트 설명: 기존 통합 문서 뷰어의 변환 검사 문제를 개선하고, Postman을 대체할 수 있는 API 테스트 플랫폼을 개발했습니다.
-<img width="100%" alt="REST API Platform1" src="https://github.com/user-attachments/assets/a7ea6994-5f38-4e5b-b89d-0f6bec470f0a">
 
 
 ## ⚙ Technology Stack (기술 스택)
