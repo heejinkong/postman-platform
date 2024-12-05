@@ -1,7 +1,7 @@
 # REST API Platform 
 
 #### 💡 Postman 대체용 내부 테스트 도구 💡
-
+<img width="100%" alt="REST API Platform1" src="https://github.com/user-attachments/assets/a7ea6994-5f38-4e5b-b89d-0f6bec470f0a">
 
 
 ## 📝 소개
