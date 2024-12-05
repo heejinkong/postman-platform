@@ -1,4 +1,4 @@
-[REST_API_Platform_솔루션개발팀_공희진.pdf](https://github.com/user-attachments/files/18026769/REST_API_Platform_._.pdf)# REST API Platform 
+# REST API Platform 
 
 #### 💡 Postman 대체용 내부 테스트 도구 💡
 
