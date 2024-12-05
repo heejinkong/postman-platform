@@ -1,11 +1,31 @@
-# REST API Platform 통합 테스트 개선 프로젝트
+# REST API Platform 
 
-이 프로젝트는 기존 통합 문서 뷰어의 테스트 과정에서 발생한 문제를 해결하기 위해 진행되었습니다. **API 요청의 예상 결과와 실제 결과 비교 기능**과 **Run 기록 확인 및 관리 기능**을 포함한 개선 작업이 이루어졌습니다. Postman의 장점을 흡수해 **사용자 친화적인 UI/UX**를 구현하고, **통합 테스트의 정확성과 효율성**을 높이기 위해 리팩토링을 진행했습니다.
+#### 💡 Postman 대체용 내부 테스트 도구 💡
 
-## 사용 기술 스택
-- **Frontend**: React, Typescript, Vite, MUI(Material-UI)
-- **Backend**: Node.js, Express
-- **아키텍처**: 도메인 주도 설계(DDD), 클린 아키텍처
+
+
+## 📝 소개
+기존 통합 문서 뷰어의 변환 검사 문제를 개선하고,
+Postman을 대체할 수 있는 API 테스트 플랫폼을 개발했습니다.
+
+
+
+
+## ⚙ 기술 스택
+
+####  Frotend
+|React|TypeScript|Vite|MUI|
+|:---:|:---:|:---:|:---:|
+| [![My Skills](https://skillicons.dev/icons?i=react)](https://skillicons.dev) | [![My Skills](https://skillicons.dev/icons?i=ts)](https://skillicons.dev) || [![My Skills](https://skillicons.dev/icons?i=vite)](https://skillicons.dev) || [![My Skills](https://skillicons.dev/icons?i=mui)](https://skillicons.dev) |
+
+
+
+#### Backend
+|Node.js|Express|
+|:---:|:---:|
+| [![My Skills](https://skillicons.dev/icons?i=nodejs)](https://skillicons.dev) | [![My Skills](https://skillicons.dev/icons?i=express)](https://skillicons.dev) |
+
+
 
 ## 리팩토링 전후 비교
 
@@ -36,7 +56,7 @@
 
 
 
-![REST_API_Platform_솔루션개발팀_공희진-01](https://github.com/user-attachments/assets/f6350e1c-fa33-4dd7-80a4-a8fe7dc61689)
+![REST_API_Platform_솔루션개발팀_공희진-01](htts://github.com/user-attachments/assets/f6350e1c-fa33-4dd7-80a4-a8fe7dc61689)
 ![REST_API_Platform_솔루션개발팀_공희진-02](https://github.com/user-attachments/assets/5d4062ef-e8ee-42d9-86cd-627e1537e881)
 ![REST_API_Platform_솔루션개발팀_공희진-03](https://github.com/user-attachments/assets/f7074fad-5ded-480a-a390-b9a28c5c130c)
 ![REST_API_Platform_솔루션개발팀_공희진-04](https://github.com/user-attachments/assets/b46e616c-a3df-4e5b-9c87-e2be650cc886)
