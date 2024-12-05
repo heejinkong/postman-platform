@@ -99,8 +99,10 @@ src/
 
 ## 📓 Document
 - 완료 보고 자료 : [REST_API_Platform_솔루션개발팀_공희진.pdf](https://github.com/user-attachments/files/18026771/REST_API_Platform_._.pdf)
-- 아키텍처 설계 : [REST API Platform-Architecture] (https://www.figma.com/board/rv0p3ItBGKXZ1sfl5R7Izk/Rest-API-Platform-Architecture?node-id=0-1&node-type=canvas&t=n8uY3GQnwvfsmMPi-0)
-- 화면 디자인 가이드 : [REST API Platform-Design] (https://www.figma.com/design/d15l1AzIGWwK6VYZ9rOAkF/REST-API-Platform-Design?node-id=0-1&node-type=canvas&t=Phg75CjHjnRgM6HD-0)
+- 아키텍처 설계 링크 : [REST API Platform-Architecture](https://www.figma.com/board/rv0p3ItBGKXZ1sfl5R7Izk/Rest-API-Platform-Architecture?node-id=0-1&node-type=canvas&t=n8uY3GQnwvfsmMPi-0)
+
+- 화면 디자인 가이드 링크 : [REST API Platform-Design](https://www.figma.com/design/d15l1AzIGWwK6VYZ9rOAkF/REST-API-Platform-Design?node-id=0-1&node-type=canvas&t=Phg75CjHjnRgM6HD-0)
+
 
 ## 🚀 리팩토링 
 #### 리팩토링 전:
