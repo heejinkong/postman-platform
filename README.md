@@ -1,17 +1,14 @@
-# REST API Platform 
+[REST_API_Platform_솔루션개발팀_공희진.pdf](https://github.com/user-attachments/files/18026769/REST_API_Platform_._.pdf)# REST API Platform 
 
 #### 💡 Postman 대체용 내부 테스트 도구 💡
+
+## 📝 Project Overview (프로젝트 개요)
+- 프로젝트 이름: REST API Platform - 통합문서뷰어 통합 테스트 개선
+- 프로젝트 설명: 기존 통합 문서 뷰어의 변환 검사 문제를 개선하고, Postman을 대체할 수 있는 API 테스트 플랫폼을 개발했습니다.
 <img width="100%" alt="REST API Platform1" src="https://github.com/user-attachments/assets/a7ea6994-5f38-4e5b-b89d-0f6bec470f0a">
 
 
-## 📝 소개
-기존 통합 문서 뷰어의 변환 검사 문제를 개선하고,
-Postman을 대체할 수 있는 API 테스트 플랫폼을 개발했습니다.
-
-
-
-
-## ⚙ 기술 스택
+## ⚙ Technology Stack (기술 스택)
 
 ####  Frotend
 |React|TypeScript|Vite|MUI|
@@ -26,33 +23,99 @@ Postman을 대체할 수 있는 API 테스트 플랫폼을 개발했습니다.
 | [![My Skills](https://skillicons.dev/icons?i=nodejs)](https://skillicons.dev) | [![My Skills](https://skillicons.dev/icons?i=express)](https://skillicons.dev) |
 
 
+## 🧱 Project Structure (프로젝트 구조)
+#### 클린 아키텍처 및 DDD 적용 [리팩토링]
+- 도메인 중심 설계: 각 기능을 독립적으로 관리, 비즈니스 로직은 domain/에서 처리.
+- 기능 독립성: 각 기능(collections, folders, requests, workspaces)별로 모듈화.
+- 상태 관리: 중앙 집중식 상태 관리 (stores/).
+- 유지보수성: 기능별 독립적인 개발과 확장 용이.
+```plaintext
+src/
+├── hooks/
+├── stores/
+├── features/
+│   ├── collections/
+│   │   ├── components/
+│   │   │   ├── CollectionItem.tsx
+│   │   │   ├── TheCollectionMenu.tsx
+│   │   ├── NewCollection.tsx
+│   │   ├── routes/
+│   │   │   ├── CollectionRoutes.tsx
+│   │   │   ├── routes.types.ts
+│   │   ├── domain/
+│   │       ├── CollectionEntity.ts
+│   │       ├── service.ts
+│   │       ├── config.ts
+│   │       ├── config.types.ts
+│   │       ├── CollectionLogic.ts
+│   │       └── utils.ts
+│   ├── folders/
+│   │   ├── components/
+│   │   │   ├── AddFolderMenuItem.tsx
+│   │   │   ├── FolderTreeMenu.tsx
+│   │   ├── routes/
+│   │   │   └── FolderRoutes.tsx
+│   │   ├── domain/
+│   │       ├── FolderEntity.ts
+│   │       ├── service.ts
+│   │       ├── config.ts
+│   │       ├── config.types.ts
+│   │       ├── FolderLogic.ts
+│   │       └── utils.ts
+│   ├── requests/
+│   │   ├── components/
+│   │   │   ├── AddRequestMenuItem.tsx
+│   │   │   ├── RequestTreeMenu.tsx
+│   │   ├── routes/
+│   │   │   └── RequestRoutes.tsx
+│   │   ├── domain/
+│   │       ├── RequestEntity.ts
+│   │       ├── service.ts
+│   │       ├── config.ts
+│   │       ├── config.types.ts
+│   │       ├── RequestLogic.ts
+│   │       └── utils.ts
+│   ├── workspaces/
+│   │   ├── components/
+│   │   │   ├── NewWorkspace.tsx
+│   │   │   ├── WorkspaceTreeMenu.tsx
+│   │   ├── routes/
+│   │   │   └── WorkspaceRoutes.tsx
+│   │   ├── domain/
+│   │       ├── WorkspaceEntity.ts
+│   │       ├── service.ts
+│   │       ├── config.ts
+│   │       ├── config.types.ts
+│   │       ├── WorkspaceLogic.ts
+│   │       └── utils.ts
+├── utils/
+│   ├── memoryRepository.test.ts
+│   ├── memoryRepository.ts
+│   └── NotFoundPage.tsx
+├── app.tsx
+└── main.tsx
+```
 
-## 리팩토링 전후 비교
 
-### 리팩토링 전:
-1. **기능 한계**
-   - API 요청에 대한 응답 형식만으로 변환 성공 여부를 판단
-   - 예상 결과와 실제 결과의 비교 기능 부족
-2. **사용성 문제**
-   - 테스트 기록 및 관리 기능 미흡
-   - 작업 이력 관리가 어려워 사용자 경험 저하
-3. **확장성 부족**
-   - 통합 테스트 기능이 특정 포맷에만 제한
-   - 다양한 포맷에 대한 테스트 확장이 어려움
+## 📓 Document
+- 완료 보고 자료 : [REST_API_Platform_솔루션개발팀_공희진.pdf](https://github.com/user-attachments/files/18026771/REST_API_Platform_._.pdf)
+- 아키텍처 설계 : [REST API Platform-Architecture] (https://www.figma.com/board/rv0p3ItBGKXZ1sfl5R7Izk/Rest-API-Platform-Architecture?node-id=0-1&node-type=canvas&t=n8uY3GQnwvfsmMPi-0)
+- 화면 디자인 가이드 : [REST API Platform-Design] (https://www.figma.com/design/d15l1AzIGWwK6VYZ9rOAkF/REST-API-Platform-Design?node-id=0-1&node-type=canvas&t=Phg75CjHjnRgM6HD-0)
 
-### 리팩토링 후:
-1. **비교 기능 추가**
-   - 예상 결과와 실제 결과를 직관적으로 비교할 수 있는 기능 추가
-   - 테스트 정확성 향상
-2. **사용자 기록 관리 강화**
-   - **Run History** 기능 추가로 테스트 실행 기록을 시간별로 확인 및 관리 가능
-3. **확장성 강화**
-   - **클린 아키텍처**와 **도메인 주도 설계(DDD)**를 도입하여 기능 확장과 유지보수 용이
+## 🚀 리팩토링 
+#### 리팩토링 전:
+- 높은 의존성: 기능 추가/변경 시 많은 수정이 필요하고, 시스템 확장성 부족.
+- 자바스크립트 사용: 안정성 낮고, 코드 오류 발생 가능성 큼.
+- 상태 관리 비효율: 데이터 흐름 추적과 관리 어려움.
+- 비즈니스 로직과 인프라 혼합: 시스템 수정 시 영향 범위 큼.
+- 테스트 비효율: 테스트 작성 및 수정에 시간 소요.
 
-## 향후 계획
-- **Postman**과의 호환성 강화
-- **PWA 구현** 및 내부 사용자용 무료 배포 목표
-
+#### 리팩토링 후:
+- 클린 아키텍처, DDD 적용: 기능별 분리로 확장성과 유지보수성 향상.
+- 타입스크립트 도입: 정적 타입 체크로 코드 안정성 및 가독성 개선.
+- 효율적인 상태 관리: Redux, Redux Persist로 상태 관리 최적화.
+- 비즈니스 로직과 인프라 분리: 시스템 변경 시 다른 모듈 영향 최소화.
+- 테스트 효율성 향상: 테스트 작성 및 유지보수 용이.
 
 
 
